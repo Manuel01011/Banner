@@ -31,7 +31,10 @@ object DatabaseDAO {
     fun executeStoredProcedure(procedureName: String, vararg params: Any): Boolean {
         val conn = getConnection() ?: return false
         return try {
-            val callableStatement: CallableStatement = conn.prepareCall("{call $procedureName(?, ?, ?)}") // Ajustar a tu procedimiento
+            // Se prepara la llamada al procedimiento con el número dinámico de parámetros
+            val placeholders = "?,".repeat(params.size).dropLast(1) // Crea la cadena de placeholders dinámica
+            val callableStatement: CallableStatement = conn.prepareCall("{call $procedureName($placeholders)}")
+
             for ((index, param) in params.withIndex()) {
                 callableStatement.setObject(index + 1, param)
             }
