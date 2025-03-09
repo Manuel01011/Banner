@@ -64,92 +64,43 @@ fun main() {
     val enrollmentController = EnrollmentController()  // Controlador para las inscripciones
 
     try {
-        // Obtener todas las carreras antes de la inserción
-        println(careerController.getAllCareers())
+      // println(courseController.searchCourses(null,null,2)) #Funcionalidad 1
 
-        // Insertar una nueva carrera
-        careerController.insertCareer(1, "Derecho", "Derecho Gornamental")
-        println(careerController.getAllCareers())
+      //println(careerController.getCareerByNameAndCode(null,1)) #Funcionalidad 2
+       /* val success = careerController.editCareer(            #Funcionalidad 2
+            cod = 1,
+            name = "Ingeniería en Software",
+            title = "Licenciatura en Software",
+            coursesToAdd = listOf(201),
+            coursesToRemove = listOf(2)
+        )
 
-        // Obtener todos los ciclos antes de la inserción
-        println(cicloController.getAllCiclos())
-
-        // Insertar un nuevo ciclo
-        cicloController.insertCiclo(1, 2025, 1, "2025-01-01", "2025-12-31")
-        println(cicloController.getAllCiclos())
-
-        // Insertar un curso solo si el ciclo con id=1 existe
-        val cicloIdExistente = cicloController.getAllCiclos().any { it.id == 1 }
-        if (cicloIdExistente) {
-            courseController.insertCourse(1, "Matemáticas", 3, 4, 1, 1)
-            println(courseController.getAllCourses())
+        if (success) {
+            println("Carrera actualizada con éxito")
         } else {
-            println("El ciclo con id=1 no existe, no se puede insertar el curso.")
+            println("Error al actualizar la carrera")
         }
 
-        // Insertar un estudiante
-        studentController.insertStudent(1, "Juan Pérez", 123456789, "juan.perez@email.com", "2000-05-15", 1)
-        println("Estudiantes después de la inserción:")
-        println(studentController.getAllStudents())
+        */
 
-        // Insertar un nuevo profesor
-        teacherController.insertTeacher(1, "Profesor Juan", 987654321, "juan.profesor@email.com")
-        println("Profesores después de la inserción:")
-        println(teacherController.getAllTeachers())
+       // println(teacherController.buscar_profesor(null,1));#Funcionalidad 3
 
-        // Insertar un nuevo grupo
-        grupoController.insertGrupo(1, 101, 2025, "08:00-10:00", 1, 1)
-        println("Grupos después de la inserción:")
-        println(grupoController.getAllGrupos())
+       //print(studentController.buscar_alumno("Alice",1,null))#Funcionalidad 4
+        /*
+        val success = studentController.buscar_alumno("Bob",null,null)
+        println(success)
+            if(success!=null){
+                println("¿Quieres ver el historial académico del estudiante? 1 = sí, 0 = no")
+                val respuesta = readLine()?.toIntOrNull() ?: -1
+                if(respuesta == 1){
+                    println("Es necesario el el id del estudiante")
+                    val respuesta2 = readLine()?.toIntOrNull() ?: -1
+                    println(studentController.alumno_historial(respuesta2))
+                }
+            }
 
-        // Insertar una inscripción solo si el estudiante y el grupo existen
-        val studentExistente = studentController.getAllStudents().any { it.id == 1 }
-        val grupoExistente = grupoController.getAllGrupos().any { it.id == 1 }
-        if (studentExistente && grupoExistente) {
-            enrollmentController.insertEnrollment(1, 1, 9.5)
-            println("Inscripciones después de la inserción:")
-            println(enrollmentController.getAllEnrollments())
-        } else {
-            println("El estudiante o el grupo no existen, no se puede insertar la inscripción.")
-        }
-
-        // Eliminar la inscripción solo si existe
-        val enrollmentExistente = enrollmentController.getAllEnrollments().any { it.studentId == 1 && it.grupoId == 1 }
-        if (enrollmentExistente) {
-            enrollmentController.deleteEnrollment(1, 1)
-            println("Inscripciones después de la eliminación:")
-            println(enrollmentController.getAllEnrollments())
-        } else {
-            println("La inscripción no existe para el estudiante 1 en el grupo 101.")
-        }
-
-        // Eliminar el grupo
-        grupoController.deleteGrupo(1)
-        println("Grupos después de la eliminación:")
-        println(grupoController.getAllGrupos())
-
-        // Eliminar el profesor
-        teacherController.deleteTeacher(1)
-        println("Profesores después de la eliminación:")
-        println(teacherController.getAllTeachers())
-
-        // Eliminar el curso
-        courseController.deleteCourse(1)
-        println(courseController.getAllCourses())
-
-        // Eliminar el estudiante
-        studentController.deleteStudent(1)
-        println("Estudiantes después de la eliminación:")
-        println(studentController.getAllStudents())
-
-        // Eliminar la carrera
-        careerController.deleteCareer(1)
-        println(careerController.getAllCareers())
-
-        // Eliminar el ciclo
-        cicloController.deleteCiclo(1)
-        println(cicloController.getAllCiclos())
-
+         */
+        // println(cicloController.ciclo_anio(2025))#Funcionalidad 5
     } catch (e: Exception) {
         println("Error: ${e.message}")
     }

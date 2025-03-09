@@ -36,4 +36,28 @@ class TeacherController {
     fun callStoredProcedure(procedureName: String, param1: Any, param2: Any): Boolean {
         return DatabaseDAO.executeStoredProcedure(procedureName, param1, param2)
     }
+
+    fun buscar_profesor(nombre: String?, id: Int?): List<Teacher> {
+        val teachers = mutableListOf<Teacher>()
+        val procedureName = "buscar_profesor"
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(
+            procedureName,
+            nombre,
+            id
+        )
+
+        resultSet?.let {
+            while (it.next()) {
+                val teacher = Teacher(
+                    it.getInt("id"),
+                    it.getString("name"),
+                    it.getInt("tel_number"),
+                    it.getString("email"),
+                )
+                teachers.add(teacher)
+            }
+            it.close()
+        }
+        return teachers
+    }
 }

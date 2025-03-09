@@ -39,4 +39,53 @@ class StudentController {
         return DatabaseDAO.executeStoredProcedure(procedureName, param1, param2)
     }
 
+    fun buscar_alumno(nombre: String?, cod: Int?, carrera :Int?): List<Student> {
+        val students = mutableListOf<Student>()
+        val procedureName = "buscar_alumno"
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(
+            procedureName,
+            nombre,
+            cod,
+            carrera
+        )
+
+        resultSet?.let {
+            while (it.next()) {
+                val student = Student(
+                    it.getInt("id"),
+                    it.getString("name"),
+                    it.getInt("tel_number"),
+                    it.getString("email"),
+                    it.getString("born_date"),
+                    it.getInt("career_cod")
+                )
+                students.add(student)
+            }
+            it.close()
+        }
+        return students
+    }
+
+    fun alumno_historial(cod: Int?): List<Enrollment> {
+        val enrollments = mutableListOf<Enrollment>()
+        val procedureName = "alumno_historial"
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(
+            procedureName,
+            cod
+        )
+
+        resultSet?.let {
+            while (it.next()) {
+                val enrollment = Enrollment(
+                    it.getInt("student_id"),
+                    it.getInt("grupo_id"),
+                    it.getDouble("grade")
+                )
+                enrollments.add(enrollment)
+            }
+            it.close()
+        }
+        return enrollments
+    }
+
 }

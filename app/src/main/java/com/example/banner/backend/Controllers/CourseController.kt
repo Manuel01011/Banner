@@ -38,4 +38,31 @@ class CourseController {
     fun callStoredProcedure(procedureName: String, param1: Any, param2: Any): Boolean {
         return DatabaseDAO.executeStoredProcedure(procedureName, param1, param2)
     }
+    //funcionalidad esperada en el CourseController
+    fun searchCourses(nombre: String?, codigo: Int?, carreraCod: Int?): List<Course> {
+        val courses = mutableListOf<Course>()
+        val procedureName = "BuscarCurso"
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(
+            procedureName,
+            nombre,
+            codigo,
+            carreraCod
+        )
+
+        resultSet?.let {
+            while (it.next()) {
+                val course = Course(
+                    it.getInt("cod"),
+                    it.getString("name"),
+                    it.getInt("credits"),
+                    it.getInt("hours"),
+                    it.getInt("ciclo_id"),
+                    it.getInt("career_cod")
+                )
+                courses.add(course)
+            }
+            it.close()
+        }
+        return courses
+    }
 }

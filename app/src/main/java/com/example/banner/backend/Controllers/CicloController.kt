@@ -37,4 +37,30 @@ class CicloController {
     fun callStoredProcedure(procedureName: String, param1: Any, param2: Any): Boolean {
         return DatabaseDAO.executeStoredProcedure(procedureName, param1, param2)
     }
+
+    fun ciclo_anio(year: Int?): List<Ciclo> {
+        val ciclos = mutableListOf<Ciclo>()
+        val procedureName = "ciclo_anio"
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(
+            procedureName,
+            year
+        )
+
+        resultSet?.let {
+            while (it.next()) {
+                val ciclo = Ciclo(
+                    it.getInt("id"),
+                    it.getInt("year"),
+                    it.getInt("number"),
+                    it.getString("date_start"),
+                    it.getString("date_finish"),
+                )
+                ciclos.add(ciclo)
+            }
+            it.close()
+        }
+        return ciclos
+    }
+
+
 }

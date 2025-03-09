@@ -61,4 +61,27 @@ object DatabaseDAO {
             false
         }
     }
+
+    //Funcionalidad esperada en course
+    fun executeStoredProcedureWithResults(procedureName: String, vararg params: Any?): ResultSet? {
+        val conn = getConnection() ?: return null
+        return try {
+            val placeholders = "?,".repeat(params.size).dropLast(1) // Generar "?,?,?"
+            val callableStatement: CallableStatement = conn.prepareCall("{CALL $procedureName($placeholders)}")
+
+            for ((index, param) in params.withIndex()) {
+                if (param == null) {
+                    callableStatement.setNull(index + 1, java.sql.Types.VARCHAR) // Ajusta según tipo
+                } else {
+                    callableStatement.setObject(index + 1, param)
+                }
+            }
+
+            val resultSet = callableStatement.executeQuery() // Ejecutar y obtener resultados
+            resultSet // Retornar ResultSet
+        } catch (e: SQLException) {
+            e.printStackTrace()
+            null
+        }
+    }
 }
