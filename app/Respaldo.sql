@@ -1,0 +1,340 @@
+CREATE TABLE Career (
+  cod INTEGER PRIMARY KEY,
+  name TEXT,
+  title TEXT
+);
+
+CREATE TABLE Ciclo (
+  id INTEGER PRIMARY KEY,
+  year INTEGER,
+  number INTEGER,
+  date_start TEXT,
+  date_finish TEXT
+);
+
+-- debe correr esto para agregar una columna a ciclo
+ALTER TABLE Ciclo ADD COLUMN is_active BOOLEAN DEFAULT FALSE;
+
+CREATE TABLE Course (
+  cod INTEGER PRIMARY KEY,
+  name TEXT,
+  credits INTEGER,
+  hours INTEGER,
+  ciclo_id INTEGER,
+  career_cod INTEGER,
+  FOREIGN KEY (ciclo_id) REFERENCES Ciclo(id),
+  FOREIGN KEY (career_cod) REFERENCES Career(cod)
+);
+
+CREATE TABLE Student (
+  id INTEGER PRIMARY KEY,
+  name TEXT,
+  tel_number INTEGER,
+  email TEXT,
+  born_date TEXT,
+  career_cod INTEGER,
+  FOREIGN KEY (career_cod) REFERENCES Career(cod)
+);
+
+CREATE TABLE Teacher (
+  id INTEGER PRIMARY KEY,
+  name TEXT,
+  tel_number INTEGER,
+  email TEXT
+);
+
+CREATE TABLE Grupo (
+  id INTEGER AUTO_INCREMENT PRIMARY KEY,
+  number_group INTEGER,
+  year INTEGER,
+  horario TEXT,
+  course_cod INTEGER,
+  teacher_id INTEGER,
+  FOREIGN KEY (course_cod) REFERENCES Course(cod),
+  FOREIGN KEY (teacher_id) REFERENCES Teacher(id)
+);
+
+CREATE TABLE Enrollment (
+  student_id INTEGER,
+  grupo_id INTEGER,
+  grade REAL,
+  PRIMARY KEY (student_id, grupo_id),
+  FOREIGN KEY (student_id) REFERENCES Student(id),
+  FOREIGN KEY (grupo_id) REFERENCES Grupo(id)
+);
+
+CREATE TABLE Usuario (
+  id INTEGER PRIMARY KEY,
+  password TEXT,
+  role TEXT CHECK (role IN ('admin', 'matriculador', 'profesor', 'alumno'))
+);
+
+-- Insert data into Career
+INSERT INTO Career (cod, name, title) VALUES
+(1, 'Computer Science', 'BSc in Computer Science'),
+(2, 'Business Administration', 'BBA in Business Administration');
+
+-- Insert data into Ciclo
+INSERT INTO Ciclo (id, year, number, date_start, date_finish) VALUES
+(1, 2024, 1, '2024-01-15', '2024-06-15'),
+(2, 2024, 2, '2024-07-01', '2024-12-15');
+
+-- Insert data into Course
+INSERT INTO Course (cod, name, credits, hours, ciclo_id, career_cod) VALUES
+(101, 'Algorithms', 4, 60, 1, 1),
+(102, 'Database Systems', 4, 60, 1, 1),
+(201, 'Marketing Strategies', 3, 45, 2, 2);
+
+-- Insert data into Student
+INSERT INTO Student (id, name, tel_number, email, born_date, career_cod) VALUES
+(1, 'Alice Johnson', 123456789, 'alice@example.com', '2002-05-10', 1),
+(2, 'Bob Smith', 987654321, 'bob@example.com', '2001-09-20', 2);
+
+-- Insert data into Teacher
+INSERT INTO Teacher (id, name, tel_number, email) VALUES
+(1, 'Dr. Emily Brown', 555123456, 'emily@example.com'),
+(2, 'Prof. Michael Green', 555654321, 'michael@example.com');
+
+-- Insert data into Grupo
+INSERT INTO Grupo (id, number_group, year, horario, course_cod, teacher_id) VALUES
+(1, 1, 2024, 'Mon-Wed 10:00-12:00', 101, 1),
+(2, 2, 2024, 'Tue-Thu 14:00-16:00', 102, 2);
+
+-- Insert data into Enrollment
+INSERT INTO Enrollment (student_id, grupo_id, grade) VALUES
+(1, 1, 89.5),
+(2, 2, 92.0);
+
+-- Insert data into Usuario
+INSERT INTO Usuario (id, password, role) VALUES
+(1, 'adminpass', 'admin'),
+(2, 'matriculador123', 'matriculador'),
+(3, 'profesor456', 'profesor'),
+(4, 'alumno789', 'alumno');
+
+-- Stored Procedure: Mantenimiento de cursos (búsqueda por nombre, código y carrera) en MySQL
+DELIMITER $$
+CREATE PROCEDURE BuscarCurso(
+    IN p_nombre VARCHAR(255),
+    IN p_codigo INT,
+    IN p_carrera_cod INT
+)
+BEGIN
+    SELECT * FROM Course
+    WHERE (p_nombre IS NULL OR name LIKE CONCAT('%', p_nombre, '%'))
+    AND (p_codigo IS NULL OR cod = p_codigo)
+    AND (p_carrera_cod IS NULL OR career_cod = p_carrera_cod);
+END $$
+DELIMITER ;
+
+-- procedimeinto para insertar una carrera
+DELIMITER //
+CREATE PROCEDURE insert_career(IN career_cod INT, IN career_name VARCHAR(255), IN career_title VARCHAR(255))
+BEGIN
+    INSERT INTO Career (cod, name, title) VALUES (career_cod, career_name, career_title);
+END //
+DELIMITER ;
+
+-- Procedimiento para insertar un usuario:
+DELIMITER //
+CREATE PROCEDURE insert_user(IN user_id INT, IN user_password VARCHAR(255), IN user_role VARCHAR(255))
+BEGIN
+    INSERT INTO Usuario (id, password, role) VALUES (user_id, user_password, user_role);
+END //
+DELIMITER ;
+
+-- procedimiento para agregar un curso
+DELIMITER //
+CREATE PROCEDURE insert_course(IN Course_cod INT, IN Course_name VARCHAR(255), IN Course_credits INT, IN Course_hours INT, IN Course_ciclo_id INT, IN Course_career_cod INT)
+BEGIN
+    INSERT INTO Course (cod, name, credits, hours, ciclo_id, career_cod) VALUES (Course_cod, Course_name, Course_credits, Course_hours, Course_ciclo_id, Course_career_cod);
+END //
+DELIMITER ;
+
+-- Procedimiento para buscar carrera por nombre y codigo
+DELIMITER $$
+CREATE PROCEDURE buscar_carrera(
+    IN p_nombre VARCHAR(255), 
+    IN p_cod INT
+)
+BEGIN
+    SELECT * FROM Career 
+    WHERE (p_nombre IS NULL OR name LIKE CONCAT('%', p_nombre, '%'))
+    AND (p_cod IS NULL OR cod = p_cod);
+END $$
+DELIMITER ;
+
+-- procedimiento para editar una carrera
+DELIMITER //
+CREATE PROCEDURE edit_career(
+    IN p_cod INT,
+    IN p_name VARCHAR(255),
+    IN p_title VARCHAR(255)
+)
+BEGIN
+    UPDATE Career
+    SET name = p_name, title = p_title
+    WHERE cod = p_cod;
+END //
+DELIMITER ;
+
+-- procedimiento para añadir un curso a una carrera
+DELIMITER //
+CREATE PROCEDURE add_course_to_career(
+    IN p_career_id INT,
+    IN p_course_id INT
+)
+BEGIN
+    UPDATE Course 
+    SET career_cod = p_career_id
+    WHERE cod = p_course_id;
+END //
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE remove_course_from_career(
+    IN p_course_id INT
+)
+BEGIN
+    UPDATE Course 
+    SET career_cod = NULL
+    WHERE cod = p_course_id;
+END //
+DELIMITER ;
+
+-- procedimiento para buscar profesor por nombre y cedula
+DELIMITER $$
+CREATE PROCEDURE buscar_profesor(
+    IN T_nombre VARCHAR(255), 
+    IN T_cod INT
+)
+BEGIN
+    SELECT * FROM Teacher 
+    WHERE (T_nombre IS NULL OR name LIKE CONCAT('%', T_nombre, '%'))
+    AND (T_cod IS NULL OR id = T_cod);
+END $$
+DELIMITER ;
+
+-- procedimiento para buscar alumno por nombre, cedula y carrera
+DELIMITER $$
+CREATE PROCEDURE buscar_alumno(
+    IN A_nombre VARCHAR(255), 
+    IN A_cod INT,
+	IN A_carre INT
+)
+BEGIN
+    SELECT * FROM Student 
+    WHERE (A_nombre IS NULL OR name LIKE CONCAT('%', A_nombre, '%'))
+    AND (A_cod IS NULL OR id = A_cod)
+	AND (A_carre IS NULL OR career_cod = A_carre);
+END $$
+DELIMITER ;
+
+-- procedimiento para ver historial del alumno
+DELIMITER $$
+CREATE PROCEDURE alumno_historial(
+    IN A_id VARCHAR(255)
+)
+BEGIN
+    SELECT * FROM Enrollment 
+    WHERE student_id = A_id;
+END $$
+DELIMITER ;
+
+-- procedimiento de busqueda de ciclo por anio
+DELIMITER $$
+CREATE PROCEDURE ciclo_anio(
+    IN C_year INT
+)
+BEGIN
+    SELECT * FROM Ciclo WHERE year = C_year;
+END $$
+DELIMITER ;
+
+-- procedimiento almacenado para marcar un ciclo como activo
+DELIMITER $$
+CREATE PROCEDURE set_active_ciclo(IN ciclo_id INT)
+BEGIN
+    -- Desactivar todos los ciclos
+    UPDATE Ciclo SET is_active = FALSE;
+
+    -- Activar el ciclo seleccionado
+    UPDATE Ciclo SET is_active = TRUE WHERE id = ciclo_id;
+END $$
+DELIMITER ;
+
+-- procedimiento almacenado para marcar un ciclo como desactivo
+DELIMITER $$
+CREATE PROCEDURE set_disactive_ciclo(IN ciclo_id INT)
+BEGIN
+    -- Desactivar todos los ciclos
+    UPDATE Ciclo SET is_active = FALSE;
+END $$
+DELIMITER ;
+
+-- procedimeinto para ver el ciclo activo
+DELIMITER $$
+CREATE PROCEDURE get_active_ciclo()
+BEGIN
+    SELECT * FROM Ciclo WHERE is_active = TRUE LIMIT 1;
+END $$
+DELIMITER ;
+
+-- metood para obtener los cursos de una carre y ciclo en particular
+DELIMITER $$
+CREATE PROCEDURE get_courses_by_career_and_cycle(
+    IN p_career_cod INTEGER,
+    IN p_ciclo_id INTEGER
+)
+BEGIN
+    SELECT c.cod, c.name, c.credits, c.hours
+    FROM Course c
+    WHERE c.career_cod = p_career_cod AND c.ciclo_id = p_ciclo_id;
+END $$
+DELIMITER ;
+
+-- procedimiento para obtener los grupos que existen de un curso
+DELIMITER $$
+CREATE PROCEDURE get_groups_by_course(IN course_id INT)
+BEGIN
+    SELECT id, number_group, year, horario, course_cod, teacher_id
+    FROM Grupo
+    WHERE course_cod = course_id;
+END $$
+DELIMITER ;
+
+-- procedimiento para anadir un nuevo curso o editar
+DELIMITER $$
+CREATE PROCEDURE add_or_update_group(
+    IN p_groupId INT,
+    IN p_number_group INT,    
+    IN p_year INT,
+    IN p_schedule VARCHAR(255),
+    IN p_course_cod INT,
+    IN p_teacher_id INT
+)
+BEGIN
+    IF p_groupId = 0 THEN
+        -- Insertar nuevo grupo si el id del grupo es 0
+        INSERT INTO Grupo (number_group, year, horario, course_cod, teacher_id)
+        VALUES (p_number_group, p_year, p_schedule, p_course_cod, p_teacher_id);
+        
+    ELSE
+        -- Actualizar grupo existente
+        UPDATE Grupo
+        SET number_group = p_number_group, year = p_year, horario = p_schedule, course_cod = p_course_cod, teacher_id = p_teacher_id
+        WHERE id = p_groupId;  -- Cambié 'groupId' por 'id' ya que es el nombre correcto en la tabla
+    END IF;
+END $$
+DELIMITER ;
+
+
+-- Para insertar un nuevo grupo
+CALL add_or_update_group(0, 90, 2026, 'Domingos 12:00 AM', 101, 1);
+
+-- Para actualizar un grupo existente
+CALL add_or_update_group(11, 40, 2025, 'Sabdos 8:00-10:40', 102, 1);
+
+select * from Course;
+select * from grupo;
+select * from teacher;

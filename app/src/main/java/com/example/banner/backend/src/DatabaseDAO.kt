@@ -27,7 +27,7 @@ object DatabaseDAO {
         }
     }
 
-    // Método para ejecutar procedimientos almacenados
+    // ejecutar metodos que editan o eliminan no muestran nada
     fun executeStoredProcedure(procedureName: String, vararg params: Any): Boolean {
         val conn = getConnection() ?: return false
         return try {
@@ -62,7 +62,6 @@ object DatabaseDAO {
         }
     }
 
-    //Funcionalidad esperada en course
     fun executeStoredProcedureWithResults(procedureName: String, vararg params: Any?): ResultSet? {
         val conn = getConnection() ?: return null
         return try {
@@ -79,6 +78,18 @@ object DatabaseDAO {
 
             val resultSet = callableStatement.executeQuery() // Ejecutar y obtener resultados
             resultSet // Retornar ResultSet
+        } catch (e: SQLException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    //procedimiento que devuelve solo un resultado
+    fun executeStoredProcedureForSingleResult(procedureName: String): ResultSet? {
+        val conn = getConnection() ?: return null
+        return try {
+            val callableStatement: CallableStatement = conn.prepareCall("{CALL $procedureName()}")
+            callableStatement.executeQuery()
         } catch (e: SQLException) {
             e.printStackTrace()
             null

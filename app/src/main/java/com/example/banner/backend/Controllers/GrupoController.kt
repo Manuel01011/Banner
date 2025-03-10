@@ -42,4 +42,35 @@ class GrupoController {
     fun callStoredProcedure(procedureName: String, param1: Any, param2: Any): Boolean {
         return DatabaseDAO.executeStoredProcedure(procedureName, param1, param2)
     }
+
+    fun getGroupsByCourse(courseId: Int): List<Grupo> {
+        val procedureName = "get_groups_by_course"
+
+        // Llamar al procedimiento almacenado y obtener el ResultSet
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName, courseId)
+
+        val groups = mutableListOf<Grupo>()
+        resultSet?.use { rs ->
+            while (rs.next()) {
+                val group = Grupo(
+                    rs.getInt("id"),
+                    rs.getInt("number_group"),
+                    rs.getInt("year"),
+                    rs.getString("horario"),
+                    rs.getInt("course_cod"),
+                    rs.getInt("teacher_id")
+                )
+                groups.add(group)
+            }
+        }
+
+        return groups
+    }
+
+    fun addOrUpdateGrupo(id: Int, numberGroup: Int, year: Int, horario: String, courseCod: Int, teacherId: Int): Boolean {
+        return DatabaseDAO.executeStoredProcedure(
+            "add_or_update_group",
+            id, numberGroup, year, horario, courseCod, teacherId
+        )
+    }
 }

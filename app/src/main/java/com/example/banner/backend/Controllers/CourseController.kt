@@ -65,4 +65,25 @@ class CourseController {
         }
         return courses
     }
+
+    fun getCoursesByCareerAndCycle(careerCod: Int, cicloId: Int): List<Course> {
+        val procedureName = "get_courses_by_career_and_cycle"
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName, careerCod, cicloId)
+
+        val courses = mutableListOf<Course>()
+        resultSet?.use { rs ->
+            while (rs.next()) {
+                val course = Course(
+                    rs.getInt("cod"),
+                    rs.getString("name"),
+                    rs.getInt("credits"),
+                    rs.getInt("hours"),
+                    cicloId,
+                    careerCod
+                )
+                courses.add(course)
+            }
+        }
+        return courses
+    }
 }

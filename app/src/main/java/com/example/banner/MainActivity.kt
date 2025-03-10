@@ -4,6 +4,7 @@ import CareerController
 import CicloController
 import CourseController
 import EnrollmentController
+import Grupo
 import GrupoController
 import StudentController
 import TeacherController
@@ -101,6 +102,26 @@ fun main() {
 
          */
         // println(cicloController.ciclo_anio(2025))#Funcionalidad 5
+   //     println(cicloController.getActiveCiclo()) //#Funcionalidad 5
+ //       val success = cicloController.setDisActiveCiclo(3)  // Activar el ciclo con ID 3
+//        val success = cicloController.setDisActiveCiclo(3) // desactivar el ciclo con ID 3
+//        if (success) {
+//            println("Ciclo 3 desactivado correctamente")
+//        } else {
+//            println("Error al desactivar el ciclo")
+//        }
+
+        //println(courseController.getCoursesByCareerAndCycle(1,1))//funcionalidad #6
+        //println("Ingrese el id del curso que desea ver todos los grupos disponibles")
+        //val respuesta = readLine()?.toIntOrNull() ?: -1
+       // println(grupoController.getGroupsByCourse(respuesta))
+
+        //el id en 0 si queremos ingresar un grupo nuevo #Funcionalidad 6
+       // grupoController.addOrUpdateGrupo(0, 12, 2024, "Mar-Vier 7:00-8:40", 102, 1)
+        //id del grupo existente que queremos agregar
+       // grupoController.addOrUpdateGrupo(2, 22, 2025, "Lunes 2:00-3:40", 101, 1)
+
+
     } catch (e: Exception) {
         println("Error: ${e.message}")
     }
