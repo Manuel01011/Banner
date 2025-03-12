@@ -60,4 +60,25 @@ class TeacherController {
         }
         return teachers
     }
+    fun getProfessorCourses(professorId: Int): List<Course> {
+        val courses = mutableListOf<Course>()
+        val procedureName = "get_professor_courses"
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName, professorId)
+
+        resultSet?.let {
+            while (it.next()) {
+                val course = Course(
+                    it.getInt("course_cod"),   // course_cod
+                    it.getString("course_name"), // course_name
+                    it.getInt("credits"),     // credits
+                    it.getInt("hours"),       // hours
+                    it.getInt("ciclo_id"),    // ciclo_id
+                    it.getInt("career_cod")   // career_cod
+                )
+                courses.add(course)
+            }
+            it.close()
+        }
+        return courses
+    }
 }

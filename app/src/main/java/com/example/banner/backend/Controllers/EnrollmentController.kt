@@ -36,4 +36,44 @@ class EnrollmentController {
         // Llamar al procedimiento almacenado para eliminar la inscripción
         return DatabaseDAO.executeStoredProcedure(procedureName, studentId, grupoId)
     }
+
+    // Cambiar de ciclo para el estudiante (llama al procedimiento almacenado)
+    fun changeCycle(studentId: Int, newCycleId: Int): Boolean {
+        val procedureName = "change_cycle"
+        // Llamar al procedimiento almacenado para cambiar el ciclo del estudiante
+        return DatabaseDAO.executeStoredProcedure(procedureName, studentId, newCycleId)
+    }
+
+
+    fun updateStudentGrade(studentId: Int, groupId: Int, newGrade: Double): Boolean {
+        val procedureName = "update_student_grade"
+        return DatabaseDAO.executeStoredProcedure(procedureName, studentId, groupId, newGrade)
+    }
+
+    // Obtener los cursos matriculados en el ciclo activo por un estudiante
+    fun getActiveCycleCourses(studentId: Int): List<Course> {
+        val courses = mutableListOf<Course>()
+        val query = "CALL get_active_cycle_courses(?)" // Llamamos al procedimiento almacenado
+
+        val resultSet: ResultSet? = DatabaseDAO.executeQuery(query, studentId)
+
+        resultSet?.let {
+            while (it.next()) {
+                // Crear el objeto Course con los nuevos parámetros
+                courses.add(
+                    Course(
+                        it.getInt("cod"),         // Código del curso
+                        it.getString("name"),     // Nombre del curso
+                        it.getInt("credits"),     // Créditos del curso
+                        it.getInt("hours"),       // Horas del curso
+                        it.getInt("year"),
+                        it.getInt("ciclo_id")
+                    )
+                )
+            }
+            it.close()  // Cerramos el ResultSet después de usarlo
+        }
+        return courses
+    }
+
 }

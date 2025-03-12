@@ -59,12 +59,30 @@ fun main() {
     val careerController = CareerController()
     val cicloController = CicloController()
     val courseController = CourseController()
-    val studentController = StudentController()  // Controlador para los estudiantes
-    val teacherController = TeacherController()  // Controlador para los profesores
-    val grupoController = GrupoController()  // Controlador para los grupos
-    val enrollmentController = EnrollmentController()  // Controlador para las inscripciones
+    val studentController = StudentController()
+    val teacherController = TeacherController()
+    val grupoController = GrupoController()
+    //val enrollmentController = EnrollmentController()
 
     try {
+        // Suponiendo que tienes un studentId (por ejemplo, 1 para Alice)
+        val studentId = 1
+
+        // Crear una instancia del controlador que maneja los cursos
+        val enrollmentController = EnrollmentController()
+
+        // Llamar al método para obtener los cursos activos del ciclo
+        //val courses = enrollmentController.getActiveCycleCourses(1)
+
+        // Imprimir los resultados
+        if (enrollmentController.getActiveCycleCourses(1).isNotEmpty()) {
+            println("Cursos activos para el estudiante con ID $studentId:")
+            enrollmentController.getActiveCycleCourses(1).forEach { course ->
+                println("Código: ${course.cod}, Nombre: ${course.name}, Créditos: ${course.credits}, Horas: ${course.hours}")
+            }
+        } else {
+            println("No hay cursos activos para el estudiante con ID $studentId.")
+        }
       // println(courseController.searchCourses(null,null,2)) #Funcionalidad 1
 
       //println(careerController.getCareerByNameAndCode(null,1)) #Funcionalidad 2
