@@ -93,7 +93,9 @@ class CareerController {
         return DatabaseDAO.executeStoredProcedure("remove_course_from_career", courseId)
     }
 
-
+    fun updateCareer(id: Int, name: String, facultyId: Int): Boolean {
+        return DatabaseDAO.executeStoredProcedure("update_career", id, name, facultyId)
+    }
 
 
 }

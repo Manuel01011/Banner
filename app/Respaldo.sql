@@ -116,6 +116,16 @@ INSERT INTO Usuario (id, password, role) VALUES
 (3, 'profesor456', 'profesor'),
 (4, 'alumno789', 'alumno');
 
+
+
+
+-- procedimiento para agregar un curso
+DELIMITER //
+CREATE PROCEDURE insert_course(IN Course_cod INT, IN Course_name VARCHAR(255), IN Course_credits INT, IN Course_hours INT, IN Course_ciclo_id INT, IN Course_career_cod INT)
+BEGIN
+    INSERT INTO Course (cod, name, credits, hours, ciclo_id, career_cod) VALUES (Course_cod, Course_name, Course_credits, Course_hours, Course_ciclo_id, Course_career_cod);
+END //
+DELIMITER ;
 -- Stored Procedure: Mantenimiento de cursos (búsqueda por nombre, código y carrera) en MySQL
 DELIMITER $$
 CREATE PROCEDURE BuscarCurso(
@@ -147,13 +157,7 @@ BEGIN
 END //
 DELIMITER ;
 
--- procedimiento para agregar un curso
-DELIMITER //
-CREATE PROCEDURE insert_course(IN Course_cod INT, IN Course_name VARCHAR(255), IN Course_credits INT, IN Course_hours INT, IN Course_ciclo_id INT, IN Course_career_cod INT)
-BEGIN
-    INSERT INTO Course (cod, name, credits, hours, ciclo_id, career_cod) VALUES (Course_cod, Course_name, Course_credits, Course_hours, Course_ciclo_id, Course_career_cod);
-END //
-DELIMITER ;
+
 
 -- Procedimiento para buscar carrera por nombre y codigo
 DELIMITER $$
@@ -569,5 +573,166 @@ END $$
 
 DELIMITER ;
 
+use banner;
 
 
+
+DELIMITER $$
+
+CREATE PROCEDURE update_ciclo(
+    IN p_id INT,
+    IN p_year INT,
+    IN p_number INT,
+    IN p_dateStart DATE,
+    IN p_dateFinish DATE
+)
+BEGIN
+    UPDATE Ciclo
+    SET year = p_year, 
+        number = p_number, 
+        date_start = p_dateStart, 
+        date_finish = p_dateFinish
+    WHERE id = p_id;
+END $$  -- <-- Aquí cerramos correctamente el bloque `BEGIN ... END`
+
+DELIMITER ;
+
+
+
+DELIMITER $$
+
+CREATE PROCEDURE update_career(
+    IN p_id INT,
+    IN p_name VARCHAR(255),
+    IN p_facultyId INT
+)
+BEGIN
+    UPDATE Career
+    SET name = p_name, 
+        faculty_id = p_facultyId
+    WHERE id = p_id;
+END $$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE PROCEDURE update_course(
+    IN p_cod INT,
+    IN p_name VARCHAR(255),
+    IN p_credits INT,
+    IN p_hours INT,
+    IN p_cicloId INT,
+    IN p_careerCod INT
+)
+BEGIN
+    UPDATE Course
+    SET name = p_name, 
+        credits = p_credits, 
+        hours = p_hours, 
+        ciclo_id = p_cicloId, 
+        career_cod = p_careerCod
+    WHERE cod = p_cod;
+END $$
+
+DELIMITER ;
+
+
+
+DELIMITER $$
+
+CREATE PROCEDURE update_enrollment(
+    IN p_student_id INT,
+    IN p_grupo_id INT,
+    IN p_grade DECIMAL(5,2)
+)
+BEGIN
+    UPDATE Enrollment
+    SET grade = p_grade
+    WHERE student_id = p_student_id AND grupo_id = p_grupo_id;
+END $$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE PROCEDURE update_grupo(
+    IN p_id INT,
+    IN p_number_group INT,
+    IN p_year INT,
+    IN p_horario VARCHAR(50),
+    IN p_course_cod INT,
+    IN p_teacher_id INT
+)
+BEGIN
+    UPDATE Grupo
+    SET number_group = p_number_group, 
+        year = p_year, 
+        horario = p_horario, 
+        course_cod = p_course_cod, 
+        teacher_id = p_teacher_id
+    WHERE id = p_id;
+END $$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE PROCEDURE update_student(
+    IN p_id INT,
+    IN p_name VARCHAR(100),
+    IN p_tel_number INT,
+    IN p_email VARCHAR(100),
+    IN p_born_date DATE,
+    IN p_career_cod INT
+)
+BEGIN
+    UPDATE Student
+    SET name = p_name, 
+        tel_number = p_tel_number, 
+        email = p_email, 
+        born_date = p_born_date, 
+        career_cod = p_career_cod
+    WHERE id = p_id;
+END $$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE PROCEDURE update_teacher(
+    IN p_id INT,
+    IN p_name VARCHAR(100),
+    IN p_tel_number INT,
+    IN p_email VARCHAR(100)
+)
+BEGIN
+    UPDATE Teacher
+    SET name = p_name, 
+        tel_number = p_tel_number, 
+        email = p_email
+    WHERE id = p_id;
+END $$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE PROCEDURE update_user(
+    IN p_id INT,
+    IN p_password VARCHAR(255),
+    IN p_role VARCHAR(50)
+)
+BEGIN
+    UPDATE Usuario
+    SET password = p_password, 
+        role = p_role
+    WHERE id = p_id;
+END $$
+
+DELIMITER ;

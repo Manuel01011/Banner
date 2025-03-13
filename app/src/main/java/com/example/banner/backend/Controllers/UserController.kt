@@ -29,4 +29,9 @@ class UserController {
         val procedureName = "insert_user" // Nombre del procedimiento almacenado
         return DatabaseDAO.executeStoredProcedure(procedureName, id, password, role)
     }
+
+    fun updateUser(id: Int, password: String, role: String): Boolean {
+        return DatabaseDAO.executeStoredProcedure("update_user", id, password, role)
+    }
+
 }
