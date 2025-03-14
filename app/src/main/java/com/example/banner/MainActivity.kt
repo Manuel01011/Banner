@@ -66,43 +66,44 @@ fun main() {
 
     try {
         // Suponiendo que tienes un studentId (por ejemplo, 1 para Alice)
-        val studentId = 1
+//        val studentId = 1
+//
+//        // Crear una instancia del controlador que maneja los cursos
+//        val enrollmentController = EnrollmentController()
+//
+//        // Llamar al método para obtener los cursos activos del ciclo
+//        val courses = enrollmentController.getActiveCycleCourses(1)
+//
+//        // Imprimir los resultados
+//        if (enrollmentController.getActiveCycleCourses(1).isNotEmpty()) {
+//            println("Cursos activos para el estudiante con ID $studentId:")
+//            enrollmentController.getActiveCycleCourses(1).forEach { course ->
+//                println("Código: ${course.cod}, Nombre: ${course.name}, Créditos: ${course.credits}, Horas: ${course.hours}")
+//            }
+//        } else {
+//            println("No hay cursos activos para el estudiante con ID $studentId.")
+//        }
+      //println(courseController.searchCourses(null,null,1)) //#Funcionalidad 1
 
-        // Crear una instancia del controlador que maneja los cursos
-        val enrollmentController = EnrollmentController()
+//      println(careerController.getCareerByNameAndCode(null,1)) //#Funcionalidad 2
+//       val success = careerController.editCareer(       //     #Funcionalidad 2
+//            cod = 1,
+//            name = "Ingeniería en Sistemas",
+//            title = "Bachiller en  Ingeniería en Sistemas",
+//            coursesToAdd = listOf(201),
+//            coursesToRemove = listOf(2)
+//        )
+//
+//        if (success) {
+//            println("Carrera actualizada con éxito")
+//        } else {
+//            println("Error al actualizar la carrera")
+//        }
+//
+//        println(careerController.getCareerByNameAndCode(null,1)) //#Funcionalidad 2
 
-        // Llamar al método para obtener los cursos activos del ciclo
-        //val courses = enrollmentController.getActiveCycleCourses(1)
 
-        // Imprimir los resultados
-        if (enrollmentController.getActiveCycleCourses(1).isNotEmpty()) {
-            println("Cursos activos para el estudiante con ID $studentId:")
-            enrollmentController.getActiveCycleCourses(1).forEach { course ->
-                println("Código: ${course.cod}, Nombre: ${course.name}, Créditos: ${course.credits}, Horas: ${course.hours}")
-            }
-        } else {
-            println("No hay cursos activos para el estudiante con ID $studentId.")
-        }
-      // println(courseController.searchCourses(null,null,2)) #Funcionalidad 1
-
-      //println(careerController.getCareerByNameAndCode(null,1)) #Funcionalidad 2
-       /* val success = careerController.editCareer(            #Funcionalidad 2
-            cod = 1,
-            name = "Ingeniería en Software",
-            title = "Licenciatura en Software",
-            coursesToAdd = listOf(201),
-            coursesToRemove = listOf(2)
-        )
-
-        if (success) {
-            println("Carrera actualizada con éxito")
-        } else {
-            println("Error al actualizar la carrera")
-        }
-
-        */
-
-       // println(teacherController.buscar_profesor(null,1));#Funcionalidad 3
+        // println(teacherController.buscar_profesor(null,1));#Funcionalidad 3
 
        //print(studentController.buscar_alumno("Alice",1,null))#Funcionalidad 4
         /*

@@ -1,3 +1,5 @@
+import com.example.banner.backend.service.GlobalException
+import com.example.banner.backend.service.NoDataException
 import java.sql.CallableStatement
 import java.sql.Connection
 import java.sql.ResultSet
@@ -5,11 +7,12 @@ import java.sql.SQLException
 
 object DatabaseDAO {
 
-    private val dbHelper = MySQLDatabaseHelper()
+    private val dbHelper = servicio()
+    private val conexion = dbHelper.getConnection()
 
     // Obtener conexión
     private fun getConnection(): Connection? {
-        return dbHelper.getConnection()
+        return dbHelper.getConnection()?: throw GlobalException("No se pudo obtener la conexión a la base de datos")
     }
 
     // Método para ejecutar consultas SELECT
@@ -25,6 +28,7 @@ object DatabaseDAO {
             e.printStackTrace()
             null
         }
+        dbHelper.closeConnection(conexion)
     }
 
     // ejecutar metodos que editan o eliminan no muestran nada
@@ -42,29 +46,15 @@ object DatabaseDAO {
             callableStatement.close()
             true
         } catch (e: SQLException) {
-            e.printStackTrace()
-            false
-        }
-    }
-
-    // Método para ejecutar INSERT, UPDATE, DELETE utilizando CallableStatement
-    fun executeUpdateWithProcedure(query: String, vararg params: Any): Boolean {
-        val conn = getConnection() ?: return false
-        return try {
-            val callableStatement: CallableStatement = conn.prepareCall(query)  // Preparar la consulta de llamada
-            for ((index, param) in params.withIndex()) {
-                callableStatement.setObject(index + 1, param)
-            }
-            callableStatement.executeUpdate() > 0
-        } catch (e: SQLException) {
-            e.printStackTrace()
-            false
+            throw GlobalException("Error al ejecutar procedimiento almacenado: ${e.message}")
+        } finally {
+            dbHelper.closeConnection(conexion)
         }
     }
 
     fun executeStoredProcedureWithResults(procedureName: String, vararg params: Any?): ResultSet? {
-        val conn = getConnection() ?: return null
         return try {
+            val conn = getConnection() ?: return null
             val placeholders = "?,".repeat(params.size).dropLast(1) // Generar "?,?,?"
             val callableStatement: CallableStatement = conn.prepareCall("{CALL $procedureName($placeholders)}")
 
@@ -77,22 +67,30 @@ object DatabaseDAO {
             }
 
             val resultSet = callableStatement.executeQuery() // Ejecutar y obtener resultados
-            resultSet // Retornar ResultSet
+            if (!resultSet.isBeforeFirst) {
+                throw NoDataException("No se encontraron datos al ejecutar el procedimiento almacenado: $procedureName")
+            }
+
+            resultSet
         } catch (e: SQLException) {
-            e.printStackTrace()
-            null
+            throw GlobalException("Error al ejecutar procedimiento almacenado con resultados: ${e.message}")
+        } finally {
+            dbHelper.closeConnection(conexion)
         }
     }
 
     //procedimiento que devuelve solo un resultado
     fun executeStoredProcedureForSingleResult(procedureName: String): ResultSet? {
-        val conn = getConnection() ?: return null
         return try {
+            val conn = getConnection() ?: return null
             val callableStatement: CallableStatement = conn.prepareCall("{CALL $procedureName()}")
             callableStatement.executeQuery()
+
         } catch (e: SQLException) {
-            e.printStackTrace()
-            null
+            throw GlobalException("Error al ejecutar el procedimiento almacenado $procedureName: ${e.message}")
+        } finally {
+            dbHelper.closeConnection(conexion)
         }
+
     }
 }
