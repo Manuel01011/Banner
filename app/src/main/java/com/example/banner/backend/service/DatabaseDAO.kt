@@ -52,6 +52,7 @@ object DatabaseDAO {
         }
     }
 
+    //procedimiento que devuelve un cursor de resultado
     fun executeStoredProcedureWithResults(procedureName: String, vararg params: Any?): ResultSet? {
         return try {
             val conn = getConnection() ?: return null

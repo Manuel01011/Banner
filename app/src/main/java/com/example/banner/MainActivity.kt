@@ -8,7 +8,11 @@ import Grupo
 import GrupoController
 import StudentController
 import TeacherController
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -19,39 +23,59 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.banner.backend.Controllers.UserController
 import com.example.banner.ui.theme.BannerTheme
 
 
 class MainActivity : ComponentActivity() {
+
+    lateinit var usernameInput : EditText
+    lateinit var passwordInput : EditText
+    lateinit var loginbtn : Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            BannerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+        setContentView(R.layout.main_activity)
+        val userController = UserController()
+
+        // Obtener las vistas de los componentes UI del XML
+        usernameInput = findViewById(R.id.user_name_input)
+        passwordInput = findViewById(R.id.password_input)
+        loginbtn = findViewById(R.id.login_btn)
+
+        loginbtn.setOnClickListener {
+            // Intentar convertir el username a Int
+            val username = usernameInput.text.toString().toIntOrNull()
+            val password = passwordInput.text.toString()
+
+            // Verificar si el username es válido (no nulo)
+            if (username == null) {
+                println("El id de usuario debe ser un número entero")
+                // Mostrar un mensaje de error o alerta aquí si lo deseas
+                return@setOnClickListener
             }
+
+            try {
+                // Llamar al método de login
+                val isLoggedIn = userController.loginUser(username, password)
+                if (isLoggedIn) {
+                    Log.d("MainActivity","Login exitoso")
+
+                    // Iniciar la nueva actividad
+                    val intent = Intent(this, WelcomeActivity::class.java)
+                    startActivity(intent)
+                    finish() // Cierra la actividad de login para que el usuario no regrese con el botón "Atrás"
+                } else {
+                    Log.d("MainActivity","Credenciales incorrectas")
+                    // Mostrar un mensaje de error de credenciales incorrectas
+                }
+            } catch (e: Exception) {
+                Log.d("MainActivity", "Error en el proceso de login: ${e.message}")
+                e.printStackTrace()
+            }
+
+            Log.d("MainActivity", "Username: $username and Password: $password")
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    BannerTheme {
-        Greeting("Android")
     }
 }
 
@@ -63,6 +87,9 @@ fun main() {
     val teacherController = TeacherController()
     val grupoController = GrupoController()
     //val enrollmentController = EnrollmentController()
+    val userController = UserController()
+
+    print(userController.loginUser(1,"adminpass" ))
 
     try {
         // Suponiendo que tienes un studentId (por ejemplo, 1 para Alice)
@@ -70,7 +97,6 @@ fun main() {
 //
 //        // Crear una instancia del controlador que maneja los cursos
 //        val enrollmentController = EnrollmentController()
-//
 //        // Llamar al método para obtener los cursos activos del ciclo
 //        val courses = enrollmentController.getActiveCycleCourses(1)
 //

@@ -34,4 +34,17 @@ class UserController {
         return DatabaseDAO.executeStoredProcedure("update_user", id, password, role)
     }
 
+    //login
+    fun loginUser(id: Int, password: String): Boolean {
+        val procedureName = "sp_LoginUsuario"
+        val resultSet = DatabaseDAO.executeStoredProcedureWithResults(procedureName, id, password)
+
+        return resultSet?.let {
+            if (it.next()) {
+                it.getBoolean("p_resultado") // Obtener el valor de salida
+            } else {
+                false
+            }
+        } ?: false
+    }
 }
