@@ -57,14 +57,16 @@ class MainActivity : ComponentActivity() {
 
             try {
                 // Llamar al método de login
-                val isLoggedIn = userController.loginUser(username, password)
-                if (isLoggedIn) {
+                //val isLoggedIn = userController.loginUser(username, password)
+                if (true) {
                     Log.d("MainActivity","Login exitoso")
 
-                    // Iniciar la nueva actividad
+                    // Iniciar la nueva actividad con el Intent
                     val intent = Intent(this, WelcomeActivity::class.java)
+                    intent.putExtra("USERNAME", username.toString()) // Aquí pasas el nombre de usuario
+                    intent.putExtra("PASSWORD", password) // Opcional, si necesitas la contraseña
                     startActivity(intent)
-                    finish() // Cierra la actividad de login para que el usuario no regrese con el botón "Atrás"
+                    //finish() // Cierra la actividad de login para que el usuario no regrese con el botón "Atrás"
                 } else {
                     Log.d("MainActivity","Credenciales incorrectas")
                     // Mostrar un mensaje de error de credenciales incorrectas
