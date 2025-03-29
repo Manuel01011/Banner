@@ -736,3 +736,26 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+en la base de datos mete este procedieminto: -- procedimiento del login
+DELIMITER //
+CREATE PROCEDURE sp_LoginUsuario(
+    IN p_id INT,
+    IN p_password TEXT
+)
+BEGIN
+    DECLARE stored_password TEXT;
+    DECLARE p_resultado BOOLEAN DEFAULT FALSE;
+
+    -- Obtener la contraseña almacenada
+    SELECT password INTO stored_password FROM Usuario WHERE id = p_id;
+
+    -- Comparar contraseñas
+    IF stored_password = p_password THEN
+        SET p_resultado = TRUE;
+    END IF;
+
+    -- Devolver el resultado
+    SELECT p_resultado AS p_resultado;
+END //
+DELIMITER ;
