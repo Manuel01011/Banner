@@ -14,4 +14,5 @@ class WelcomeActivity : AppCompatActivity() {
         val mensajeBienvenida = "Welcome $usuario"
         findViewById<TextView>(R.id.textViewWelcome).text = mensajeBienvenida
     }
+
 }
