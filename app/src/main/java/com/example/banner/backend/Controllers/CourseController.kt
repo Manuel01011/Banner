@@ -4,8 +4,10 @@ class CourseController {
 
     fun getAllCourses(): List<Course> {
         val courses = mutableListOf<Course>()
-        val query = "SELECT * FROM Course"
-        val resultSet: ResultSet? = DatabaseDAO.executeQuery(query)
+        val procedureName = "GetAllCourses"  // Nombre del procedimiento almacenado
+
+        // Llamamos al procedimiento almacenado que devuelve un ResultSet
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName)
 
         resultSet?.let {
             while (it.next()) {
@@ -21,6 +23,7 @@ class CourseController {
             }
             it.close()
         }
+
         return courses
     }
 

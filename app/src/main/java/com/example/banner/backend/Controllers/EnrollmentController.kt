@@ -2,11 +2,13 @@ import java.sql.ResultSet
 
 class EnrollmentController {
 
-    // Obtener todas las inscripciones
+    // Obtener todas las matriculas
     fun getAllEnrollments(): List<Enrollment> {
         val enrollments = mutableListOf<Enrollment>()
-        val query = "SELECT * FROM Enrollment"
-        val resultSet: ResultSet? = DatabaseDAO.executeQuery(query)
+        val procedureName = "GetAllEnrollments"  // Nombre del procedimiento almacenado
+
+        // Llamamos al procedimiento almacenado que devuelve un ResultSet
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName)
 
         resultSet?.let {
             while (it.next()) {
@@ -20,6 +22,7 @@ class EnrollmentController {
             }
             it.close() // Cerramos el ResultSet después de usarlo
         }
+
         return enrollments
     }
 

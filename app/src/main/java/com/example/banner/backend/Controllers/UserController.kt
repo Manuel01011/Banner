@@ -7,20 +7,24 @@ class UserController {
 
     fun getAllUsers(): List<Usuario> {
         val usuarios = mutableListOf<Usuario>()
-        val query = "SELECT * FROM Usuario"
-        val resultSet: ResultSet? = DatabaseDAO.executeQuery(query)
+        val procedureName = "GetAllUsuarios"  // Nombre del procedimiento almacenado
+
+        // Llamamos al procedimiento almacenado que devuelve un ResultSet
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName)
 
         resultSet?.let {
             while (it.next()) {
+                // Crear un objeto Usuario a partir del ResultSet
                 val usuario = Usuario(
                     it.getInt("id"),
                     it.getString("password"),
-                    it.getString("role"),
+                    it.getString("role")
                 )
                 usuarios.add(usuario)
             }
-            it.close()
+            it.close() // Cerramos el ResultSet después de usarlo
         }
+
         return usuarios
     }
 

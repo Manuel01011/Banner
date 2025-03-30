@@ -4,7 +4,6 @@ import CareerController
 import CicloController
 import CourseController
 import EnrollmentController
-import Grupo
 import GrupoController
 import StudentController
 import TeacherController
@@ -14,17 +13,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.banner.backend.Controllers.UserController
-import com.example.banner.ui.theme.BannerTheme
 
 
 class MainActivity : ComponentActivity() {
@@ -62,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     Log.d("MainActivity","Login exitoso")
 
                     // Iniciar la nueva actividad con el Intent
-                    val intent = Intent(this, WelcomeActivity::class.java)
+                    val intent = Intent(this, Admin::class.java)
                     intent.putExtra("USERNAME", username.toString()) // Aquí pasas el nombre de usuario
                     intent.putExtra("PASSWORD", password) // Opcional, si necesitas la contraseña
                     startActivity(intent)
@@ -88,10 +77,11 @@ fun main() {
     val studentController = StudentController()
     val teacherController = TeacherController()
     val grupoController = GrupoController()
-    //val enrollmentController = EnrollmentController()
+    val enrollmentController = EnrollmentController()
     val userController = UserController()
 
-    print(userController.loginUser(1,"adminpass" ))
+    print(userController.getAllUsers())
+  //  print(userController.loginUser(1,"adminpass" ))
 
     try {
         // Suponiendo que tienes un studentId (por ejemplo, 1 para Alice)

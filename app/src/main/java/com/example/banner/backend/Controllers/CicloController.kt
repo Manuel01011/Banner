@@ -4,8 +4,10 @@ class CicloController {
 
     fun getAllCiclos(): List<Ciclo> {
         val ciclos = mutableListOf<Ciclo>()
-        val query = "SELECT * FROM Ciclo"
-        val resultSet: ResultSet? = DatabaseDAO.executeQuery(query)
+        val procedureName = "GetAllCiclos"  // Nombre del procedimiento almacenado
+
+        // Llamamos al procedimiento almacenado que devuelve un ResultSet
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName)
 
         resultSet?.let {
             while (it.next()) {
@@ -21,10 +23,9 @@ class CicloController {
             }
             it.close()
         }
+
         return ciclos
     }
-
-
 
     fun insertCiclo(id: Int, year: Int, number: Int, dateStart: String, dateFinish: String): Boolean {
         val procedureName = "insert_ciclo"

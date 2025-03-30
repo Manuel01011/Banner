@@ -13,8 +13,18 @@
         android:theme="@style/Theme.Banner"
         tools:targetApi="31" >
 
-        <activity android:name=".WelcomeActivity"
+        <activity android:name=".Admin"
             android:theme="@style/Theme.Banner" />
+
+        <activity android:name=".Student"
+            android:theme="@style/Theme.Banner" />
+
+        <activity android:name=".Professor"
+            android:theme="@style/Theme.Banner" />
+
+        <activity android:name=".Course"
+            android:theme="@style/Theme.Banner" />
+
 
         <activity
             android:name=".MainActivity"

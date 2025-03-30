@@ -4,11 +4,14 @@ class GrupoController {
 
     fun getAllGrupos(): List<Grupo> {
         val grupos = mutableListOf<Grupo>()
-        val query = "SELECT * FROM Grupo"
-        val resultSet: ResultSet? = DatabaseDAO.executeQuery(query)
+        val procedureName = "GetAllGrups"  // Nombre del procedimiento almacenado
+
+        // Llamamos al procedimiento almacenado que devuelve un ResultSet
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName)
 
         resultSet?.let {
             while (it.next()) {
+                // Crear un objeto Grupo a partir del ResultSet
                 val grupo = Grupo(
                     it.getInt("id"),
                     it.getInt("number_group"),
@@ -19,8 +22,9 @@ class GrupoController {
                 )
                 grupos.add(grupo)
             }
-            it.close()
+            it.close() // Cerramos el ResultSet después de usarlo
         }
+
         return grupos
     }
 

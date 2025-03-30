@@ -309,6 +309,13 @@ BEGIN
     FROM Grupo
     WHERE course_cod = course_id;
 END $$
+DELIMITER ;DELIMITER $$
+CREATE PROCEDURE get_groups_by_course(IN course_id INT)
+BEGIN
+    SELECT id, number_group, year, horario, course_cod, teacher_id
+    FROM Grupo
+    WHERE course_cod = course_id;
+END $$
 DELIMITER ;
 
 -- procedimiento para anadir un nuevo curso o editar
@@ -736,3 +743,90 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+-- procedimiento del login
+DELIMITER //
+CREATE PROCEDURE sp_LoginUsuario(
+    IN p_id INT,
+    IN p_password TEXT
+)
+BEGIN
+    DECLARE stored_password TEXT;
+    DECLARE p_resultado BOOLEAN DEFAULT FALSE;
+
+    -- Obtener la contraseña almacenada
+    SELECT password INTO stored_password FROM Usuario WHERE id = p_id;
+
+    -- Comparar contraseñas
+    IF stored_password = p_password THEN
+        SET p_resultado = TRUE;
+    END IF;
+
+    -- Devolver el resultado
+    SELECT p_resultado AS p_resultado;
+END //
+DELIMITER ;
+
+-- procedieminto para todas las carreas
+DELIMITER //
+CREATE PROCEDURE GetAllCareers()
+BEGIN
+    SELECT * FROM Career;
+END;
+//DELIMITER ;
+
+-- procedieminto para todos los ciclos
+DELIMITER //
+CREATE PROCEDURE GetAllCiclos()
+BEGIN
+    SELECT * FROM Ciclo;
+END;
+//DELIMITER 
+
+-- procedieminto para todos los cursos
+DELIMITER //
+CREATE PROCEDURE GetAllCourses()
+BEGIN
+    SELECT * FROM Course;
+END;
+//DELIMITER 
+
+-- procedieminto para todas las matriculas
+DELIMITER //
+CREATE PROCEDURE GetAllEnrollments()
+BEGIN
+    SELECT * FROM Enrollment;
+END;
+//DELIMITER 
+
+-- procedieminto para todos los grupos
+DELIMITER //
+CREATE PROCEDURE GetAllGrups()
+BEGIN
+    SELECT * FROM Grupo;
+END;
+//DELIMITER 
+
+-- procedieminto para todos los estudiantes
+DELIMITER //
+CREATE PROCEDURE GetAllStudents()
+BEGIN
+    SELECT * FROM Student;
+END;
+//DELIMITER 
+
+-- procedieminto para todos los profesores
+DELIMITER //
+CREATE PROCEDURE GetAllTeachers()
+BEGIN
+    SELECT * FROM Teacher;
+END;
+//DELIMITER 
+
+-- procedieminto para todos los usuarios
+DELIMITER //
+CREATE PROCEDURE GetAllUsuarios()
+BEGIN
+    SELECT * FROM Usuario;
+END;
+//DELIMITER 

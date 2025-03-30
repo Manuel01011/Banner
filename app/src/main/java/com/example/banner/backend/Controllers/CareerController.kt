@@ -2,20 +2,23 @@ import java.sql.ResultSet
 
 class CareerController {
 
-    fun getAllCareers(): List<Triple<Int, String, String>> {  // Cambié Pair por Triple para incluir el título
+    fun getAllCareers(): List<Triple<Int, String, String>> {
         val careers = mutableListOf<Triple<Int, String, String>>()  // Usamos Triple para almacenar los tres valores
-        val query = "SELECT cod, name, title FROM Career"  // Agregamos 'title' a la consulta
-        val resultSet: ResultSet? = DatabaseDAO.executeQuery(query)
+        val procedureName = "GetAllCareers"  // Nombre del procedimiento almacenado
+
+        // Llamamos al procedimiento almacenado que devuelve un ResultSet
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName)
 
         resultSet?.let {
             while (it.next()) {
                 val cod = it.getInt("cod")
                 val name = it.getString("name")
-                val title = it.getString("title")  // Obtenemos el valor de 'title'
+                val title = it.getString("title")
                 careers.add(Triple(cod, name, title))  // Usamos Triple para almacenar los tres valores
             }
             it.close()
         }
+
         return careers
     }
 

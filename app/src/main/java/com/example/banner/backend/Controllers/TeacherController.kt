@@ -4,11 +4,14 @@ class TeacherController {
 
     fun getAllTeachers(): List<Teacher> {
         val teachers = mutableListOf<Teacher>()
-        val query = "SELECT * FROM Teacher"
-        val resultSet: ResultSet? = DatabaseDAO.executeQuery(query)
+        val procedureName = "GetAllTeachers"  // Nombre del procedimiento almacenado
+
+        // Llamamos al procedimiento almacenado que devuelve un ResultSet
+        val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName)
 
         resultSet?.let {
             while (it.next()) {
+                // Crear un objeto Teacher a partir del ResultSet
                 val teacher = Teacher(
                     it.getInt("id"),
                     it.getString("name"),
@@ -17,8 +20,9 @@ class TeacherController {
                 )
                 teachers.add(teacher)
             }
-            it.close()
+            it.close() // Cerramos el ResultSet después de usarlo
         }
+
         return teachers
     }
 
