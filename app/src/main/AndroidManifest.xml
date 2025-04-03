@@ -25,6 +25,23 @@
         <activity android:name=".Course"
             android:theme="@style/Theme.Banner" />
 
+        <activity android:name=".Register"
+            android:theme="@style/Theme.Banner" />
+
+        <activity android:name=".Career"
+            android:theme="@style/Theme.Banner" />
+
+        <activity android:name=".Ciclo"
+            android:theme="@style/Theme.Banner" />
+
+        <activity android:name=".Group"
+            android:theme="@style/Theme.Banner" />
+
+        <activity android:name=".Enrollment"
+            android:theme="@style/Theme.Banner" />
+
+        <activity android:name=".User"
+            android:theme="@style/Theme.Banner" />
 
         <activity
             android:name=".MainActivity"

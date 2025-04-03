@@ -1,5 +1,4 @@
 package com.example.banner
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -8,14 +7,14 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 
-class Course : AppCompatActivity(){
+class Career : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var menuButton: ImageButton
     private lateinit var navigationView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.course)
+        setContentView(R.layout.career)
 
         drawerLayout = findViewById(R.id.drawer_layout)
         menuButton = findViewById(R.id.menu_button)
@@ -35,7 +34,7 @@ class Course : AppCompatActivity(){
             when (item.itemId) {
                 R.id.nav_logout -> {
                     Log.d("ProfessorActivity", "Logout Clicked")
-                    finish() // Cierra la actividad actual y vuelve a la anterior
+                    finish()
                 }
                 else -> Log.d("AdminActivity", "Unknown menu item: ${item.itemId}")
             }
@@ -44,6 +43,7 @@ class Course : AppCompatActivity(){
             true
         }
     }
+
     // Si el usuario presiona atrás y el menú está abierto, se cierra en lugar de salir de la app
     override fun onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {

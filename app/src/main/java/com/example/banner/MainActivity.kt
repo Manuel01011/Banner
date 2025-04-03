@@ -1,5 +1,4 @@
 package com.example.banner
-
 import CareerController
 import CicloController
 import CourseController
@@ -12,6 +11,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import com.example.banner.backend.Controllers.UserController
 
@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
         usernameInput = findViewById(R.id.user_name_input)
         passwordInput = findViewById(R.id.password_input)
         loginbtn = findViewById(R.id.login_btn)
+        val registerText: TextView = findViewById(R.id.register_text)
 
         loginbtn.setOnClickListener {
             // Intentar convertir el username a Int
@@ -66,6 +67,11 @@ class MainActivity : ComponentActivity() {
             }
 
             Log.d("MainActivity", "Username: $username and Password: $password")
+        }
+
+        registerText.setOnClickListener {
+            val intent = Intent(this, Register::class.java)
+            startActivity(intent)
         }
     }
 }

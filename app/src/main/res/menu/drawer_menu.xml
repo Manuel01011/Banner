@@ -17,6 +17,31 @@
         android:icon="@drawable/ic_courses" />
 
     <item
+        android:id="@+id/nav_Ciclo"
+        android:title="Ciclos"
+        android:icon="@drawable/ic_ciclo" />
+
+    <item
+        android:id="@+id/nav_carrer"
+        android:title="Carrers"
+        android:icon="@drawable/ic_carrer" />
+
+    <item
+        android:id="@+id/nav_enrrollment"
+        android:title="Enrrollments"
+        android:icon="@drawable/ic_enrrollment" />
+
+    <item
+        android:id="@+id/nav_group"
+        android:title="Groups"
+        android:icon="@drawable/ic_group" />
+
+    <item
+        android:id="@+id/nav_user"
+        android:title="Users"
+        android:icon="@drawable/ic_users" />
+
+    <item
         android:id="@+id/nav_logout"
         android:title="Logout"
         android:icon="@drawable/ic_logout" />

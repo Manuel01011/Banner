@@ -55,6 +55,26 @@ class Admin : AppCompatActivity() {
                     Log.d("AdminActivity", "Courses Clicked")
                     startActivity(Intent(this, Course::class.java))
                 }
+                R.id.nav_carrer -> {
+                    Log.d("AdminActivity", "Logout Clicked")
+                    startActivity(Intent(this, Career::class.java))
+                }
+                R.id.nav_Ciclo -> {
+                    Log.d("AdminActivity", "Logout Clicked")
+                    startActivity(Intent(this, Ciclo::class.java))
+                }
+                R.id.nav_enrrollment -> {
+                    Log.d("AdminActivity", "Logout Clicked")
+                    startActivity(Intent(this, Enrollment::class.java))
+                }
+                R.id.nav_group -> {
+                    Log.d("AdminActivity", "Logout Clicked")
+                    startActivity(Intent(this, Group::class.java))
+                }
+                R.id.nav_user -> {
+                    Log.d("AdminActivity", "Logout Clicked")
+                    startActivity(Intent(this, User::class.java))
+                }
                 R.id.nav_logout -> {
                     Log.d("AdminActivity", "Logout Clicked")
                     startActivity(Intent(this, MainActivity::class.java))
