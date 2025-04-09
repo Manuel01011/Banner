@@ -43,6 +43,16 @@
         <activity android:name=".User"
             android:theme="@style/Theme.Banner" />
 
+        <activity android:name=".EditCareerActivity" />
+
+        <activity android:name=".EditStudentActivity" />
+
+        <activity android:name=".EditProfessorActivity" />
+
+        <activity android:name=".EditCicloActivity" />
+
+        <activity android:name=".EditCourseActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

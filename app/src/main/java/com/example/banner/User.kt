@@ -1,17 +1,29 @@
 package com.example.banner
+import Usuario_
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
+import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
 
 class User : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var menuButton: ImageButton
     private lateinit var navigationView: NavigationView
+    private lateinit var searchView: SearchView
+    private lateinit var fullList: MutableList<Usuario_>
+
+    // Recyclerview de Teachers
+    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mAdapter: RecyclerAdapter8
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +55,75 @@ class User : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
+        setUpRecyclerView()
+        Log.d("CareerActivity", "Después de setUpRecyclerView")
+        enableSwipeToDeleteAndEdit()
+    }
+
+    //devuelve la lista de los carreas
+    private fun getUsuers(): MutableList<Usuario_> {
+        return mutableListOf(
+            Usuario_(1,"pass","Student"),
+            Usuario_(2,"pass","Professor"),
+            Usuario_(3,"pass","Admi"),
+
+        )
+    }
+    //Habilitar Swipe con ItemTouchHelper
+    private fun enableSwipeToDeleteAndEdit() {
+        val swipeHandler = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val student = mAdapter.getItem(position)
+
+                when (direction) {
+                    ItemTouchHelper.LEFT -> {
+                        // Eliminar ciclo
+                        mAdapter.removeItem(position)
+                    }
+                    ItemTouchHelper.RIGHT -> {
+                        // Actualizar (simulado)
+                        Toast.makeText(this@User, "Editar: ${student.id}", Toast.LENGTH_SHORT).show()
+                        mAdapter.restoreItem(student, position) // por ahora solo restaura
+                    }
+                }
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(mRecyclerView)
+    }
+
+    //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager
+    private fun setUpRecyclerView() {
+        mRecyclerView = findViewById(R.id.recycler_view)
+        mRecyclerView.setHasFixedSize(true)
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        fullList = getUsuers()
+        mAdapter = RecyclerAdapter8(fullList.toMutableList(), this)
+        mRecyclerView.adapter = mAdapter
+
+        searchView = findViewById(R.id.search_view)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val filtered = if (!newText.isNullOrBlank()) {
+                    fullList.filter { it.role.contains(newText, ignoreCase = true) }
+                } else {
+                    fullList
+                }
+                mAdapter.updateData(filtered)
+                return true
+            }
+        })
     }
 
     // Si el usuario presiona atrás y el menú está abierto, se cierra en lugar de salir de la app
@@ -52,5 +133,11 @@ class User : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+
+    fun deleteUser(position: Int) {
+        val user = mAdapter.getItem(position)
+        mAdapter.removeItem(position)
+        Toast.makeText(this, "Usuario eliminada: ${user.id}", Toast.LENGTH_SHORT).show()
     }
 }

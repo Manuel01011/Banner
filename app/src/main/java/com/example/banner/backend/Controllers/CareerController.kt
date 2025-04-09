@@ -1,7 +1,6 @@
 import java.sql.ResultSet
 
 class CareerController {
-
     fun getAllCareers(): List<Triple<Int, String, String>> {
         val careers = mutableListOf<Triple<Int, String, String>>()  // Usamos Triple para almacenar los tres valores
         val procedureName = "GetAllCareers"  // Nombre del procedimiento almacenado

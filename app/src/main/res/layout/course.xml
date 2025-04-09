@@ -40,6 +40,33 @@
             android:layout_marginTop="25dp"
             android:layout_marginStart="5dp"/>
 
+        <SearchView
+            android:id="@+id/search_view"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:queryHint="Busca por nombre"
+            android:layout_marginTop="80dp"
+            android:layout_marginStart="22dp"
+            android:iconifiedByDefault="false"
+            android:background="@android:color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- RecyclerView para mostrar las entidades en CardView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginBottom="16dp"
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/textView_menu"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Menú lateral -->

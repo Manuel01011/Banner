@@ -1,5 +1,5 @@
 package com.example.banner
-import Usuario
+import Usuario_
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -50,7 +50,7 @@ class Register : AppCompatActivity() {
             }
 
             // Crear usuario (Simulación)
-            val usuario = Usuario(userId.toInt(), password, selectedRole)
+            val usuario = Usuario_(userId.toInt(), password, selectedRole)
 
             // Simular registro exitoso
             Toast.makeText(this, "Registro exitoso como ${usuario.role}", Toast.LENGTH_LONG).show()

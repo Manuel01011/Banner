@@ -3,8 +3,8 @@ import java.sql.ResultSet
 class EnrollmentController {
 
     // Obtener todas las matriculas
-    fun getAllEnrollments(): List<Enrollment> {
-        val enrollments = mutableListOf<Enrollment>()
+    fun getAllEnrollments(): List<Enrollment_> {
+        val enrollments = mutableListOf<Enrollment_>()
         val procedureName = "GetAllEnrollments"  // Nombre del procedimiento almacenado
 
         // Llamamos al procedimiento almacenado que devuelve un ResultSet
@@ -13,7 +13,7 @@ class EnrollmentController {
         resultSet?.let {
             while (it.next()) {
                 // Crear un objeto Enrollment a partir del ResultSet
-                val enrollment = Enrollment(
+                val enrollment = Enrollment_(
                     it.getInt("student_id"),
                     it.getInt("grupo_id"),
                     it.getDouble("grade")
@@ -54,8 +54,8 @@ class EnrollmentController {
     }
 
     // Obtener los cursos matriculados en el ciclo activo por un estudiante
-    fun getActiveCycleCourses(studentId: Int): List<Course> {
-        val courses = mutableListOf<Course>()
+    fun getActiveCycleCourses(studentId: Int): List<Course_> {
+        val cours = mutableListOf<Course_>()
         val query = "CALL get_active_cycle_courses(?)" // Llamamos al procedimiento almacenado
 
         val resultSet: ResultSet? = DatabaseDAO.executeQuery(query, studentId)
@@ -63,8 +63,8 @@ class EnrollmentController {
         resultSet?.let {
             while (it.next()) {
                 // Crear el objeto Course con los nuevos parámetros
-                courses.add(
-                    Course(
+                cours.add(
+                    Course_(
                         it.getInt("cod"),         // Código del curso
                         it.getString("name"),     // Nombre del curso
                         it.getInt("credits"),     // Créditos del curso
@@ -76,7 +76,7 @@ class EnrollmentController {
             }
             it.close()  // Cerramos el ResultSet después de usarlo
         }
-        return courses
+        return cours
     }
 
 }

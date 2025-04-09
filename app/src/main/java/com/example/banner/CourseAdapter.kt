@@ -1,4 +1,81 @@
 package com.example.banner
+import Course_
+import android.content.Context
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 
-class CourseAdapter {
+class RecyclerAdapter4(
+    private val cursos: MutableList<Course_>,
+    private val context: Context
+) : RecyclerView.Adapter<RecyclerAdapter4.ViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val view = layoutInflater.inflate(R.layout.curso_item, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        Log.d("RecyclerAdapter", "Binding item en posición $position")
+        holder.bind(cursos[position], context)
+    }
+
+    override fun getItemCount(): Int = cursos.size
+
+    fun getItem(position: Int): Course_ = cursos[position]
+
+    fun removeItem(position: Int) {
+        cursos.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun restoreItem(item: Course_, position: Int) {
+        cursos.add(position, item)
+        notifyItemInserted(position)
+    }
+
+    fun updateData(newData: List<Course_>) {
+        cursos.clear()
+        cursos.addAll(newData)
+        notifyDataSetChanged()
+    }
+
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val textCod: TextView = view.findViewById(R.id.text_cod)
+        private val textName: TextView = view.findViewById(R.id.text_name)
+        private val textCredits: TextView = view.findViewById(R.id.text_credits)
+        private val textHours: TextView = view.findViewById(R.id.text_hours)
+        private val textCiclo: TextView = view.findViewById(R.id.text_ciclo)
+        private val textCareer: TextView = view.findViewById(R.id.text_career)
+        private val btnDelete: ImageButton = view.findViewById(R.id.btn_delete)
+
+        fun bind(course: Course_, context: Context) {
+            textCod.text = "Código: ${course.cod}"
+            textName.text = course.name
+            textCredits.text = "Créditos: ${course.credits}"
+            textHours.text = "Horas: ${course.hours}"
+            textCiclo.text = "Ciclo ID: ${course.cicloId}"
+            textCareer.text = "Código de carrera: ${course.careerCod}"
+
+            itemView.setOnClickListener {
+                Toast.makeText(context, "Curso: ${course.name}", Toast.LENGTH_SHORT).show()
+            }
+
+            btnDelete.setOnClickListener {
+                if (context is Course) {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        context.deleteCourse(position)
+                    }
+                }
+            }
+        }
+    }
 }

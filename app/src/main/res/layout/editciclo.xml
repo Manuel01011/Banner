@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_background"
+    android:padding="24dp">
+
+    <EditText
+        android:id="@+id/edit_year"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Año"
+        android:inputType="number"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/edit_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Número"
+        android:inputType="number"
+        app:layout_constraintTop_toBottomOf="@id/edit_year"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/edit_start_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Fecha inicio (YYYY-MM-DD)"
+        android:inputType="date"
+        app:layout_constraintTop_toBottomOf="@id/edit_number"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/edit_finish_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Fecha fin (YYYY-MM-DD)"
+        android:inputType="date"
+        app:layout_constraintTop_toBottomOf="@id/edit_start_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp" />
+
+    <CheckBox
+        android:id="@+id/checkbox_active"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Activo"
+        app:layout_constraintTop_toBottomOf="@id/edit_finish_date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Guardar"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_active"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

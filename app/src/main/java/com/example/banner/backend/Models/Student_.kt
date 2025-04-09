@@ -1,4 +1,4 @@
-class Student {
+class Student_ {
     var id: Int = 0
     var name: String = ""
     var telNumber: Int = 0

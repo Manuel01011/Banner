@@ -1,4 +1,4 @@
-class Course {
+class Course_ {
     var cod: Int = 0
     var name: String = ""
     var credits: Int = 0

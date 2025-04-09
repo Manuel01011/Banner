@@ -2,8 +2,8 @@ import java.sql.ResultSet
 
 class StudentController {
 
-    fun getAllStudents(): List<Student> {
-        val students = mutableListOf<Student>()
+    fun getAllStudents(): List<Student_> {
+        val students = mutableListOf<Student_>()
         val procedureName = "GetAllStudents"  // Nombre del procedimiento almacenado
 
         // Llamamos al procedimiento almacenado que devuelve un ResultSet
@@ -12,7 +12,7 @@ class StudentController {
         resultSet?.let {
             while (it.next()) {
                 // Crear un objeto Student a partir del ResultSet
-                val student = Student(
+                val student = Student_(
                     it.getInt("id"),
                     it.getString("name"),
                     it.getInt("tel_number"),
@@ -43,8 +43,8 @@ class StudentController {
         return DatabaseDAO.executeStoredProcedure(procedureName, param1, param2)
     }
 
-    fun buscar_alumno(nombre: String?, cod: Int?, carrera :Int?): List<Student> {
-        val students = mutableListOf<Student>()
+    fun buscar_alumno(nombre: String?, cod: Int?, carrera :Int?): List<Student_> {
+        val students = mutableListOf<Student_>()
         val procedureName = "buscar_alumno"
         val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(
             procedureName,
@@ -55,7 +55,7 @@ class StudentController {
 
         resultSet?.let {
             while (it.next()) {
-                val student = Student(
+                val student = Student_(
                     it.getInt("id"),
                     it.getString("name"),
                     it.getInt("tel_number"),
@@ -70,8 +70,8 @@ class StudentController {
         return students
     }
 
-    fun alumno_historial(cod: Int?): List<Enrollment> {
-        val enrollments = mutableListOf<Enrollment>()
+    fun alumno_historial(cod: Int?): List<Enrollment_> {
+        val enrollments = mutableListOf<Enrollment_>()
         val procedureName = "alumno_historial"
         val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(
             procedureName,
@@ -80,7 +80,7 @@ class StudentController {
 
         resultSet?.let {
             while (it.next()) {
-                val enrollment = Enrollment(
+                val enrollment = Enrollment_(
                     it.getInt("student_id"),
                     it.getInt("grupo_id"),
                     it.getDouble("grade")

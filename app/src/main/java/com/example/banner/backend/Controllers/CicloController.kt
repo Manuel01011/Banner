@@ -2,8 +2,8 @@ import java.sql.ResultSet
 
 class CicloController {
 
-    fun getAllCiclos(): List<Ciclo> {
-        val ciclos = mutableListOf<Ciclo>()
+    fun getAllCiclos(): List<Ciclo_> {
+        val ciclos = mutableListOf<Ciclo_>()
         val procedureName = "GetAllCiclos"  // Nombre del procedimiento almacenado
 
         // Llamamos al procedimiento almacenado que devuelve un ResultSet
@@ -11,7 +11,7 @@ class CicloController {
 
         resultSet?.let {
             while (it.next()) {
-                val ciclo = Ciclo(
+                val ciclo = Ciclo_(
                     it.getInt("id"),
                     it.getInt("year"),
                     it.getInt("number"),
@@ -42,8 +42,8 @@ class CicloController {
         return DatabaseDAO.executeStoredProcedure(procedureName, param1, param2)
     }
 
-    fun ciclo_anio(year: Int?): List<Ciclo> {
-        val ciclos = mutableListOf<Ciclo>()
+    fun ciclo_anio(year: Int?): List<Ciclo_> {
+        val ciclos = mutableListOf<Ciclo_>()
         val procedureName = "ciclo_anio"
         val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(
             procedureName,
@@ -52,7 +52,7 @@ class CicloController {
 
         resultSet?.let {
             while (it.next()) {
-                val ciclo = Ciclo(
+                val ciclo = Ciclo_(
                     it.getInt("id"),
                     it.getInt("year"),
                     it.getInt("number"),
@@ -67,13 +67,13 @@ class CicloController {
         return ciclos
     }
 
-    fun getActiveCiclo(): Ciclo? {
+    fun getActiveCiclo(): Ciclo_? {
         val procedureName = "get_active_ciclo"
         val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureForSingleResult(procedureName)
 
         resultSet?.use { rs ->
             if (rs.next()) {
-                return Ciclo(
+                return Ciclo_(
                     rs.getInt("id"),
                     rs.getInt("year"),
                     rs.getInt("number"),

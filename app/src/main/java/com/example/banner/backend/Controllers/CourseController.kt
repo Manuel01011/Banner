@@ -2,8 +2,8 @@ import java.sql.ResultSet
 
 class CourseController {
 
-    fun getAllCourses(): List<Course> {
-        val courses = mutableListOf<Course>()
+    fun getAllCourses(): List<Course_> {
+        val cours = mutableListOf<Course_>()
         val procedureName = "GetAllCourses"  // Nombre del procedimiento almacenado
 
         // Llamamos al procedimiento almacenado que devuelve un ResultSet
@@ -11,7 +11,7 @@ class CourseController {
 
         resultSet?.let {
             while (it.next()) {
-                val course = Course(
+                val course = Course_(
                     it.getInt("cod"),
                     it.getString("name"),
                     it.getInt("credits"),
@@ -19,12 +19,12 @@ class CourseController {
                     it.getInt("ciclo_id"),
                     it.getInt("career_cod")
                 )
-                courses.add(course)
+                cours.add(course)
             }
             it.close()
         }
 
-        return courses
+        return cours
     }
 
     fun insertCourse(cod: Int, name: String, credits: Int, hours: Int, cicloId: Int, careerCod: Int): Boolean {
@@ -42,8 +42,8 @@ class CourseController {
         return DatabaseDAO.executeStoredProcedure(procedureName, param1, param2)
     }
     //funcionalidad esperada en el CourseController
-    fun searchCourses(nombre: String?, codigo: Int?, carreraCod: Int?): List<Course> {
-        val courses = mutableListOf<Course>()
+    fun searchCourses(nombre: String?, codigo: Int?, carreraCod: Int?): List<Course_> {
+        val cours = mutableListOf<Course_>()
         val procedureName = "BuscarCurso"
         val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(
             procedureName,
@@ -54,7 +54,7 @@ class CourseController {
 
         resultSet?.let {
             while (it.next()) {
-                val course = Course(
+                val course = Course_(
                     it.getInt("cod"),
                     it.getString("name"),
                     it.getInt("credits"),
@@ -62,21 +62,21 @@ class CourseController {
                     it.getInt("ciclo_id"),
                     it.getInt("career_cod")
                 )
-                courses.add(course)
+                cours.add(course)
             }
             it.close()
         }
-        return courses
+        return cours
     }
 
-    fun getCoursesByCareerAndCycle(careerCod: Int, cicloId: Int): List<Course> {
+    fun getCoursesByCareerAndCycle(careerCod: Int, cicloId: Int): List<Course_> {
         val procedureName = "get_courses_by_career_and_cycle"
         val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName, careerCod, cicloId)
 
-        val courses = mutableListOf<Course>()
+        val cours = mutableListOf<Course_>()
         resultSet?.use { rs ->
             while (rs.next()) {
-                val course = Course(
+                val course = Course_(
                     rs.getInt("cod"),
                     rs.getString("name"),
                     rs.getInt("credits"),
@@ -84,9 +84,9 @@ class CourseController {
                     cicloId,
                     careerCod
                 )
-                courses.add(course)
+                cours.add(course)
             }
         }
-        return courses
+        return cours
     }
 }

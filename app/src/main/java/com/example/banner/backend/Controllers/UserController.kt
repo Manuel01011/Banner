@@ -1,12 +1,12 @@
 package com.example.banner.backend.Controllers
 
-import Usuario
+import Usuario_
 import java.sql.ResultSet
 
 class UserController {
 
-    fun getAllUsers(): List<Usuario> {
-        val usuarios = mutableListOf<Usuario>()
+    fun getAllUsers(): List<Usuario_> {
+        val usuarios = mutableListOf<Usuario_>()
         val procedureName = "GetAllUsuarios"  // Nombre del procedimiento almacenado
 
         // Llamamos al procedimiento almacenado que devuelve un ResultSet
@@ -15,7 +15,7 @@ class UserController {
         resultSet?.let {
             while (it.next()) {
                 // Crear un objeto Usuario a partir del ResultSet
-                val usuario = Usuario(
+                val usuario = Usuario_(
                     it.getInt("id"),
                     it.getString("password"),
                     it.getString("role")

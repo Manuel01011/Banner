@@ -2,8 +2,8 @@ import java.sql.ResultSet
 
 class GrupoController {
 
-    fun getAllGrupos(): List<Grupo> {
-        val grupos = mutableListOf<Grupo>()
+    fun getAllGrupos(): List<Grupo_> {
+        val grupos = mutableListOf<Grupo_>()
         val procedureName = "GetAllGrups"  // Nombre del procedimiento almacenado
 
         // Llamamos al procedimiento almacenado que devuelve un ResultSet
@@ -12,7 +12,7 @@ class GrupoController {
         resultSet?.let {
             while (it.next()) {
                 // Crear un objeto Grupo a partir del ResultSet
-                val grupo = Grupo(
+                val grupo = Grupo_(
                     it.getInt("id"),
                     it.getInt("number_group"),
                     it.getInt("year"),
@@ -47,16 +47,16 @@ class GrupoController {
         return DatabaseDAO.executeStoredProcedure(procedureName, param1, param2)
     }
 
-    fun getGroupsByCourse(courseId: Int): List<Grupo> {
+    fun getGroupsByCourse(courseId: Int): List<Grupo_> {
         val procedureName = "get_groups_by_course"
 
         // Llamar al procedimiento almacenado y obtener el ResultSet
         val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName, courseId)
 
-        val groups = mutableListOf<Grupo>()
+        val groups = mutableListOf<Grupo_>()
         resultSet?.use { rs ->
             while (rs.next()) {
-                val group = Grupo(
+                val group = Grupo_(
                     rs.getInt("id"),
                     rs.getInt("number_group"),
                     rs.getInt("year"),

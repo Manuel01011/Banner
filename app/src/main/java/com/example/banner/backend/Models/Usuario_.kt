@@ -1,4 +1,4 @@
-class Usuario {
+class Usuario_ {
     var id: Int = 0
     var password: String = ""
     var role: String = ""

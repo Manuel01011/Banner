@@ -1,4 +1,4 @@
-class Ciclo {
+class Ciclo_ {
     var id: Int = 0
     var year: Int = 0
     var number: Int = 0

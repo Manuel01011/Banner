@@ -1,4 +1,4 @@
-class Grupo {
+class Grupo_ {
     var id: Int = 0
     var numberGroup: Int = 0
     var year: Int = 0

@@ -1,4 +1,4 @@
-class Enrollment {
+class Enrollment_ {
     var studentId: Int = 0
     var grupoId: Int = 0
     var grade: Double = 0.0

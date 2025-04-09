@@ -1,4 +1,4 @@
-class Career {
+class Career_ {
     var cod: Int = 0
     var name: String = ""
     var title: String = ""

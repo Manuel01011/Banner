@@ -1,4 +1,4 @@
-class Teacher {
+class Teacher_ {
     var id: Int = 0
     var name: String = ""
     var telNumber: Int = 0

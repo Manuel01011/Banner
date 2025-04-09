@@ -2,8 +2,8 @@ import java.sql.ResultSet
 
 class TeacherController {
 
-    fun getAllTeachers(): List<Teacher> {
-        val teachers = mutableListOf<Teacher>()
+    fun getAllTeachers(): List<Teacher_> {
+        val teachers = mutableListOf<Teacher_>()
         val procedureName = "GetAllTeachers"  // Nombre del procedimiento almacenado
 
         // Llamamos al procedimiento almacenado que devuelve un ResultSet
@@ -12,7 +12,7 @@ class TeacherController {
         resultSet?.let {
             while (it.next()) {
                 // Crear un objeto Teacher a partir del ResultSet
-                val teacher = Teacher(
+                val teacher = Teacher_(
                     it.getInt("id"),
                     it.getString("name"),
                     it.getInt("tel_number"),
@@ -41,8 +41,8 @@ class TeacherController {
         return DatabaseDAO.executeStoredProcedure(procedureName, param1, param2)
     }
 
-    fun buscar_profesor(nombre: String?, id: Int?): List<Teacher> {
-        val teachers = mutableListOf<Teacher>()
+    fun buscar_profesor(nombre: String?, id: Int?): List<Teacher_> {
+        val teachers = mutableListOf<Teacher_>()
         val procedureName = "buscar_profesor"
         val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(
             procedureName,
@@ -52,7 +52,7 @@ class TeacherController {
 
         resultSet?.let {
             while (it.next()) {
-                val teacher = Teacher(
+                val teacher = Teacher_(
                     it.getInt("id"),
                     it.getString("name"),
                     it.getInt("tel_number"),
@@ -64,14 +64,14 @@ class TeacherController {
         }
         return teachers
     }
-    fun getProfessorCourses(professorId: Int): List<Course> {
-        val courses = mutableListOf<Course>()
+    fun getProfessorCourses(professorId: Int): List<Course_> {
+        val cours = mutableListOf<Course_>()
         val procedureName = "get_professor_courses"
         val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName, professorId)
 
         resultSet?.let {
             while (it.next()) {
-                val course = Course(
+                val course = Course_(
                     it.getInt("course_cod"),   // course_cod
                     it.getString("course_name"), // course_name
                     it.getInt("credits"),     // credits
@@ -79,10 +79,10 @@ class TeacherController {
                     it.getInt("ciclo_id"),    // ciclo_id
                     it.getInt("career_cod")   // career_cod
                 )
-                courses.add(course)
+                cours.add(course)
             }
             it.close()
         }
-        return courses
+        return cours
     }
 }

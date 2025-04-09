@@ -1,35 +1,49 @@
 package com.example.banner
 import CareerController
 import Career_
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 
 class Career : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var menuButton: ImageButton
     private lateinit var navigationView: NavigationView
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: CareerAdapter
     private lateinit var searchView: SearchView
-    private val controller = CareerController()
+    private lateinit var fullList: MutableList<Career_>
+
+    // Recyclerview de carreras
+    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mAdapter: RecyclerAdapter
+
+    //editar
+    private lateinit var editCareerLauncher: ActivityResultLauncher<Intent>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("CareerActivity", "onCreate llamado")
         setContentView(R.layout.career)
 
-        recyclerView = findViewById(R.id.recycler_view)
-        searchView = findViewById(R.id.search_view)
         drawerLayout = findViewById(R.id.drawer_layout)
         menuButton = findViewById(R.id.menu_button)
         navigationView = findViewById(R.id.navigation_view)
@@ -43,8 +57,10 @@ class Career : AppCompatActivity() {
 
         // Manejo de las opciones del menú
         navigationView.setNavigationItemSelectedListener { item ->
-            Log.d("AdminActivity", "Menu item clicked: ${item.itemId} (${resources.getResourceEntryName(item.itemId)})")
-
+            Log.d(
+                "AdminActivity",
+                "Menu item clicked: ${item.itemId} (${resources.getResourceEntryName(item.itemId)})"
+            )
             when (item.itemId) {
                 R.id.nav_logout -> {
                     Log.d("ProfessorActivity", "Logout Clicked")
@@ -56,85 +72,147 @@ class Career : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
+        //editar
+        editCareerLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    val cod = data.getIntExtra("cod", -1)
+                    val name = data.getStringExtra("name") ?: ""
+                    val title = data.getStringExtra("title") ?: ""
 
-        //Recyclen de carreras
-        val careerList = controller.getAllCareers().map {
-            Career_(it.first, it.second, it.third)
-        }.toMutableList()
-
-        adapter = CareerAdapter(careerList) { career ->
-            // Click sobre una carrera → Editar
-            showCareerDialog(editMode = true, career = career)
-        }
-
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
-
-        // Implementar Swipe
-        setupSwipe()
-
-        // Buscar carrera
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?) = false
-            override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter.filter(newText)
-                return true
-            }
-        })
-
-        // Botón flotante para agregar carrera (añádelo a tu layout)
-        val fab: FloatingActionButton = findViewById(R.id.fab_add)
-        fab.setOnClickListener {
-            showCareerDialog(editMode = false)
-        }
-    }
-
-    private fun setupSwipe() {
-        val swipeHandler = object : ItemTouchHelper.SimpleCallback(0,
-            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-
-            override fun onMove(...) = false
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val career = adapter.getCareerAt(position)
-
-                when (direction) {
-                    ItemTouchHelper.LEFT -> {
-                        controller.deleteCareer(career.cod)
-                        adapter.removeItem(position)
-                        Toast.makeText(this@Career, "Carrera eliminada", Toast.LENGTH_SHORT).show()
-                    }
-                    ItemTouchHelper.RIGHT -> {
-                        showCareerDialog(editMode = true, career = career)
-                        adapter.notifyItemChanged(position) // evitar que se borre visualmente
+                    val index = fullList.indexOfFirst { it.cod == cod }
+                    if (index != -1) {
+                        fullList[index].name = name
+                        fullList[index].title = title
+                        mAdapter.updateData(fullList)
+                        Toast.makeText(this, "Carrera actualizada", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
-        ItemTouchHelper(swipeHandler).attachToRecyclerView(recyclerView)
+
+        Log.d("CareerActivity", "Antes de setUpRecyclerView")
+        setUpRecyclerView()
+        Log.d("CareerActivity", "Después de setUpRecyclerView")
+        enableSwipeToDeleteAndEdit()
+
     }
 
-    private fun showCareerDialog(editMode: Boolean, career: Career_? = null) {
-        val dialog = CareerFormDialog(this, editMode, career) { result ->
-            if (editMode) {
-                controller.editCareer(result.cod, result.name, result.title, listOf(), listOf())
-                adapter.updateItemByCod(result.cod, result)
-            } else {
-                controller.insertCareer(result.cod, result.name, result.title)
-                adapter.addItem(result)
+    //devuelve la lista de los carreas
+    private fun getSuperheros(): MutableList<Career_> {
+        return mutableListOf(
+            Career_(1, "Ingeniería en Sistemas", "Ingeniero en Sistemas"),
+            Career_(2, "Ingeniería Civil", "Ingeniero Civil"),
+            Career_(3, "Medicina", "Médico Cirujano")
+        )
+    }
+
+    //Habilitar Swipe con ItemTouchHelper
+    private fun enableSwipeToDeleteAndEdit() {
+        val swipeHandler = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val carrera = mAdapter.getItem(position)
+
+                when (direction) {
+                    ItemTouchHelper.RIGHT -> {
+                        editCareerLauncher.launch(Intent(this@Career, EditCareerActivity::class.java).apply {
+                            putExtra("cod", carrera.cod)
+                            putExtra("name", carrera.name)
+                            putExtra("title", carrera.title)
+                        })
+                        mAdapter.notifyItemChanged(position)
+                    }
+                }
+            }
+
+            //edicion con estilo bonito
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE && dX > 0) {
+                    val itemView = viewHolder.itemView
+                    val paint = Paint().apply {
+                        color = Color.parseColor("#388E3C") // Verde para editar
+                    }
+
+                    val background = RectF(
+                        itemView.left.toFloat(),
+                        itemView.top.toFloat(),
+                        itemView.left + dX,
+                        itemView.bottom.toFloat()
+                    )
+
+                    c.drawRect(background, paint)
+
+                    // Agregar ícono de lápiz (opcional: revisa si tienes este drawable en tu proyecto)
+                    val icon = ContextCompat.getDrawable(this@Career, R.drawable.ic_edit) // Usa tu ícono aquí
+                    icon?.let {
+                        val iconMargin = (itemView.height - it.intrinsicHeight) / 2
+                        val iconTop = itemView.top + (itemView.height - it.intrinsicHeight) / 2
+                        val iconLeft = itemView.left + iconMargin
+                        val iconRight = iconLeft + it.intrinsicWidth
+                        val iconBottom = iconTop + it.intrinsicHeight
+
+                        it.setBounds(iconLeft, iconTop, iconRight, iconBottom)
+                        it.draw(c)
+                    }
+                }
             }
         }
-        dialog.show()
-    }
+
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(mRecyclerView)
     }
 
-    // Si el usuario presiona atrás y el menú está abierto, se cierra en lugar de salir de la app
-    override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
+    //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager
+    private fun setUpRecyclerView() {
+        mRecyclerView = findViewById(R.id.recycler_view)
+        mRecyclerView.setHasFixedSize(true)
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        fullList = getSuperheros()
+        mAdapter = RecyclerAdapter(fullList.toMutableList(), this)
+        mRecyclerView.adapter = mAdapter
+
+        searchView = findViewById(R.id.search_view)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val filtered = if (!newText.isNullOrBlank()) {
+                    fullList.filter { it.name.contains(newText, ignoreCase = true) }
+                } else {
+                    fullList
+                }
+                mAdapter.updateData(filtered)
+                return true
+            }
+        })
+    }
+
+    fun deleteCareer(position: Int) {
+        val carrera = mAdapter.getItem(position)
+        mAdapter.removeItem(position)
+        Toast.makeText(this, "Carrera eliminada: ${carrera.name}", Toast.LENGTH_SHORT).show()
     }
 }
+
+
