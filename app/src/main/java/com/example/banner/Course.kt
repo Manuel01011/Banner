@@ -20,6 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 class Course : AppCompatActivity(){
@@ -28,11 +29,11 @@ class Course : AppCompatActivity(){
     private lateinit var navigationView: NavigationView
     private lateinit var searchView: SearchView
     private lateinit var fullList: MutableList<Course_>
-
+    private lateinit var fabAgregarCurso: FloatingActionButton
     // Recyclerview de carreras
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: RecyclerAdapter4
-
+    private lateinit var addCourseLauncher: ActivityResultLauncher<Intent>
     //editar
     private lateinit var editCourseLauncher: ActivityResultLauncher<Intent>
 
@@ -45,6 +46,7 @@ class Course : AppCompatActivity(){
         navigationView = findViewById(R.id.navigation_view)
         navigationView.bringToFront()
         navigationView.requestFocus()
+        fabAgregarCurso = findViewById(R.id.fabAgregarCurso)
 
         // Botón para abrir el menú lateral
         menuButton.setOnClickListener {
@@ -95,6 +97,37 @@ class Course : AppCompatActivity(){
                 }
             }
         }
+        // Inicialización del ActivityResultLauncher para agregar curso
+       addCourseLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    // Obtener los valores de los campos de la nueva actividad
+                    val courseCode = data.getIntExtra("courseCode", -1)
+                    val courseName = data.getStringExtra("courseName") ?: ""
+                    val credits = data.getIntExtra("credits", -1)
+                    val hours = data.getIntExtra("hours", -1)
+                    val cycleId = data.getIntExtra("cycleId", -1)
+                    val careerCode = data.getIntExtra("careerCode", -1)
+
+                    // Crear un nuevo objeto Course con los datos recibidos
+                    val newCourse = Course_(courseCode, courseName, credits, hours, cycleId, careerCode)
+
+                    // Agregar el nuevo curso a la lista
+                    fullList.add(newCourse)
+                    mAdapter.updateData(fullList)
+                    Toast.makeText(this, "Curso agregado", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        // Configurar el FAB para lanzar la actividad de agregar curso
+        fabAgregarCurso.setOnClickListener {
+            // Iniciar la actividad para agregar un curso
+            val intent = Intent(this, AgregarCurso::class.java)
+            addCourseLauncher.launch(intent)
+        }
+
         Log.d("CareerActivity", "Antes de setUpRecyclerView")
         setUpRecyclerView()
         Log.d("CareerActivity", "Después de setUpRecyclerView")
