@@ -34,7 +34,7 @@ class Ciclo : AppCompatActivity() {
     private lateinit var mAdapter: RecyclerAdapter2
 
     //editar
-    private lateinit var editCareerLauncher: ActivityResultLauncher<Intent>
+    private lateinit var editCicloLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +67,7 @@ class Ciclo : AppCompatActivity() {
             true
         }
 
-        editCareerLauncher = registerForActivityResult(
+        editCicloLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -124,7 +124,7 @@ class Ciclo : AppCompatActivity() {
 
                 when (direction) {
                     ItemTouchHelper.RIGHT -> {
-                        editCareerLauncher.launch(Intent(this@Ciclo, EditCicloActivity::class.java).apply {
+                        editCicloLauncher.launch(Intent(this@Ciclo, EditCicloActivity::class.java).apply {
                             putExtra("id", ciclo.id)
                             putExtra("year",ciclo.year)
                             putExtra("number", ciclo.number)
