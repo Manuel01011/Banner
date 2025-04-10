@@ -53,6 +53,22 @@
 
         <activity android:name=".EditCourseActivity" />
 
+        <activity android:name=".AgregarCarrera" />
+
+        <activity android:name=".AgregarCiclo" />
+
+        <activity android:name=".AgregarCurso" />
+
+        <activity android:name=".AgregarEstudiante" />
+
+        <activity android:name=".AgregarGrupo" />
+
+        <activity android:name=".AgregarMatricula" />
+
+        <activity android:name=".AgregarProfesor" />
+
+        <activity android:name=".AgregarUsuario" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

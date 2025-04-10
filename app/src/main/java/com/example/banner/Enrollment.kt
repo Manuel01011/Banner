@@ -1,17 +1,21 @@
 package com.example.banner
 import Enrollment_
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 class Enrollment : AppCompatActivity() {
@@ -20,7 +24,8 @@ class Enrollment : AppCompatActivity() {
     private lateinit var navigationView: NavigationView
     private lateinit var searchView: SearchView
     private lateinit var fullList: MutableList<Enrollment_>
-
+    private lateinit var fabAgregarMatricula: FloatingActionButton
+    private lateinit var addEnrollmentLauncher: ActivityResultLauncher<Intent>
     // Recyclerview de carreras
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: RecyclerAdapter7
@@ -34,7 +39,7 @@ class Enrollment : AppCompatActivity() {
         navigationView = findViewById(R.id.navigation_view)
         navigationView.bringToFront()
         navigationView.requestFocus()
-
+        fabAgregarMatricula = findViewById(R.id.fabAgregarMatricula)
         // Botón para abrir el menú lateral
         menuButton.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
@@ -55,6 +60,35 @@ class Enrollment : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
+        // Registra el ActivityResultLauncher para recibir el resultado de la actividad
+        addEnrollmentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    // Obtener los valores de los campos de la nueva actividad
+                    val studentId = data.getIntExtra("studentId", -1)
+                    val grupoId = data.getIntExtra("grupoId", -1)
+                    val grade = data.getDoubleExtra("grade", 0.0)
+                    // Crear un nuevo objeto Matrícula con los datos recibidos
+                    val newEnrollment = Enrollment_(studentId, grupoId, grade)
+                    // Agregar la nueva matrícula a la lista
+                    fullList.add(newEnrollment)
+                    // Actualizar el adaptador con los nuevos datos
+                    mAdapter.updateData(fullList)
+                    // Mostrar mensaje confirmando la acción
+                    Toast.makeText(this, "Matrícula agregada correctamente", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+
+
+        fabAgregarMatricula.setOnClickListener {
+            // Iniciar la actividad para agregar un curso
+            val intent = Intent(this, AgregarMatricula::class.java)
+            addEnrollmentLauncher.launch(intent)
+        }
+
         Log.d("CareerActivity", "Antes de setUpRecyclerView")
         setUpRecyclerView()
         Log.d("CareerActivity", "Después de setUpRecyclerView")

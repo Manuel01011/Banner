@@ -21,6 +21,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 
@@ -30,13 +31,15 @@ class Career : AppCompatActivity() {
     private lateinit var navigationView: NavigationView
     private lateinit var searchView: SearchView
     private lateinit var fullList: MutableList<Career_>
-
+    private lateinit var fabAgregarCarrera: FloatingActionButton
     // Recyclerview de carreras
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: RecyclerAdapter
 
     //editar
     private lateinit var editCareerLauncher: ActivityResultLauncher<Intent>
+    private lateinit var addCareerLauncher: ActivityResultLauncher<Intent>
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +52,7 @@ class Career : AppCompatActivity() {
         navigationView = findViewById(R.id.navigation_view)
         navigationView.bringToFront()
         navigationView.requestFocus()
-
+        fabAgregarCarrera = findViewById(R.id.fabAgregarCarrera)
         // Botón para abrir el menú lateral
         menuButton.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
@@ -93,11 +96,35 @@ class Career : AppCompatActivity() {
                 }
             }
         }
+        addCareerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    val cod = data.getIntExtra("cod", -1)
+                    val name = data.getStringExtra("name") ?: ""
+                    val title = data.getStringExtra("title") ?: ""
+
+                    // Crear un nuevo objeto Career_ con los datos recibidos
+                    val newCareer = Career_(cod, name, title)
+
+                    // Agregar la nueva carrera a la lista
+                    fullList.add(newCareer)
+                    mAdapter.updateData(fullList)
+                    Toast.makeText(this, "Carrera agregada", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        fabAgregarCarrera.setOnClickListener {
+            // Iniciar la actividad para agregar una nueva carrera
+            val intent = Intent(this, AgregarCarrera::class.java)
+            addCareerLauncher.launch(intent)
+        }
 
         Log.d("CareerActivity", "Antes de setUpRecyclerView")
         setUpRecyclerView()
         Log.d("CareerActivity", "Después de setUpRecyclerView")
         enableSwipeToDeleteAndEdit()
+
 
     }
 

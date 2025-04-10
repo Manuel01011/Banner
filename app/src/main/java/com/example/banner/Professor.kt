@@ -21,6 +21,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 class Professor : AppCompatActivity() {
@@ -29,7 +30,8 @@ class Professor : AppCompatActivity() {
     private lateinit var navigationView: NavigationView
     private lateinit var searchView: SearchView
     private lateinit var fullList: MutableList<Teacher_>
-
+    private lateinit var fabAgregarProfesor: FloatingActionButton
+    private lateinit var addTeacherLauncher: ActivityResultLauncher<Intent>
     // Recyclerview de Teachers
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: RecyclerAdapter3
@@ -46,7 +48,7 @@ class Professor : AppCompatActivity() {
         navigationView = findViewById(R.id.navigation_view)
         navigationView.bringToFront()
         navigationView.requestFocus()
-
+        fabAgregarProfesor = findViewById(R.id.fabAgregarProfesor)
         // Botón para abrir el menú lateral
         menuButton.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
@@ -90,6 +92,31 @@ class Professor : AppCompatActivity() {
                     }
                 }
             }
+        }
+        addTeacherLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    // Obtener los valores de los campos de la nueva actividad
+                    val profesorId = data.getIntExtra("profesorId", -1)
+                    val profesorName = data.getStringExtra("profesorName") ?: ""
+                    val profesorTelNumber = data.getIntExtra("profesorTel",-1)
+                    val profesorEmail = data.getStringExtra("profesorEmail") ?: ""
+
+                    // Crear un nuevo objeto Profesor con los datos recibidos
+                    val newProfesor = Teacher_(profesorId, profesorName, profesorTelNumber, profesorEmail)
+
+                    // Agregar el nuevo profesor a la lista
+                    fullList.add(newProfesor)
+                    mAdapter.updateData(fullList)
+                    Toast.makeText(this, "Profesor agregado", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        fabAgregarProfesor.setOnClickListener {
+            // Iniciar la actividad para agregar un curso
+            val intent = Intent(this, AgregarProfesor::class.java)
+            addTeacherLauncher.launch(intent)
         }
 
         setUpRecyclerView()

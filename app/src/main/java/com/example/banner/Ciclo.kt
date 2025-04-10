@@ -20,6 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 class Ciclo : AppCompatActivity() {
@@ -28,7 +29,8 @@ class Ciclo : AppCompatActivity() {
     private lateinit var navigationView: NavigationView
     private lateinit var searchView: SearchView
     private lateinit var fullList: MutableList<Ciclo_>
-
+    private lateinit var fabAgregarCiclo: FloatingActionButton
+    private lateinit var addCycleLauncher: ActivityResultLauncher<Intent>
     // Recyclerview de ciclos
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: RecyclerAdapter2
@@ -45,6 +47,7 @@ class Ciclo : AppCompatActivity() {
         navigationView = findViewById(R.id.navigation_view)
         navigationView.bringToFront()
         navigationView.requestFocus()
+        fabAgregarCiclo = findViewById(R.id.fabAgregarCiclo)
 
         // Botón para abrir el menú lateral
         menuButton.setOnClickListener {
@@ -93,6 +96,34 @@ class Ciclo : AppCompatActivity() {
                 }
             }
         }
+        addCycleLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    // Obtener los valores de los campos de la nueva actividad
+                    val cycleId = data.getIntExtra("id", -1)
+                    val cycleYear = data.getIntExtra("year", -1)
+                    val cycleNumber = data.getIntExtra("number", -1)
+                    val startDate = data.getStringExtra("startDate") ?: ""
+                    val endDate = data.getStringExtra("endDate") ?: ""
+                    val isActive = data.getBooleanExtra("isActive", false)
+
+                    // Crear un nuevo objeto Cycle con los datos recibidos
+                    val newCycle = Ciclo_(cycleId, cycleYear, cycleNumber, startDate, endDate, isActive)
+
+                    // Agregar el nuevo ciclo a la lista
+                    fullList.add(newCycle)
+                    mAdapter.updateData(fullList)
+                    Toast.makeText(this, "Ciclo agregado", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+            fabAgregarCiclo.setOnClickListener {
+                // Iniciar la actividad para agregar un ciclo
+                val intent = Intent(this, AgregarCiclo::class.java)
+                addCycleLauncher.launch(intent)
+            }
 
         Log.d("CareerActivity", "Antes de setUpRecyclerView")
         setUpRecyclerView()

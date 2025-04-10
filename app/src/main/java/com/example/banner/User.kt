@@ -1,17 +1,21 @@
 package com.example.banner
 import Usuario_
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 class User : AppCompatActivity() {
@@ -20,7 +24,8 @@ class User : AppCompatActivity() {
     private lateinit var navigationView: NavigationView
     private lateinit var searchView: SearchView
     private lateinit var fullList: MutableList<Usuario_>
-
+    private lateinit var fabAgregarUsuario: FloatingActionButton
+    private lateinit var addUserLauncher: ActivityResultLauncher<Intent>
     // Recyclerview de Teachers
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: RecyclerAdapter8
@@ -34,7 +39,7 @@ class User : AppCompatActivity() {
         navigationView = findViewById(R.id.navigation_view)
         navigationView.bringToFront()
         navigationView.requestFocus()
-
+        fabAgregarUsuario = findViewById(R.id.fabAgregarUser)
         // Botón para abrir el menú lateral
         menuButton.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
@@ -55,6 +60,30 @@ class User : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
+        addUserLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    // Obtener los valores de los campos de la nueva actividad
+                    val usuarioId = data.getIntExtra("usuarioId", -1)
+                    val usuarioPassword = data.getStringExtra("usuarioPassword") ?: ""
+                    val usuarioRole = data.getStringExtra("usuarioRole") ?: ""
+                    // Crear un nuevo objeto Estudiante con los datos recibidos
+                    val newUser = Usuario_(usuarioId, usuarioPassword, usuarioRole)
+
+                    // Agregar el nuevo estudiante a la lista
+                    fullList.add(newUser)
+                    mAdapter.updateData(fullList)
+                    Toast.makeText(this, "Usuario agregado", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        fabAgregarUsuario.setOnClickListener {
+            // Iniciar la actividad para agregar un curso
+            val intent = Intent(this, AgregarUsuario::class.java)
+            addUserLauncher.launch(intent)
+        }
+
         setUpRecyclerView()
         Log.d("CareerActivity", "Después de setUpRecyclerView")
         enableSwipeToDeleteAndEdit()

@@ -20,6 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 class Student : AppCompatActivity() {
@@ -28,7 +29,8 @@ class Student : AppCompatActivity() {
     private lateinit var navigationView: NavigationView
     private lateinit var searchView: SearchView
     private lateinit var fullList: MutableList<Student_>
-
+    private lateinit var fabAgregarEstudiante: FloatingActionButton
+    private lateinit var addStudentLauncher: ActivityResultLauncher<Intent>
     // Recyclerview de Teachers
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: RecyclerAdapter5
@@ -45,6 +47,7 @@ class Student : AppCompatActivity() {
         navigationView = findViewById(R.id.navigation_view)
         navigationView.bringToFront()
         navigationView.requestFocus()
+        fabAgregarEstudiante = findViewById(R.id.fabAgregarEstudiante)
 
         // Botón para abrir el menú lateral
         menuButton.setOnClickListener {
@@ -95,6 +98,33 @@ class Student : AppCompatActivity() {
                     }
                 }
             }
+        }
+        addStudentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    // Obtener los valores de los campos de la nueva actividad
+                    val studentId = data.getIntExtra("studentId", -1)
+                    val studentName = data.getStringExtra("studentName") ?: ""
+                    val studentTelNumber = data.getIntExtra("studentTelNumber",-1)
+                    val studentEmail = data.getStringExtra("studentEmail") ?: ""
+                    val studentBornDate = data.getStringExtra("studentBornDate") ?: ""
+                    val studentCareerCode = data.getIntExtra("studentCareerCode", -1)
+
+                    // Crear un nuevo objeto Estudiante con los datos recibidos
+                    val newStudent = Student_(studentId, studentName, studentTelNumber, studentEmail, studentBornDate, studentCareerCode)
+
+                    // Agregar el nuevo estudiante a la lista
+                    fullList.add(newStudent)
+                    mAdapter.updateData(fullList)
+                    Toast.makeText(this, "Estudiante agregado", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        fabAgregarEstudiante.setOnClickListener {
+            // Iniciar la actividad para agregar un curso
+            val intent = Intent(this, AgregarEstudiante::class.java)
+            addStudentLauncher.launch(intent)
         }
 
         setUpRecyclerView()

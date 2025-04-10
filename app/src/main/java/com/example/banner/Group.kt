@@ -1,17 +1,21 @@
 package com.example.banner
 import Grupo_
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 class Group : AppCompatActivity() {
@@ -20,7 +24,8 @@ class Group : AppCompatActivity() {
     private lateinit var navigationView: NavigationView
     private lateinit var searchView: SearchView
     private lateinit var fullList: MutableList<Grupo_>
-
+    private lateinit var fabAgregarGrupo: FloatingActionButton
+    private lateinit var addGroupLauncher: ActivityResultLauncher<Intent>
     // Recyclerview de Teachers
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: RecyclerAdapter6
@@ -34,7 +39,7 @@ class Group : AppCompatActivity() {
         navigationView = findViewById(R.id.navigation_view)
         navigationView.bringToFront()
         navigationView.requestFocus()
-
+        fabAgregarGrupo = findViewById(R.id.fabAgregarGrupo)
         // Botón para abrir el menú lateral
         menuButton.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
@@ -55,6 +60,35 @@ class Group : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
+        addGroupLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    val groupId = data.getIntExtra("groupId", -1)
+                    val groupNumber = data.getIntExtra("groupNumber", -1)
+                    val groupYear = data.getIntExtra("groupYear", -1)
+                    val groupHorario = data.getStringExtra("groupHorario") ?: ""
+                    val groupCourseCode = data.getIntExtra("groupCourseCode", -1)
+                    val groupTeacherId = data.getIntExtra("groupTeacherId", -1)
+
+                    // Crear un nuevo objeto Grupo con los datos recibidos
+                    val newGroup = Grupo_(groupId, groupNumber, groupYear, groupHorario, groupCourseCode, groupTeacherId)
+
+                    // Agregar el nuevo estudiante a la lista
+                    fullList.add(newGroup)
+                    mAdapter.updateData(fullList)
+                    Toast.makeText(this, "Grupo agregado", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+
+        fabAgregarGrupo.setOnClickListener {
+            // Iniciar la actividad para agregar un curso
+            val intent = Intent(this, AgregarGrupo::class.java)
+            addGroupLauncher.launch(intent)
+        }
+
         setUpRecyclerView()
         Log.d("CareerActivity", "Después de setUpRecyclerView")
         enableSwipeToDeleteAndEdit()
