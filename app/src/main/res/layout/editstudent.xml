@@ -10,45 +10,91 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!-- Título general -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Student edit"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Nombre -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
         <EditText
             android:id="@+id/editName"
-            android:hint="Nombre"
+            android:hint="Ingrese el nombre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <!-- Teléfono -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
         <EditText
             android:id="@+id/editTel"
-            android:hint="Teléfono"
+            android:hint="Ingrese el teléfono"
             android:inputType="phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <!-- Correo electrónico -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
         <EditText
             android:id="@+id/editEmail"
-            android:hint="Correo electrónico"
+            android:hint="Ingrese el correo"
             android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <!-- Fecha de nacimiento -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Birthdate"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
         <EditText
             android:id="@+id/editBornDate"
-            android:hint="Fecha de nacimiento (YYYY-MM-DD)"
+            android:hint="YYYY-MM-DD"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <!-- Código de carrera -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Career cod"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"/>
         <EditText
             android:id="@+id/editCareerCod"
-            android:hint="Código de carrera"
+            android:hint="Ingrese el código de carrera"
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
+        <!-- Botón de guardar -->
         <Button
             android:id="@+id/saveButton"
-            android:text="Guardar cambios"
+            android:text="Save Changes"
             android:textColor="#303F9F"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="20dp"/>
     </LinearLayout>
 </ScrollView>

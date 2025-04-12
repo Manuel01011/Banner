@@ -13,61 +13,69 @@
         android:theme="@style/Theme.Banner"
         tools:targetApi="31" >
 
-        <activity android:name=".Admin"
+        <activity android:name=".frontend.views.admin.Admin"
             android:theme="@style/Theme.Banner" />
 
-        <activity android:name=".Student"
+        <activity android:name=".frontend.views.student.Student"
             android:theme="@style/Theme.Banner" />
 
-        <activity android:name=".Professor"
+        <activity android:name=".frontend.views.professor.Professor"
             android:theme="@style/Theme.Banner" />
 
-        <activity android:name=".Course"
+        <activity android:name=".frontend.views.course.Course"
             android:theme="@style/Theme.Banner" />
 
-        <activity android:name=".Register"
+        <activity android:name=".frontend.views.register.Register"
             android:theme="@style/Theme.Banner" />
 
-        <activity android:name=".Career"
+        <activity android:name=".frontend.views.career.Career"
             android:theme="@style/Theme.Banner" />
 
-        <activity android:name=".Ciclo"
+        <activity android:name=".frontend.views.cicle.Ciclo"
             android:theme="@style/Theme.Banner" />
 
-        <activity android:name=".Group"
+        <activity android:name=".frontend.views.group.Group"
             android:theme="@style/Theme.Banner" />
 
-        <activity android:name=".Enrollment"
+        <activity android:name=".frontend.views.enrollment.Enrollment"
             android:theme="@style/Theme.Banner" />
 
-        <activity android:name=".User"
+        <activity android:name=".frontend.views.user.User"
             android:theme="@style/Theme.Banner" />
 
-        <activity android:name=".EditCareerActivity" />
+        <activity android:name=".frontend.views.career.EditCareerActivity" />
 
-        <activity android:name=".EditStudentActivity" />
+        <activity android:name=".frontend.views.student.EditStudentActivity" />
 
-        <activity android:name=".EditProfessorActivity" />
+        <activity android:name=".frontend.views.professor.EditProfessorActivity" />
 
-        <activity android:name=".EditCicloActivity" />
+        <activity android:name=".frontend.views.cicle.EditCicloActivity" />
 
-        <activity android:name=".EditCourseActivity" />
+        <activity android:name=".frontend.views.course.EditCourseActivity" />
 
-        <activity android:name=".AgregarCarrera" />
+        <activity android:name=".frontend.views.enrollment.EditEnrollmentActivity" />
 
-        <activity android:name=".AgregarCiclo" />
+        <activity android:name=".frontend.views.user.EditarUsuario" />
 
-        <activity android:name=".AgregarCurso" />
+        <activity android:name=".frontend.views.group.EditGrupoActivity" />
 
-        <activity android:name=".AgregarEstudiante" />
+        <activity android:name=".frontend.views.career.AgregarCarrera" />
 
-        <activity android:name=".AgregarGrupo" />
+        <activity android:name=".frontend.views.cicle.AgregarCiclo" />
 
-        <activity android:name=".AgregarMatricula" />
+        <activity android:name=".frontend.views.course.AgregarCurso" />
 
-        <activity android:name=".AgregarProfesor" />
+        <activity android:name=".frontend.views.student.AgregarEstudiante" />
 
-        <activity android:name=".AgregarUsuario" />
+        <activity android:name=".frontend.views.group.AgregarGrupo" />
+
+        <activity android:name=".frontend.views.enrollment.AgregarMatricula" />
+
+        <activity android:name=".frontend.views.professor.AgregarProfesor" />
+
+        <activity android:name=".frontend.views.user.AgregarUsuario" />
+
+        <activity android:name=".frontend.views.login.login" />
 
         <activity
             android:name=".MainActivity"
