@@ -21,7 +21,7 @@ class EditCourseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.editcourse)
+        setContentView(R.layout.edit_course)
 
         edtCod = findViewById(R.id.edtCod)
         edtName = findViewById(R.id.edtName)

@@ -44,7 +44,7 @@
             android:id="@+id/search_view"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:queryHint="Busca por nombre"
+            android:queryHint="Search by id"
             android:layout_marginTop="80dp"
             android:layout_marginStart="22dp"
             android:iconifiedByDefault="false"
@@ -89,6 +89,6 @@
         android:layout_gravity="start"
         android:focusable="true"
         android:clickable="true"
-        app:menu="@menu/menu_ciclos"/>
+        app:menu="@menu/menu_semester"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

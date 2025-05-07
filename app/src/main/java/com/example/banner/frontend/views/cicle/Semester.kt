@@ -24,7 +24,7 @@ import com.example.banner.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
-class Ciclo : AppCompatActivity() {
+class Semester : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var menuButton: ImageButton
     private lateinit var navigationView: NavigationView
@@ -41,7 +41,7 @@ class Ciclo : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.ciclo)
+        setContentView(R.layout.semester)
 
         drawerLayout = findViewById(R.id.drawer_layout)
         menuButton = findViewById(R.id.menu_button)
@@ -92,7 +92,7 @@ class Ciclo : AppCompatActivity() {
                         fullList[index].dateFinish = dateFinish
                         fullList[index].is_active = isActive
                         mAdapter.updateData(fullList)
-                        Toast.makeText(this, "Ciclo actualizado", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Semester actualizado", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -112,17 +112,17 @@ class Ciclo : AppCompatActivity() {
                     // Crear un nuevo objeto Cycle con los datos recibidos
                     val newCycle = Ciclo_(cycleId, cycleYear, cycleNumber, startDate, endDate, isActive)
 
-                    // Agregar el nuevo ciclo a la lista
+                    // Agregar el nuevo semester a la lista
                     fullList.add(newCycle)
                     mAdapter.updateData(fullList)
-                    Toast.makeText(this, "Ciclo agregado", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Semester agregado", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
             fabAgregarCiclo.setOnClickListener {
-                // Iniciar la actividad para agregar un ciclo
-                val intent = Intent(this, AgregarCiclo::class.java)
+                // Iniciar la actividad para agregar un semester
+                val intent = Intent(this, AddSemester::class.java)
                 addCycleLauncher.launch(intent)
             }
 
@@ -156,7 +156,7 @@ class Ciclo : AppCompatActivity() {
 
                 when (direction) {
                     ItemTouchHelper.RIGHT -> {
-                        editCicloLauncher.launch(Intent(this@Ciclo, EditCicloActivity::class.java).apply {
+                        editCicloLauncher.launch(Intent(this@Semester, EditSemesterActivity::class.java).apply {
                             putExtra("id", ciclo.id)
                             putExtra("year",ciclo.year)
                             putExtra("number", ciclo.number)
@@ -197,7 +197,7 @@ class Ciclo : AppCompatActivity() {
                     c.drawRect(background, paint)
 
                     // Agregar ícono de lápiz (opcional: revisa si tienes este drawable en tu proyecto)
-                    val icon = ContextCompat.getDrawable(this@Ciclo, R.drawable.ic_edit) // Usa tu ícono aquí
+                    val icon = ContextCompat.getDrawable(this@Semester, R.drawable.ic_edit) // Usa tu ícono aquí
                     icon?.let {
                         val iconMargin = (itemView.height - it.intrinsicHeight) / 2
                         val iconTop = itemView.top + (itemView.height - it.intrinsicHeight) / 2
@@ -231,9 +231,9 @@ class Ciclo : AppCompatActivity() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 val filtered = if (!newText.isNullOrBlank()) {
-                    // Filtra por el título del ciclo, que es la concatenación de "Ciclo number - year"
+                    // Filtra por el título del semester, que es la concatenación de "Semester number - year"
                     fullList.filter {
-                        "Ciclo ${it.number} - ${it.year}".contains(newText, ignoreCase = true)
+                        "Semester ${it.number} - ${it.year}".contains(newText, ignoreCase = true)
                     }
                 } else {
                     fullList
@@ -256,6 +256,6 @@ class Ciclo : AppCompatActivity() {
     fun deleteCiclo(position: Int) {
         val ciclo = mAdapter.getItem(position)
         mAdapter.removeItem(position)
-        Toast.makeText(this, "Ciclo eliminada: ${ciclo.id}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Semester eliminada: ${ciclo.id}", Toast.LENGTH_SHORT).show()
     }
 }

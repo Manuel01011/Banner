@@ -15,7 +15,7 @@ class EditEnrollmentActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.editenrollment)
+        setContentView(R.layout.edit_enrollment)
 
         etStudentId = findViewById(R.id.etStudentId)
         etGrupoId = findViewById(R.id.etGrupoId)

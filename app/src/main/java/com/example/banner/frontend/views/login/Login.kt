@@ -19,7 +19,7 @@ class login : ComponentActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.loginactivity)
+        setContentView(R.layout.login_activity)
         val userController = UserController()
 
         // Obtener las vistas de los componentes UI del XML

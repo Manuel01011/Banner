@@ -24,7 +24,7 @@ import com.example.banner.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
-class Professor : AppCompatActivity() {
+class Teacher : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var menuButton: ImageButton
     private lateinit var navigationView: NavigationView
@@ -41,7 +41,7 @@ class Professor : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.profesor)
+        setContentView(R.layout.teacher)
 
         drawerLayout = findViewById(R.id.drawer_layout)
         menuButton = findViewById(R.id.menu_button)
@@ -70,7 +70,7 @@ class Professor : AppCompatActivity() {
             true
         }
 
-        // Launcher para editar profesor
+        // Launcher para editar teacher
         editProfessorLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
@@ -106,7 +106,7 @@ class Professor : AppCompatActivity() {
                     // Crear un nuevo objeto Profesor con los datos recibidos
                     val newProfesor = Teacher_(profesorId, profesorName, profesorTelNumber, profesorEmail)
 
-                    // Agregar el nuevo profesor a la lista
+                    // Agregar el nuevo teacher a la lista
                     fullList.add(newProfesor)
                     mAdapter.updateData(fullList)
                     Toast.makeText(this, "Profesor agregado", Toast.LENGTH_SHORT).show()
@@ -115,7 +115,7 @@ class Professor : AppCompatActivity() {
         }
         fabAgregarProfesor.setOnClickListener {
             // Iniciar la actividad para agregar un curso
-            val intent = Intent(this, AgregarProfesor::class.java)
+            val intent = Intent(this, AddTeacher::class.java)
             addTeacherLauncher.launch(intent)
         }
 
@@ -148,7 +148,7 @@ class Professor : AppCompatActivity() {
 
                 when (direction) {
                     ItemTouchHelper.RIGHT -> {
-                        editProfessorLauncher.launch(Intent(this@Professor, EditProfessorActivity::class.java).apply {
+                        editProfessorLauncher.launch(Intent(this@Teacher, EditTeacherActivity::class.java).apply {
                             putExtra("name", profesor.name)
                             putExtra("tel",profesor.telNumber)
                             putExtra("email", profesor.email)
@@ -186,7 +186,7 @@ class Professor : AppCompatActivity() {
                     c.drawRect(background, paint)
 
                     // Agregar ícono de lápiz (opcional: revisa si tienes este drawable en tu proyecto)
-                    val icon = ContextCompat.getDrawable(this@Professor, R.drawable.ic_edit) // Usa tu ícono aquí
+                    val icon = ContextCompat.getDrawable(this@Teacher, R.drawable.ic_edit) // Usa tu ícono aquí
                     icon?.let {
                         val iconMargin = (itemView.height - it.intrinsicHeight) / 2
                         val iconTop = itemView.top + (itemView.height - it.intrinsicHeight) / 2

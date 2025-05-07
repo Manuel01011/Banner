@@ -66,7 +66,7 @@ class RecyclerAdapter3(
             }
 
             btnDelete.setOnClickListener {
-                if (context is Professor) {
+                if (context is Teacher) {
                     val position = adapterPosition
                     if (position != RecyclerView.NO_POSITION) {
                         context.deleteProfessor(position)

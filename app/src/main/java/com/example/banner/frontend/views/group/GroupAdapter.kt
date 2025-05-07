@@ -63,7 +63,7 @@ class RecyclerAdapter6(
             textYear.text = "Año: ${grupo.year}"
             textSchedule.text = "Horario: ${grupo.horario}"
             textCourse.text = "Código del curso: ${grupo.courseCod}"
-            textTeacher.text = "ID del profesor: ${grupo.teacherId}"
+            textTeacher.text = "ID del teacher: ${grupo.teacherId}"
 
             itemView.setOnClickListener {
                 Toast.makeText(context, "Grupo ${grupo.numberGroup} - ${grupo.horario}", Toast.LENGTH_SHORT).show()

@@ -10,11 +10,11 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.banner.MainActivity
 import com.example.banner.R
 import com.example.banner.frontend.views.career.Career
-import com.example.banner.frontend.views.cicle.Ciclo
+import com.example.banner.frontend.views.cicle.Semester
 import com.example.banner.frontend.views.course.Course
 import com.example.banner.frontend.views.enrollment.Enrollment
 import com.example.banner.frontend.views.group.Group
-import com.example.banner.frontend.views.professor.Professor
+import com.example.banner.frontend.views.professor.Teacher
 import com.example.banner.frontend.views.student.Student
 import com.example.banner.frontend.views.user.User
 import com.google.android.material.navigation.NavigationView
@@ -59,7 +59,7 @@ class Admin : AppCompatActivity() {
                 }
                 R.id.nav_professors -> {
                     Log.d("AdminActivity", "Professors Clicked")
-                    startActivity(Intent(this, Professor::class.java))
+                    startActivity(Intent(this, Teacher::class.java))
                 }
                 R.id.nav_courses -> {
                     Log.d("AdminActivity", "Courses Clicked")
@@ -71,7 +71,7 @@ class Admin : AppCompatActivity() {
                 }
                 R.id.nav_Ciclo -> {
                     Log.d("AdminActivity", "Logout Clicked")
-                    startActivity(Intent(this, Ciclo::class.java))
+                    startActivity(Intent(this, Semester::class.java))
                 }
                 R.id.nav_enrrollment -> {
                     Log.d("AdminActivity", "Logout Clicked")

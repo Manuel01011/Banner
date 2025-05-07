@@ -57,6 +57,7 @@ class RecyclerAdapter(
         private val btnDelete: ImageButton = view.findViewById(R.id.btn_delete)
 
 
+
         fun bind(carrera: Career_, context: Context) {
             Log.d("ViewHolder", "Binding carrera: ${carrera.name}")
             codCarrera.text = carrera.cod.toString()

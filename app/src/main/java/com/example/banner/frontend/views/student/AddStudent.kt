@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.banner.R
 
-class AgregarEstudiante : AppCompatActivity() {
+class AddStudent : AppCompatActivity() {
 
     private lateinit var studentId: EditText
     private lateinit var studentName: EditText
@@ -21,7 +21,7 @@ class AgregarEstudiante : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.agregar_estudiante)
+        setContentView(R.layout.add_student)
 
         // Asociamos las vistas con las variables
         studentId = findViewById(R.id.agregar_estudiante_id)

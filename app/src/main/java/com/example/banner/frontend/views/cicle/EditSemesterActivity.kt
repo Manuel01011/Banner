@@ -12,7 +12,7 @@ import android.app.DatePickerDialog
 import android.widget.Toast
 import com.example.banner.R
 
-class EditCicloActivity : AppCompatActivity() {
+class EditSemesterActivity : AppCompatActivity() {
     private lateinit var editYear: EditText
     private lateinit var editNumber: EditText
     private lateinit var editStartDate: EditText
@@ -27,7 +27,7 @@ class EditCicloActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.editciclo)
+        setContentView(R.layout.edit_semester)
 
         // Vinculamos las vistas
         editYear = findViewById(R.id.edit_year)
@@ -72,8 +72,8 @@ class EditCicloActivity : AppCompatActivity() {
         checkIsActive.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // Desactivar otros ciclos
-                // para asegurarte de que solo un ciclo esté marcado como activo
-                Toast.makeText(this, "Ciclo activado", Toast.LENGTH_SHORT).show()
+                // para asegurarte de que solo un semester esté marcado como activo
+                Toast.makeText(this, "Semester activado", Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -111,7 +111,7 @@ class Enrollment : AppCompatActivity() {
 
         fabAgregarMatricula.setOnClickListener {
             // Iniciar la actividad para agregar un curso
-            val intent = Intent(this, AgregarMatricula::class.java)
+            val intent = Intent(this, AddEnrollment::class.java)
             addEnrollmentLauncher.launch(intent)
         }
 

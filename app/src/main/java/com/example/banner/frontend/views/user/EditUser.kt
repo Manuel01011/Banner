@@ -10,7 +10,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.example.banner.R
 
-class EditarUsuario: AppCompatActivity() {
+class EditUser: AppCompatActivity() {
     private lateinit var editTextPassword: EditText
     private lateinit var editTextRole: AutoCompleteTextView
     private var userId: Int = -1
@@ -18,14 +18,14 @@ class EditarUsuario: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.edituser)
+        setContentView(R.layout.edit_user)
 
         // Inicializar los campos
         editTextPassword = findViewById(R.id.editTextPassword)
         editTextRole = findViewById(R.id.editTextRole)
 
         // Lista de roles predefinidos
-        val roleOptions = listOf("Student", "Professor", "Admin")
+        val roleOptions = listOf("Student", "Teacher", "Admin")
         val roleAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, roleOptions)
         editTextRole.setAdapter(roleAdapter)
 

@@ -7,7 +7,7 @@
     android:background="@drawable/login_background"
     android:padding="24dp">
 
-    <!-- Pregunta para ID del profesor -->
+    <!-- Pregunta para ID del teacher -->
     <TextView
         android:id="@+id/agregar_profesor_id_text"
         android:layout_width="wrap_content"
@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp" />
 
-    <!-- Pregunta para nombre del profesor -->
+    <!-- Pregunta para nombre del teacher -->
     <TextView
         android:id="@+id/agregar_profesor_name_text"
         android:layout_width="wrap_content"
@@ -55,7 +55,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp" />
 
-    <!-- Pregunta para número de teléfono del profesor -->
+    <!-- Pregunta para número de teléfono del teacher -->
     <TextView
         android:id="@+id/agregar_profesor_telNumber_text"
         android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp" />
 
-    <!-- Pregunta para correo electrónico del profesor -->
+    <!-- Pregunta para correo electrónico del teacher -->
     <TextView
         android:id="@+id/agregar_profesor_email_text"
         android:layout_width="wrap_content"
@@ -103,7 +103,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp" />
 
-    <!-- Botón para guardar el profesor -->
+    <!-- Botón para guardar el teacher -->
     <Button
         android:id="@+id/btn_guardar_profesor"
         android:layout_width="0dp"

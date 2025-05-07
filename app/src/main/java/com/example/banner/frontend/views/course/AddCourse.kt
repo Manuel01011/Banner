@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.banner.R
 
-class AgregarCurso : AppCompatActivity() {
+class AddCourse : AppCompatActivity() {
     private lateinit var courseCode: EditText
     private lateinit var courseName: EditText
     private lateinit var credits: EditText
@@ -20,7 +20,7 @@ class AgregarCurso : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.agregar_curso)
+        setContentView(R.layout.add_course)
 
         // Asocia las vistas de la interfaz con las variables de Kotlin
         courseCode = findViewById(R.id.agregar_cod_curso)

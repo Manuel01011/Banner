@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.banner.R
 
-class AgregarGrupo : AppCompatActivity() {
+class AddGroup : AppCompatActivity() {
     private lateinit var grupoId: EditText
     private lateinit var grupoNumber: EditText
     private lateinit var grupoYear: EditText
@@ -20,7 +20,7 @@ class AgregarGrupo : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.agregar_grupo)
+        setContentView(R.layout.add_group)
 
         grupoId = findViewById(R.id.agregar_grupo_id)
         grupoNumber = findViewById(R.id.agregar_grupo_number)

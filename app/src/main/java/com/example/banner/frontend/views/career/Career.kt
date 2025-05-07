@@ -41,6 +41,7 @@ class Career : AppCompatActivity() {
 
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("CareerActivity", "onCreate llamado")
@@ -115,7 +116,7 @@ class Career : AppCompatActivity() {
         }
         fabAgregarCarrera.setOnClickListener {
             // Iniciar la actividad para agregar una nueva carrera
-            val intent = Intent(this, AgregarCarrera::class.java)
+            val intent = Intent(this, AddCareer::class.java)
             addCareerLauncher.launch(intent)
         }
 

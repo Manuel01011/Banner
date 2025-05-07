@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.banner.R
 
-class AgregarUsuario : AppCompatActivity() {
+class AddUser : AppCompatActivity() {
     private lateinit var usuarioId: EditText
     private lateinit var usuarioPassword: EditText
     private lateinit var usuarioRole: EditText
@@ -17,7 +17,7 @@ class AgregarUsuario : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.agregar_usuario)
+        setContentView(R.layout.add_user)
 
         // Inicializar las vistas
         usuarioId = findViewById(R.id.agregar_usuario_id)

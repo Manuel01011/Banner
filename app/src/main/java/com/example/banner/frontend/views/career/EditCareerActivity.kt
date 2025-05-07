@@ -16,7 +16,7 @@ class EditCareerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.editcareer)
+        setContentView(R.layout.edit_career)
 
         cod = findViewById(R.id.edit_cod)
         name = findViewById(R.id.edit_name)

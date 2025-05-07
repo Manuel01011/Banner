@@ -8,7 +8,7 @@
 
     <item
         android:id="@+id/nav_professors"
-        android:title="Professors"
+        android:title="Teachers"
         android:icon="@drawable/ic_professors" />
 
     <item
@@ -18,12 +18,12 @@
 
     <item
         android:id="@+id/nav_Ciclo"
-        android:title="Ciclos"
-        android:icon="@drawable/ic_ciclo" />
+        android:title="Semesters"
+        android:icon="@drawable/ic_semester" />
 
     <item
         android:id="@+id/nav_carrer"
-        android:title="Carrers"
+        android:title="Careers"
         android:icon="@drawable/ic_carrer" />
 
     <item

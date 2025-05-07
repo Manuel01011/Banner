@@ -7,7 +7,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.example.banner.R
 
-class EditGrupoActivity : AppCompatActivity(){
+class EditGroupActivity : AppCompatActivity(){
     private lateinit var etId: EditText
     private lateinit var etNumber: EditText
     private lateinit var etYear: EditText
@@ -18,7 +18,7 @@ class EditGrupoActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.editgrupo)
+        setContentView(R.layout.edit_group)
 
         etId = findViewById(R.id.etId)
         etNumber = findViewById(R.id.etNumber)

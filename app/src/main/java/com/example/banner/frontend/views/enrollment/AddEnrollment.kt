@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.banner.R
 
-class AgregarMatricula : AppCompatActivity() {
+class AddEnrollment : AppCompatActivity() {
     private lateinit var studentId: EditText
     private lateinit var grupoId: EditText
     private lateinit var grade: EditText
@@ -17,7 +17,7 @@ class AgregarMatricula : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.agregar_matricula)
+        setContentView(R.layout.add_enrollment)
 
         // Inicializar las vistas
         studentId = findViewById(R.id.agregar_id_estudiante)

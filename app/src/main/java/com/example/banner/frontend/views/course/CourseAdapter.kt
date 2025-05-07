@@ -18,7 +18,7 @@ class RecyclerAdapter4(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.curso_item, parent, false)
+        val view = layoutInflater.inflate(R.layout.course_item, parent, false)
         return ViewHolder(view)
     }
 
@@ -61,7 +61,7 @@ class RecyclerAdapter4(
             textName.text = course.name
             textCredits.text = "Créditos: ${course.credits}"
             textHours.text = "Horas: ${course.hours}"
-            textCiclo.text = "Ciclo ID: ${course.cicloId}"
+            textCiclo.text = "Semester ID: ${course.cicloId}"
             textCareer.text = "Código de carrera: ${course.careerCod}"
 
             itemView.setOnClickListener {

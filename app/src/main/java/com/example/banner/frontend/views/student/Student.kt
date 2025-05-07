@@ -124,7 +124,7 @@ class Student : AppCompatActivity() {
         }
         fabAgregarEstudiante.setOnClickListener {
             // Iniciar la actividad para agregar un curso
-            val intent = Intent(this, AgregarEstudiante::class.java)
+            val intent = Intent(this, AddStudent::class.java)
             addStudentLauncher.launch(intent)
         }
 

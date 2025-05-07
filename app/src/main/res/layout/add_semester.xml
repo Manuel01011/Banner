@@ -6,7 +6,7 @@
     android:background="@drawable/login_background"
     android:padding="24dp">
 
-    <!-- Pregunta para ID del ciclo -->
+    <!-- Pregunta para ID del semester -->
     <TextView
         android:id="@+id/agregar_id_text"
         android:layout_width="wrap_content"

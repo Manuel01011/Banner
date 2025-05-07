@@ -8,7 +8,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.example.banner.R
 
-class EditProfessorActivity : AppCompatActivity(){
+class EditTeacherActivity : AppCompatActivity(){
     private lateinit var editName: EditText
     private lateinit var editPhone: EditText
     private lateinit var editEmail: EditText
@@ -18,7 +18,7 @@ class EditProfessorActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.editteacher)
+        setContentView(R.layout.edit_teacher)
 
         editName = findViewById(R.id.edit_name)
         editPhone = findViewById(R.id.edit_tel)

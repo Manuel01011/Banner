@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.banner.R
 
-class AgregarProfesor : AppCompatActivity() {
+class AddTeacher : AppCompatActivity() {
     private lateinit var profesorId: EditText
     private lateinit var profesorName: EditText
     private lateinit var profesorTel: EditText
@@ -18,7 +18,7 @@ class AgregarProfesor : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.agregar_profesor)
+        setContentView(R.layout.add_teacher)
 
         // Inicializar las vistas
         profesorId = findViewById(R.id.agregar_profesor_id)
@@ -27,7 +27,7 @@ class AgregarProfesor : AppCompatActivity() {
         profesorEmail = findViewById(R.id.agregar_profesor_email)
         saveProfesorBtn = findViewById(R.id.btn_guardar_profesor)
 
-        // Configurar el botón de guardar profesor
+        // Configurar el botón de guardar teacher
         saveProfesorBtn.setOnClickListener {
             // Obtener los valores de los campos de texto
             val profesorIdValue = profesorId.text.toString().toIntOrNull()

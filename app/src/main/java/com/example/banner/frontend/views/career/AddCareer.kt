@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.banner.R
 
-class AgregarCarrera : AppCompatActivity() {
+class AddCareer : AppCompatActivity() {
     private lateinit var cod: EditText
     private lateinit var name: EditText
     private lateinit var title: EditText
@@ -19,7 +19,7 @@ class AgregarCarrera : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.agregar_carrera) // Asegúrate de que este XML esté correctamente configurado
+        setContentView(R.layout.add_career) // Asegúrate de que este XML esté correctamente configurado
 
         cod = findViewById(R.id.agregar_cod)
         name = findViewById(R.id.agregar_name)

@@ -20,7 +20,7 @@ class RecyclerAdapter2(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view = layoutInflater.inflate(R.layout.ciclo_item, parent, false)
+        val view = layoutInflater.inflate(R.layout.semester_item, parent, false)
         return ViewHolder(view)
     }
 
@@ -56,7 +56,7 @@ class RecyclerAdapter2(
         private val btnDelete: ImageButton = view.findViewById(R.id.btn_delete)
 
         fun bind(ciclo: Ciclo_, context: Context) {
-            textTitle.text = "Ciclo ${ciclo.number} - ${ciclo.year}"
+            textTitle.text = "Semester ${ciclo.number} - ${ciclo.year}"
             textDateRange.text = "Del ${ciclo.dateStart} al ${ciclo.dateFinish}"
             textStatus.text = if (ciclo.is_active) "Activo" else "Inactivo"
             textStatus.setTextColor(
@@ -67,12 +67,12 @@ class RecyclerAdapter2(
             )
 
             itemView.setOnClickListener {
-                Toast.makeText(context, "Ciclo ID: ${ciclo.id}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Semester ID: ${ciclo.id}", Toast.LENGTH_SHORT).show()
             }
 
             btnDelete.setOnClickListener {
                 // Lógica para eliminar desde el adaptador
-                if (context is Ciclo) {
+                if (context is Semester) {
                     val position = adapterPosition
                     if (position != RecyclerView.NO_POSITION) {
                         context.deleteCiclo(position)

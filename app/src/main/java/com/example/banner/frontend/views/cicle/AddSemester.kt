@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.banner.R
 
-class AgregarCiclo : AppCompatActivity() {
+class AddSemester : AppCompatActivity() {
     private lateinit var id: EditText
     private lateinit var year: EditText
     private lateinit var number: EditText
@@ -21,7 +21,7 @@ class AgregarCiclo : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.agregar_ciclo)
+        setContentView(R.layout.add_semester)
 
         id = findViewById(R.id.agregar_id)
         year = findViewById(R.id.agregar_year)
