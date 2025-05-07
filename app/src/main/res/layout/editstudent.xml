@@ -24,12 +24,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name"
+            android:text="Enter Name"
             android:textStyle="bold"
             android:layout_marginTop="10dp"/>
         <EditText
             android:id="@+id/editName"
-            android:hint="Ingrese el nombre"
+            android:hint="Name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -37,12 +37,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Phone"
+            android:text="Enter Phone Number"
             android:textStyle="bold"
             android:layout_marginTop="10dp"/>
         <EditText
             android:id="@+id/editTel"
-            android:hint="Ingrese el teléfono"
+            android:hint="Number"
             android:inputType="phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -51,12 +51,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email"
+            android:text="Enter Email"
             android:textStyle="bold"
             android:layout_marginTop="10dp"/>
         <EditText
             android:id="@+id/editEmail"
-            android:hint="Ingrese el correo"
+            android:hint="Email"
             android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -65,7 +65,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Birthdate"
+            android:text="Enter Birthdate"
             android:textStyle="bold"
             android:layout_marginTop="10dp"/>
         <EditText
@@ -78,12 +78,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Career cod"
+            android:text="Enter Career code"
             android:textStyle="bold"
             android:layout_marginTop="10dp"/>
         <EditText
             android:id="@+id/editCareerCod"
-            android:hint="Ingrese el código de carrera"
+            android:hint="Code"
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -91,8 +91,9 @@
         <!-- Botón de guardar -->
         <Button
             android:id="@+id/saveButton"
-            android:text="Save Changes"
-            android:textColor="#303F9F"
+            android:text="Save"
+            android:backgroundTint="@color/purple_500"
+            android:textColor="#FFFFFF"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"/>

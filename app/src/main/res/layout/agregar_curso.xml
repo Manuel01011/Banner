@@ -10,7 +10,7 @@
         android:id="@+id/agregar_titulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Agregar Curso"
+        android:text="Add course"
         android:textSize="27sp"
         android:textStyle="bold"
         android:layout_marginBottom="20dp"/>
@@ -116,7 +116,7 @@
         android:id="@+id/btn_guardar_curso"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Guardar curso"
+        android:text="Save"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/purple_500"
         android:textColor="@android:color/white"/>

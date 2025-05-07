@@ -10,7 +10,7 @@
         android:id="@+id/agregar_titulo_matricula"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Agregar Matrícula"
+        android:text="Add enrollment"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginBottom="20dp"/>
@@ -19,42 +19,42 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ID Estudiante"
+        android:text="Enter student id"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
     <EditText
         android:id="@+id/agregar_id_estudiante"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ingrese ID de Estudiante"
+        android:hint="ID"
         android:inputType="number"/>
 
     <!-- ID de grupo -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ID Grupo"
+        android:text="Enter group id"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
     <EditText
         android:id="@+id/agregar_id_grupo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ingrese ID de Grupo"
+        android:hint="ID"
         android:inputType="number"/>
 
     <!-- Calificación -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Calificación"
+        android:text="Enter Grade"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
     <EditText
         android:id="@+id/agregar_calificacion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ingrese Calificación"
+        android:hint="Grade"
         android:inputType="numberDecimal"/>
 
     <!-- Botón Guardar -->
@@ -62,7 +62,7 @@
         android:id="@+id/btn_guardar_matricula"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Guardar Matrícula"
+        android:text="Save"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/purple_500"
         android:textColor="@android:color/white"/>

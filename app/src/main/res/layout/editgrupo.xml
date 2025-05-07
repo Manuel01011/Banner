@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit Group"
+            android:text="Group edit"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="20dp" />
@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Group ID"
+            android:text="Enter Group ID"
             android:textStyle="bold"
             android:layout_marginTop="10dp" />
 
@@ -38,13 +38,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Group Number"
+            android:text="Enter Group Number"
             android:textStyle="bold"
             android:layout_marginTop="10dp" />
 
         <EditText
             android:id="@+id/etNumber"
-            android:hint="Número"
+            android:hint="Number"
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -53,13 +53,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Year"
+            android:text="Enter Year"
             android:textStyle="bold"
             android:layout_marginTop="10dp" />
 
         <EditText
             android:id="@+id/etYear"
-            android:hint="Año"
+            android:hint="Year"
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -68,13 +68,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Schedule"
+            android:text="Enter Schedule"
             android:textStyle="bold"
             android:layout_marginTop="10dp" />
 
         <EditText
             android:id="@+id/etHorario"
-            android:hint="Horario"
+            android:hint="Schedule"
             android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -83,13 +83,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Course Code"
+            android:text="Enter Course Code"
             android:textStyle="bold"
             android:layout_marginTop="10dp" />
 
         <EditText
             android:id="@+id/etCourseCode"
-            android:hint="Código Curso"
+            android:hint="Code"
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -104,7 +104,7 @@
 
         <EditText
             android:id="@+id/etTeacherId"
-            android:hint="ID Profesor"
+            android:hint="Enter ID Profesor"
             android:inputType="number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -112,7 +112,7 @@
         <!-- Botón Guardar -->
         <Button
             android:id="@+id/btnGuardar"
-            android:text="Save Changes"
+            android:text="Save"
             android:layout_width="match_parent"
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/purple_500"

@@ -10,7 +10,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Course"
+        android:text="Course Edit"
         android:textSize="18sp"
         android:textStyle="bold"
         android:layout_marginBottom="20dp"/>
@@ -19,7 +19,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Course Code"
+        android:text="Enter Course code"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
 
@@ -28,14 +28,14 @@
         android:id="@+id/edtCod"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Course Code"
+        android:hint="Code"
         android:inputType="number"/>
 
     <!-- Title for Course Name -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Course Name"
+        android:text="Enter Course name"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
 
@@ -44,14 +44,14 @@
         android:id="@+id/edtName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Course Name"
+        android:hint="Name"
         android:inputType="text"/>
 
     <!-- Title for Credits -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Credits"
+        android:text="Enter Credits"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
 
@@ -60,14 +60,14 @@
         android:id="@+id/edtCredits"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Credits"
+        android:hint="Credits"
         android:inputType="number"/>
 
     <!-- Title for Hours -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hours"
+        android:text="Enter Hours"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
 
@@ -76,14 +76,14 @@
         android:id="@+id/edtHours"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Hours"
+        android:hint="Hours"
         android:inputType="number"/>
 
     <!-- Title for Cycle ID -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cycle ID"
+        android:text="Enter Cycle ID"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
 
@@ -92,14 +92,14 @@
         android:id="@+id/edtCicloId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Cycle ID"
+        android:hint="ID"
         android:inputType="number"/>
 
     <!-- Title for Career Code -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Career Code"
+        android:text="Enter Career Code"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
 
@@ -108,7 +108,7 @@
         android:id="@+id/edtCareerCod"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Career Code"
+        android:hint="Code"
         android:inputType="number"/>
 
     <!-- Save Button -->
@@ -116,7 +116,7 @@
         android:id="@+id/saveButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save Changes"
+        android:text="Save"
         android:layout_marginTop="20dp"
         android:backgroundTint="@color/purple_500"
         android:textColor="@android:color/white"/>

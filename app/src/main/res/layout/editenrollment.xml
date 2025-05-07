@@ -10,13 +10,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Student ID"
+        android:text="Enter Student ID"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
 
     <EditText
         android:id="@+id/etStudentId"
-        android:hint="ID del Estudiante"
+        android:hint="ID"
         android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -24,13 +24,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Group ID"
+        android:text="Enter Group ID"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
 
     <EditText
         android:id="@+id/etGrupoId"
-        android:hint="ID del Grupo"
+        android:hint="ID"
         android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -38,20 +38,20 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Grade"
+        android:text="Enter Grade"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
 
     <EditText
         android:id="@+id/etGrade"
-        android:hint="Nota"
+        android:hint="Grade"
         android:inputType="numberDecimal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/btnGuardar"
-        android:text="Save Changes"
+        android:text="Save"
         android:backgroundTint="@color/purple_500"
         android:textColor="@android:color/white"
         android:layout_marginTop="20dp"
