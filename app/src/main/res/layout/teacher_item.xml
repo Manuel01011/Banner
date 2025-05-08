@@ -18,7 +18,7 @@
             android:id="@+id/text_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Nombre del Teacher"
+            android:text="Teacher Name"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#303F9F"
@@ -31,7 +31,7 @@
             android:id="@+id/text_tel_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Teléfono: 123456789"
+            android:text="Phone number: 123456789"
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp"
             app:layout_constraintTop_toBottomOf="@id/text_name"
@@ -53,14 +53,29 @@
             android:layout_marginTop="8dp" />
 
         <ImageButton
+            android:id="@+id/btn_edit"
+            android:layout_width="25dp"
+            android:layout_height="26dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="12dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Edit career"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
             android:id="@+id/btn_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_delete"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="12dp"
             android:background="@android:color/transparent"
             android:contentDescription="Eliminar Matricula"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:src="@android:drawable/ic_menu_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

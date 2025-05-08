@@ -110,7 +110,7 @@ class User : AppCompatActivity() {
         }
         fabAgregarUsuario.setOnClickListener {
             // Iniciar la actividad para agregar un curso
-            val intent = Intent(this, AgregarUsuario::class.java)
+            val intent = Intent(this, AddUser::class.java)
             addUserLauncher.launch(intent)
         }
 
@@ -123,7 +123,7 @@ class User : AppCompatActivity() {
     private fun getUsuers(): MutableList<Usuario_> {
         return mutableListOf(
             Usuario_(1,"pass","Student"),
-            Usuario_(2,"pass","Professor"),
+            Usuario_(2,"pass","Teacher"),
             Usuario_(3,"pass","Admi"),
 
         )
@@ -144,7 +144,7 @@ class User : AppCompatActivity() {
                 when (direction) {
                     ItemTouchHelper.RIGHT -> {
                         // Editar usuario
-                        val intent = Intent(this@User, EditarUsuario::class.java).apply {
+                        val intent = Intent(this@User, EditUser::class.java).apply {
                             putExtra("usuarioId", student.id)
                             putExtra("usuarioPassword", student.password)
                             putExtra("usuarioRole", student.role)

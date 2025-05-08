@@ -18,6 +18,6 @@ class Ciclo_ {
     }
 
     override fun toString(): String {
-        return "Ciclo(id=$id, year=$year, number=$number, dateStart='$dateStart', dateFinish='$dateFinish', is_active='$is_active')"
+        return "Semester(id=$id, year=$year, number=$number, dateStart='$dateStart', dateFinish='$dateFinish', is_active='$is_active')"
     }
 }

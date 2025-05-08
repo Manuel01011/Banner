@@ -20,7 +20,7 @@ class EditStudentActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.editstudent)
+        setContentView(R.layout.edit_student)
 
         nameEdit = findViewById(R.id.editName)
         telEdit = findViewById(R.id.editTel)

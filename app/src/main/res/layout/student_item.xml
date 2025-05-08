@@ -27,7 +27,7 @@
             android:id="@+id/text_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Nombre: "
+            android:text="Name: "
             android:textSize="18sp"
             android:textColor="#303F9F"
             android:textStyle="bold"
@@ -39,7 +39,7 @@
             android:id="@+id/text_tel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Teléfono: "
+            android:text="Phone number: "
             app:layout_constraintTop_toBottomOf="@id/text_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -57,7 +57,7 @@
             android:id="@+id/text_born"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Fecha de nacimiento: "
+            android:text="Date of birth: "
             app:layout_constraintTop_toBottomOf="@id/text_email"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -66,11 +66,24 @@
             android:id="@+id/text_career"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Código de carrera: "
+            android:text="Career code: "
             app:layout_constraintTop_toBottomOf="@id/text_born"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_edit"
+            android:layout_width="25dp"
+            android:layout_height="26dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="4dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Edit career"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/btn_delete"

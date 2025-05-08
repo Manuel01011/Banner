@@ -117,7 +117,7 @@ class Group : AppCompatActivity() {
 
         fabAgregarGrupo.setOnClickListener {
             // Iniciar la actividad para agregar un curso
-            val intent = Intent(this, AgregarGrupo::class.java)
+            val intent = Intent(this, AddGroup::class.java)
             addGroupLauncher.launch(intent)
         }
 
@@ -151,7 +151,7 @@ class Group : AppCompatActivity() {
 
                 when (direction) {
                     ItemTouchHelper.RIGHT -> {
-                        val intent = Intent(this@Group, EditGrupoActivity::class.java).apply {
+                        val intent = Intent(this@Group, EditGroupActivity::class.java).apply {
                             putExtra("id", curso.id)
                             putExtra("number", curso.numberGroup)
                             putExtra("year", curso.year)

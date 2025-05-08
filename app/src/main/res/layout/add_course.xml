@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_background"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/agregar_titulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add course"
+        android:textSize="27sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Código del curso -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Course Code"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/agregar_cod_curso"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Course Code"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:minWidth="48dp"/>
+
+    <!-- Nombre del curso -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Course Name"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/agregar_nombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Course Name"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:minWidth="48dp"/>
+
+    <!-- Créditos -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Credits"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/agregar_creditos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Credits"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:minWidth="48dp"/>
+
+    <!-- Horas -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hours"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/agregar_horas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Hours"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:minWidth="48dp"/>
+
+    <!-- ID del semester -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cycle ID"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/agregar_id_ciclo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Cycle ID"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:minWidth="48dp"/>
+
+    <!-- Código de carrera -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Career Code"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/agregar_cod_carrera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Career Code"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:minWidth="48dp"/>
+
+    <!-- Botón Guardar -->
+    <Button
+        android:id="@+id/btn_guardar_curso"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"/>
+</LinearLayout>
+
+
+

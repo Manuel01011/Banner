@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@drawable/login_background"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Título principal -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Group edit"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Título y campo para ID -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter Group ID"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
+
+        <EditText
+            android:id="@+id/etId"
+            android:hint="ID"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Título y campo para Número -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter Group Number"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
+
+        <EditText
+            android:id="@+id/etNumber"
+            android:hint="Number"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Título y campo para Año -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter Year"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
+
+        <EditText
+            android:id="@+id/etYear"
+            android:hint="Year"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Título y campo para Horario -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter Schedule"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
+
+        <EditText
+            android:id="@+id/etHorario"
+            android:hint="Schedule"
+            android:inputType="text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Título y campo para Código Curso -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter Course Code"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
+
+        <EditText
+            android:id="@+id/etCourseCode"
+            android:hint="Code"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Título y campo para ID Profesor -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Teacher ID"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp" />
+
+        <EditText
+            android:id="@+id/etTeacherId"
+            android:hint="Enter ID Profesor"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Botón Guardar -->
+        <Button
+            android:id="@+id/btnGuardar"
+            android:text="Save"
+            android:layout_width="match_parent"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/purple_500"
+            android:textColor="@android:color/white"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

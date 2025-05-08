@@ -27,7 +27,7 @@
             android:id="@+id/text_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Número de grupo"
+            android:text="Group number"
             android:textSize="18sp"
             android:textColor="#303F9F"
             app:layout_constraintTop_toBottomOf="@id/text_id"
@@ -38,7 +38,7 @@
             android:id="@+id/text_year"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Año"
+            android:text="Year"
             android:textColor="@android:color/darker_gray"
             app:layout_constraintTop_toBottomOf="@id/text_number"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +48,7 @@
             android:id="@+id/text_schedule"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Horario"
+            android:text="Schedule"
             android:textColor="@android:color/darker_gray"
             app:layout_constraintTop_toBottomOf="@id/text_year"
             app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +58,7 @@
             android:id="@+id/text_course"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Código del curso"
+            android:text="Course code"
             android:textColor="@android:color/darker_gray"
             app:layout_constraintTop_toBottomOf="@id/text_schedule"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,20 +68,35 @@
             android:id="@+id/text_teacher"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="ID del profesor"
+            android:text="Teacher id"
             android:textColor="@android:color/darker_gray"
             app:layout_constraintTop_toBottomOf="@id/text_course"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageButton
+            android:id="@+id/btn_edit"
+            android:layout_width="25dp"
+            android:layout_height="26dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Edit career"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
             android:id="@+id/btn_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_delete"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
             android:background="@android:color/transparent"
             android:contentDescription="Eliminar Matricula"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:src="@android:drawable/ic_menu_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

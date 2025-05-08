@@ -40,10 +40,10 @@ class EnrollmentController {
         return DatabaseDAO.executeStoredProcedure(procedureName, studentId, grupoId)
     }
 
-    // Cambiar de ciclo para el estudiante (llama al procedimiento almacenado)
+    // Cambiar de semester para el estudiante (llama al procedimiento almacenado)
     fun changeCycle(studentId: Int, newCycleId: Int): Boolean {
         val procedureName = "change_cycle"
-        // Llamar al procedimiento almacenado para cambiar el ciclo del estudiante
+        // Llamar al procedimiento almacenado para cambiar el semester del estudiante
         return DatabaseDAO.executeStoredProcedure(procedureName, studentId, newCycleId)
     }
 
@@ -53,7 +53,7 @@ class EnrollmentController {
         return DatabaseDAO.executeStoredProcedure(procedureName, studentId, groupId, newGrade)
     }
 
-    // Obtener los cursos matriculados en el ciclo activo por un estudiante
+    // Obtener los cursos matriculados en el semester activo por un estudiante
     fun getActiveCycleCourses(studentId: Int): List<Course_> {
         val cours = mutableListOf<Course_>()
         val query = "CALL get_active_cycle_courses(?)" // Llamamos al procedimiento almacenado

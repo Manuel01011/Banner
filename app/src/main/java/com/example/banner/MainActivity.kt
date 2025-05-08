@@ -46,7 +46,7 @@ fun main() {
 //
 //        // Crear una instancia del controlador que maneja los cursos
 //        val enrollmentController = EnrollmentController()
-//        // Llamar al método para obtener los cursos activos del ciclo
+//        // Llamar al método para obtener los cursos activos del semester
 //        val courses = enrollmentController.getActiveCycleCourses(1)
 //
 //        // Imprimir los resultados
@@ -97,12 +97,12 @@ fun main() {
          */
         // println(cicloController.ciclo_anio(2025))#Funcionalidad 5
    //     println(cicloController.getActiveCiclo()) //#Funcionalidad 5
- //       val success = cicloController.setDisActiveCiclo(3)  // Activar el ciclo con ID 3
-//        val success = cicloController.setDisActiveCiclo(3) // desactivar el ciclo con ID 3
+ //       val success = cicloController.setDisActiveCiclo(3)  // Activar el semester con ID 3
+//        val success = cicloController.setDisActiveCiclo(3) // desactivar el semester con ID 3
 //        if (success) {
-//            println("Ciclo 3 desactivado correctamente")
+//            println("Semester 3 desactivado correctamente")
 //        } else {
-//            println("Error al desactivar el ciclo")
+//            println("Error al desactivar el semester")
 //        }
 
         //println(courseController.getCoursesByCareerAndCycle(1,1))//funcionalidad #6

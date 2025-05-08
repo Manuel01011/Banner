@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@android:color/white"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/text_cod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Code"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name of course"
+            android:textSize="18sp"
+            android:textColor="#303F9F"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/text_cod"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_credits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Credits"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintTop_toBottomOf="@id/text_name"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hours"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintTop_toBottomOf="@id/text_credits"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_ciclo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Semester id"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintTop_toBottomOf="@id/text_hours"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_career"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Code career"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintTop_toBottomOf="@id/text_ciclo"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_edit"
+            android:layout_width="24dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:contentDescription="Edit career"
+            android:src="@drawable/ic_edit"
+            tools:layout_editor_absoluteX="329dp"
+            tools:layout_editor_absoluteY="44dp" />
+
+        <ImageButton
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_delete"
+            android:background="@android:color/transparent"
+            android:contentDescription="Delete course"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

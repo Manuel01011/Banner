@@ -36,8 +36,11 @@ class Career : AppCompatActivity() {
     private lateinit var mAdapter: RecyclerAdapter
 
     //editar
+    // Elimina esto:
     private lateinit var editCareerLauncher: ActivityResultLauncher<Intent>
+
     private lateinit var addCareerLauncher: ActivityResultLauncher<Intent>
+
 
 
 
@@ -51,7 +54,9 @@ class Career : AppCompatActivity() {
         navigationView = findViewById(R.id.navigation_view)
         navigationView.bringToFront()
         navigationView.requestFocus()
+
         fabAgregarCarrera = findViewById(R.id.fabAgregarCarrera)
+
         // Botón para abrir el menú lateral
         menuButton.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
@@ -59,10 +64,7 @@ class Career : AppCompatActivity() {
 
         // Manejo de las opciones del menú
         navigationView.setNavigationItemSelectedListener { item ->
-            Log.d(
-                "AdminActivity",
-                "Menu item clicked: ${item.itemId} (${resources.getResourceEntryName(item.itemId)})"
-            )
+            Log.d("AdminActivity", "Menu item clicked: ${item.itemId} (${resources.getResourceEntryName(item.itemId)})")
             when (item.itemId) {
                 R.id.nav_logout -> {
                     Log.d("ProfessorActivity", "Logout Clicked")
@@ -74,8 +76,31 @@ class Career : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
-        //editar
+
+
         editCareerLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                if (data != null) {
+                    val position = data.getIntExtra("position", -1)
+                    val cod = data.getIntExtra("cod", -1)
+                    val name = data.getStringExtra("name") ?: ""
+                    val title = data.getStringExtra("title") ?: ""
+
+                    if (position != -1) {
+                        val updatedCareer = Career_(cod, name, title)
+                        mAdapter.editItem(position, updatedCareer)
+                        Toast.makeText(this, "Carrera actualizada", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
+
+        // Lanzador para agregar carrera
+        addCareerLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -85,47 +110,27 @@ class Career : AppCompatActivity() {
                     val name = data.getStringExtra("name") ?: ""
                     val title = data.getStringExtra("title") ?: ""
 
-                    val index = fullList.indexOfFirst { it.cod == cod }
-                    if (index != -1) {
-                        fullList[index].name = name
-                        fullList[index].title = title
-                        mAdapter.updateData(fullList)
-                        Toast.makeText(this, "Carrera actualizada", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-        addCareerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data
-                if (data != null) {
-                    val cod = data.getIntExtra("cod", -1)
-                    val name = data.getStringExtra("name") ?: ""
-                    val title = data.getStringExtra("title") ?: ""
-
-                    // Crear un nuevo objeto Career_ con los datos recibidos
                     val newCareer = Career_(cod, name, title)
-
-                    // Agregar la nueva carrera a la lista
                     fullList.add(newCareer)
                     mAdapter.updateData(fullList)
                     Toast.makeText(this, "Carrera agregada", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
+        // Botón flotante para agregar nueva carrera
         fabAgregarCarrera.setOnClickListener {
-            // Iniciar la actividad para agregar una nueva carrera
-            val intent = Intent(this, AgregarCarrera::class.java)
+            val intent = Intent(this, AddCareer::class.java)
             addCareerLauncher.launch(intent)
         }
 
+        // Configurar RecyclerView y adaptador
         Log.d("CareerActivity", "Antes de setUpRecyclerView")
         setUpRecyclerView()
         Log.d("CareerActivity", "Después de setUpRecyclerView")
-        enableSwipeToDeleteAndEdit()
-
 
     }
+
 
     //devuelve la lista de los carreas
     private fun getSuperheros(): MutableList<Career_> {
@@ -137,76 +142,7 @@ class Career : AppCompatActivity() {
     }
 
     //Habilitar Swipe con ItemTouchHelper
-    private fun enableSwipeToDeleteAndEdit() {
-        val swipeHandler = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val carrera = mAdapter.getItem(position)
-
-                when (direction) {
-                    ItemTouchHelper.RIGHT -> {
-                        editCareerLauncher.launch(Intent(this@Career, EditCareerActivity::class.java).apply {
-                            putExtra("cod", carrera.cod)
-                            putExtra("name", carrera.name)
-                            putExtra("title", carrera.title)
-                        })
-                        mAdapter.notifyItemChanged(position)
-                    }
-                }
-            }
-
-            //edicion con estilo bonito
-            override fun onChildDraw(
-                c: Canvas,
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                dX: Float,
-                dY: Float,
-                actionState: Int,
-                isCurrentlyActive: Boolean
-            ) {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-
-                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE && dX > 0) {
-                    val itemView = viewHolder.itemView
-                    val paint = Paint().apply {
-                        color = Color.parseColor("#388E3C") // Verde para editar
-                    }
-
-                    val background = RectF(
-                        itemView.left.toFloat(),
-                        itemView.top.toFloat(),
-                        itemView.left + dX,
-                        itemView.bottom.toFloat()
-                    )
-
-                    c.drawRect(background, paint)
-
-                    // Agregar ícono de lápiz (opcional: revisa si tienes este drawable en tu proyecto)
-                    val icon = ContextCompat.getDrawable(this@Career, R.drawable.ic_edit) // Usa tu ícono aquí
-                    icon?.let {
-                        val iconMargin = (itemView.height - it.intrinsicHeight) / 2
-                        val iconTop = itemView.top + (itemView.height - it.intrinsicHeight) / 2
-                        val iconLeft = itemView.left + iconMargin
-                        val iconRight = iconLeft + it.intrinsicWidth
-                        val iconBottom = iconTop + it.intrinsicHeight
-
-                        it.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                        it.draw(c)
-                    }
-                }
-            }
-        }
-
-        val itemTouchHelper = ItemTouchHelper(swipeHandler)
-        itemTouchHelper.attachToRecyclerView(mRecyclerView)
-    }
 
     //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager
     private fun setUpRecyclerView() {
@@ -215,7 +151,11 @@ class Career : AppCompatActivity() {
         mRecyclerView.layoutManager = LinearLayoutManager(this)
 
         fullList = getSuperheros()
-        mAdapter = RecyclerAdapter(fullList.toMutableList(), this)
+        mAdapter = RecyclerAdapter(fullList.toMutableList(), this) { superhero ->
+            // Handle edit action here (e.g., open a new activity or show a dialog)
+            Toast.makeText(this, "Edit ${superhero.name}", Toast.LENGTH_SHORT).show()
+        }
+
         mRecyclerView.adapter = mAdapter
 
         searchView = findViewById(R.id.search_view)
@@ -232,6 +172,17 @@ class Career : AppCompatActivity() {
                 return true
             }
         })
+    }
+
+    fun editCareer(position: Int) {
+        val carrera = mAdapter.getItem(position)
+        val intent = Intent(this, EditCareerActivity::class.java).apply {
+            putExtra("position", position)  // Añadimos la posición para saber qué item actualizar
+            putExtra("cod", carrera.cod)
+            putExtra("name", carrera.name)
+            putExtra("title", carrera.title)
+        }
+        editCareerLauncher.launch(intent)
     }
 
     fun deleteCareer(position: Int) {

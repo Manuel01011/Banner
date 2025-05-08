@@ -13,23 +13,26 @@ class EditCareerActivity : AppCompatActivity() {
     private lateinit var name: EditText
     private lateinit var title: EditText
     private lateinit var saveBtn: Button
+    private var position: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.editcareer)
+        setContentView(R.layout.edit_career)
 
         cod = findViewById(R.id.edit_cod)
         name = findViewById(R.id.edit_name)
         title = findViewById(R.id.edit_title)
         saveBtn = findViewById(R.id.btn_save)
 
-        // Obtener los datos actuales
+        // Obtener los datos actuales y la posición
+        position = intent.getIntExtra("position", -1)
         cod.setText(intent.getIntExtra("cod", 0).toString())
         name.setText(intent.getStringExtra("name"))
         title.setText(intent.getStringExtra("title"))
 
         saveBtn.setOnClickListener {
             val resultIntent = Intent().apply {
+                putExtra("position", position)  // Devolvemos la posición
                 putExtra("cod", cod.text.toString().toInt())
                 putExtra("name", name.text.toString())
                 putExtra("title", title.text.toString())
