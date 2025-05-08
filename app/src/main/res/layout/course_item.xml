@@ -73,14 +73,16 @@
 
         <ImageButton
             android:id="@+id/btn_edit"
-            android:layout_width="24dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@android:color/transparent"
             android:contentDescription="Edit career"
             android:src="@drawable/ic_edit"
-            tools:layout_editor_absoluteX="329dp"
-            tools:layout_editor_absoluteY="44dp" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="10dp" />
 
         <ImageButton
             android:id="@+id/btn_delete"

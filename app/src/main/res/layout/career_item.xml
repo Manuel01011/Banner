@@ -3,6 +3,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/tools"
     android:layout_margin="8dp"
     card_view:cardCornerRadius="12dp"
     card_view:cardElevation="6dp"
@@ -43,23 +44,26 @@
         android:id="@+id/btn_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginStart="300dp"
+        android:layout_gravity="center_vertical"
         android:src="@drawable/ic_edit"
         android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="Edit career"
-        android:layout_gravity="center_vertical" />
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="350dp"
+        />
 
 
     <ImageButton
         android:id="@+id/btn_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:layout_marginStart="300dp"
         android:src="@android:drawable/ic_menu_delete"
         android:background="@android:color/transparent"
         android:contentDescription="Delete career"
-        android:layout_gravity="center_vertical" />
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="-10dp"
+        android:layout_marginStart="348dp"/>
 
 </androidx.cardview.widget.CardView>

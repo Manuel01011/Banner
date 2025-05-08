@@ -59,7 +59,7 @@
             android:id="@+id/register_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Log out"
+            android:text="Sing up"
             android:textColor="#3B81F1"
             android:textSize="16sp"
             android:paddingTop="12dp"
