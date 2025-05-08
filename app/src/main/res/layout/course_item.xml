@@ -79,7 +79,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="Edit career"
             android:src="@drawable/ic_edit"
-            tools:layout_editor_absoluteX="327dp"
+            tools:layout_editor_absoluteX="329dp"
             tools:layout_editor_absoluteY="44dp" />
 
         <ImageButton

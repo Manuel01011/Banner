@@ -38,6 +38,10 @@ class RecyclerAdapter2(
         notifyItemRemoved(position)
     }
 
+    fun editItem(position: Int,item: Ciclo_) {
+        ciclos.set(position,item)
+        notifyItemChanged(position)
+    }
     fun restoreItem(item: Ciclo_, position: Int) {
         ciclos.add(position, item)
         notifyItemInserted(position)
@@ -54,11 +58,12 @@ class RecyclerAdapter2(
         private val textDateRange: TextView = view.findViewById(R.id.text_date_range)
         private val textStatus: TextView = view.findViewById(R.id.text_status)
         private val btnDelete: ImageButton = view.findViewById(R.id.btn_delete)
+        private val btnEdit: ImageButton = view.findViewById(R.id.btn_edit)
 
         fun bind(ciclo: Ciclo_, context: Context) {
             textTitle.text = "Semester ${ciclo.number} - ${ciclo.year}"
             textDateRange.text = "Del ${ciclo.dateStart} al ${ciclo.dateFinish}"
-            textStatus.text = if (ciclo.is_active) "Activo" else "Inactivo"
+            textStatus.text = if (ciclo.is_active) "Active" else "Inactive"
             textStatus.setTextColor(
                 ContextCompat.getColor(
                     context,
@@ -76,6 +81,14 @@ class RecyclerAdapter2(
                     val position = adapterPosition
                     if (position != RecyclerView.NO_POSITION) {
                         context.deleteCiclo(position)
+                    }
+                }
+            }
+            btnEdit.setOnClickListener {
+                if (context is Semester) {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        context.editCiclo(position)
                     }
                 }
             }

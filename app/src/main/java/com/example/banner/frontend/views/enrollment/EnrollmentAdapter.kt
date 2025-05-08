@@ -53,14 +53,24 @@ class RecyclerAdapter7(
         private val textGroupId: TextView = view.findViewById(R.id.text_group_id)
         private val textGrade: TextView = view.findViewById(R.id.text_grade)
         private val btnDelete: ImageButton = view.findViewById(R.id.btn_delete)
+        private val btnEdit: ImageButton = itemView.findViewById(R.id.btn_edit)
 
         fun bind(enrollment: Enrollment_, context: Context) {
-            textStudentId.text = "ID Estudiante: ${enrollment.studentId}"
-            textGroupId.text = "ID Grupo: ${enrollment.grupoId}"
-            textGrade.text = "Nota: ${enrollment.grade}"
+            textStudentId.text = "ID Student: ${enrollment.studentId}"
+            textGroupId.text = "ID Group: ${enrollment.grupoId}"
+            textGrade.text = "Grade: ${enrollment.grade}"
 
             itemView.setOnClickListener {
                 Toast.makeText(context, "Inscripción del estudiante ID: ${enrollment.studentId}", Toast.LENGTH_SHORT).show()
+            }
+
+            btnEdit.setOnClickListener {
+                if (context is Enrollment) {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        context.editEnrollment(position)
+                    }
+                }
             }
 
             btnDelete.setOnClickListener {

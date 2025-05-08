@@ -36,6 +36,11 @@ class RecyclerAdapter4(
         notifyItemRemoved(position)
     }
 
+    fun editItem(position: Int, updatedCourse: Course_) {
+        cursos[position] = updatedCourse
+        notifyItemChanged(position)
+    }
+
     fun restoreItem(item: Course_, position: Int) {
         cursos.add(position, item)
         notifyItemInserted(position)
@@ -55,24 +60,37 @@ class RecyclerAdapter4(
         private val textCiclo: TextView = view.findViewById(R.id.text_ciclo)
         private val textCareer: TextView = view.findViewById(R.id.text_career)
         private val btnDelete: ImageButton = view.findViewById(R.id.btn_delete)
+        private val btnEdit: ImageButton = itemView.findViewById(R.id.btn_edit)
 
         fun bind(course: Course_, context: Context) {
-            textCod.text = "Código: ${course.cod}"
+            textCod.text = "Code: ${course.cod}"
             textName.text = course.name
-            textCredits.text = "Créditos: ${course.credits}"
-            textHours.text = "Horas: ${course.hours}"
+            textCredits.text = "Credits: ${course.credits}"
+            textHours.text = "Hours: ${course.hours}"
             textCiclo.text = "Semester ID: ${course.cicloId}"
-            textCareer.text = "Código de carrera: ${course.careerCod}"
+            textCareer.text = "Career code: ${course.careerCod}"
 
+            // Click en el ítem completo
             itemView.setOnClickListener {
                 Toast.makeText(context, "Curso: ${course.name}", Toast.LENGTH_SHORT).show()
             }
 
+            // Botón de eliminar
             btnDelete.setOnClickListener {
                 if (context is Course) {
                     val position = adapterPosition
                     if (position != RecyclerView.NO_POSITION) {
                         context.deleteCourse(position)
+                    }
+                }
+            }
+
+            // Botón de editar (AÑADIDO)
+            btnEdit.setOnClickListener {
+                if (context is Course) {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        context.editCourse(position)
                     }
                 }
             }

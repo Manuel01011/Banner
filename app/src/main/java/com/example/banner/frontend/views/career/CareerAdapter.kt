@@ -1,6 +1,7 @@
 package com.example.banner.frontend.views.career
 import Career_
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +14,8 @@ import com.example.banner.R
 
 class RecyclerAdapter(
     private val carreras: MutableList<Career_>,
-    private val context: Context
+    private val context: Context,
+    private val onItemEdit: (Career_) -> Unit
 ) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
     //onCreateViewHolder: Infla el diseño de cada elemento de la lista
@@ -25,7 +27,7 @@ class RecyclerAdapter(
     //onBindViewHolder: Asigna los datos de un SuperHeroe a la vista correspondiente.
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d("RecyclerAdapter", "Binding item en posición $position")
-        holder.bind(carreras[position], context)
+        holder.bind(carreras[position], context, onItemEdit)
     }
 
     override fun getItemCount(): Int = carreras.size
@@ -35,6 +37,11 @@ class RecyclerAdapter(
     fun removeItem(position: Int) {
         carreras.removeAt(position)
         notifyItemRemoved(position)
+    }
+
+    fun editItem(position: Int,item: Career_) {
+        carreras.set(position,item)
+        notifyItemChanged(position)
     }
 
     fun restoreItem(item: Career_, position: Int) {
@@ -55,19 +62,31 @@ class RecyclerAdapter(
         private val nameCarrea: TextView = view.findViewById(R.id.text_name)
         private val titleCarrera: TextView = view.findViewById(R.id.text_title)
         private val btnDelete: ImageButton = view.findViewById(R.id.btn_delete)
+        private val editButton: ImageButton = view.findViewById(R.id.btn_edit)
 
-
-
-        fun bind(carrera: Career_, context: Context) {
+        fun bind(carrera: Career_, context: Context, onEdit: (Career_) -> Unit) {
             Log.d("ViewHolder", "Binding carrera: ${carrera.name}")
             codCarrera.text = carrera.cod.toString()
             nameCarrea.text = carrera.name
             titleCarrera.text = carrera.title
 
+            // Solo para mostrar un Toast si se hace clic en todo el ítem
             itemView.setOnClickListener {
                 Log.d("ViewHolder", "Clic en carrera: ${carrera.cod}")
                 Toast.makeText(context, carrera.name, Toast.LENGTH_SHORT).show()
             }
+
+            // Ahora sí: botón de edición llama al callback
+            editButton.setOnClickListener {
+
+                if (context is Career) {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        context.editCareer(position)
+                    }
+                }
+            }
+
             btnDelete.setOnClickListener {
                 if (context is Career) {
                     val position = adapterPosition
@@ -78,5 +97,6 @@ class RecyclerAdapter(
             }
         }
     }
+
 
 }

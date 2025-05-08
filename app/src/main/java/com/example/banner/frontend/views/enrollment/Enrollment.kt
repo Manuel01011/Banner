@@ -90,15 +90,16 @@ class Enrollment : AppCompatActivity() {
             }
         }
 
-        //edit matricula
-        editEnrollmentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        editEnrollmentLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 if (data != null) {
+                    val position = data.getIntExtra("position", -1)
                     val studentId = data.getIntExtra("studentId", -1)
                     val grupoId = data.getIntExtra("grupoId", -1)
                     val grade = data.getDoubleExtra("grade", 0.0)
-                    val position = data.getIntExtra("position", -1)
 
                     if (position != -1) {
                         fullList[position] = Enrollment_(studentId, grupoId, grade)
@@ -118,7 +119,7 @@ class Enrollment : AppCompatActivity() {
         Log.d("CareerActivity", "Antes de setUpRecyclerView")
         setUpRecyclerView()
         Log.d("CareerActivity", "Después de setUpRecyclerView")
-        enableSwipeToDeleteAndEdit()
+
     }
 
     //devuelve la lista de los carreas
@@ -130,77 +131,9 @@ class Enrollment : AppCompatActivity() {
         )
     }
 
-    //Habilitar Swipe con ItemTouchHelper
-    private fun enableSwipeToDeleteAndEdit() {
-        val swipeHandler = object : ItemTouchHelper.SimpleCallback(0,  ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
+    //
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val matricula = mAdapter.getItem(position)
 
-                when (direction) {
-                    ItemTouchHelper.RIGHT -> {
-                        val intent = Intent(this@Enrollment, EditEnrollmentActivity::class.java)
-                        intent.putExtra("studentId", matricula.studentId)
-                        intent.putExtra("grupoId", matricula.grupoId)
-                        intent.putExtra("grade", matricula.grade)
-                        intent.putExtra("position", position)
-                        editEnrollmentLauncher.launch(intent)
-                        mAdapter.restoreItem(matricula, position)
-                    }
-                }
-            }
-            //edicion con estilo bonito
-            override fun onChildDraw(
-                c: Canvas,
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                dX: Float,
-                dY: Float,
-                actionState: Int,
-                isCurrentlyActive: Boolean
-            ) {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-
-                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE && dX > 0) {
-                    val itemView = viewHolder.itemView
-                    val paint = Paint().apply {
-                        color = Color.parseColor("#388E3C") // Verde para editar
-                    }
-
-                    val background = RectF(
-                        itemView.left.toFloat(),
-                        itemView.top.toFloat(),
-                        itemView.left + dX,
-                        itemView.bottom.toFloat()
-                    )
-
-                    c.drawRect(background, paint)
-
-                    // Agregar ícono de lápiz (opcional: revisa si tienes este drawable en tu proyecto)
-                    val icon = ContextCompat.getDrawable(this@Enrollment, R.drawable.ic_edit) // Usa tu ícono aquí
-                    icon?.let {
-                        val iconMargin = (itemView.height - it.intrinsicHeight) / 2
-                        val iconTop = itemView.top + (itemView.height - it.intrinsicHeight) / 2
-                        val iconLeft = itemView.left + iconMargin
-                        val iconRight = iconLeft + it.intrinsicWidth
-                        val iconBottom = iconTop + it.intrinsicHeight
-
-                        it.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                        it.draw(c)
-                    }
-                }
-            }
-        }
-
-        val itemTouchHelper = ItemTouchHelper(swipeHandler)
-        itemTouchHelper.attachToRecyclerView(mRecyclerView)
-    }
     //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager
     private fun setUpRecyclerView() {
         mRecyclerView = findViewById(R.id.recycler_view)
@@ -227,6 +160,16 @@ class Enrollment : AppCompatActivity() {
         })
     }
 
+    fun editEnrollment(position: Int) {
+        val enrollment = fullList[position]
+        val intent = Intent(this, EditEnrollmentActivity::class.java).apply {
+            putExtra("position", position)
+            putExtra("studentId", enrollment.studentId)
+            putExtra("grupoId", enrollment.grupoId)
+            putExtra("grade", enrollment.grade)
+        }
+        editEnrollmentLauncher.launch(intent)
+    }
     // Si el usuario presiona atrás y el menú está abierto, se cierra en lugar de salir de la app
     override fun onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
