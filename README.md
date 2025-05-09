@@ -61,3 +61,8 @@ El proyecto se está desarrollando en fases:
 ## 🚧 Estado del Proyecto
 
 Actualmente el proyecto **se encuentra en la Etapa II**. Algunas funcionalidades están en desarrollo y pueden no estar completamente operativas o integradas.
+
+## 👨‍💻 Autores
+
+- Manuel Mora Sandi
+- Victor Quesada Rodriguez
