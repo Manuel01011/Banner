@@ -93,27 +93,36 @@ class Group : AppCompatActivity() {
         }
 
         //edit
-        editGroupLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        editGroupLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 if (data != null) {
+                    val position = data.getIntExtra("position", -1)
                     val id = data.getIntExtra("id", -1)
                     val number = data.getIntExtra("number", -1)
                     val year = data.getIntExtra("year", -1)
                     val horario = data.getStringExtra("horario") ?: ""
                     val courseCode = data.getIntExtra("courseCode", -1)
                     val teacherId = data.getIntExtra("teacherId", -1)
-                    val position = data.getIntExtra("position", -1)
 
-                    val updatedGroup = Grupo_(id, number, year, horario, courseCode, teacherId)
-                    if (position >= 0) {
-                        fullList[position] = updatedGroup
+                    if (position != -1) {
+                        fullList[position] = Grupo_(
+                            id = id,
+                            numberGroup = number,
+                            year = year,
+                            horario = horario,
+                            courseCod = courseCode,
+                            teacherId = teacherId
+                        )
                         mAdapter.updateData(fullList)
                         Toast.makeText(this, "Grupo actualizado", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
+
 
         fabAgregarGrupo.setOnClickListener {
             // Iniciar la actividad para agregar un curso
@@ -123,7 +132,7 @@ class Group : AppCompatActivity() {
 
         setUpRecyclerView()
         Log.d("CareerActivity", "Después de setUpRecyclerView")
-        enableSwipeToDeleteAndEdit()
+
     }
 
     //devuelve la lista de los carreas
@@ -137,79 +146,6 @@ class Group : AppCompatActivity() {
     }
 
     //Habilitar Swipe con ItemTouchHelper
-    private fun enableSwipeToDeleteAndEdit() {
-        val swipeHandler = object : ItemTouchHelper.SimpleCallback(0,  ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val curso = mAdapter.getItem(position)
-
-                when (direction) {
-                    ItemTouchHelper.RIGHT -> {
-                        val intent = Intent(this@Group, EditGroupActivity::class.java).apply {
-                            putExtra("id", curso.id)
-                            putExtra("number", curso.numberGroup)
-                            putExtra("year", curso.year)
-                            putExtra("horario", curso.horario)
-                            putExtra("courseCode", curso.courseCod)
-                            putExtra("teacherId", curso.teacherId)
-                            putExtra("position", position)
-                        }
-                        editGroupLauncher.launch(intent)
-                    }
-                }
-            }
-            //edicion con estilo bonito
-            override fun onChildDraw(
-                c: Canvas,
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                dX: Float,
-                dY: Float,
-                actionState: Int,
-                isCurrentlyActive: Boolean
-            ) {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-
-                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE && dX > 0) {
-                    val itemView = viewHolder.itemView
-                    val paint = Paint().apply {
-                        color = Color.parseColor("#388E3C") // Verde para editar
-                    }
-
-                    val background = RectF(
-                        itemView.left.toFloat(),
-                        itemView.top.toFloat(),
-                        itemView.left + dX,
-                        itemView.bottom.toFloat()
-                    )
-
-                    c.drawRect(background, paint)
-
-                    // Agregar ícono de lápiz (opcional: revisa si tienes este drawable en tu proyecto)
-                    val icon = ContextCompat.getDrawable(this@Group, R.drawable.ic_edit) // Usa tu ícono aquí
-                    icon?.let {
-                        val iconMargin = (itemView.height - it.intrinsicHeight) / 2
-                        val iconTop = itemView.top + (itemView.height - it.intrinsicHeight) / 2
-                        val iconLeft = itemView.left + iconMargin
-                        val iconRight = iconLeft + it.intrinsicWidth
-                        val iconBottom = iconTop + it.intrinsicHeight
-
-                        it.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                        it.draw(c)
-                    }
-                }
-            }
-        }
-
-        val itemTouchHelper = ItemTouchHelper(swipeHandler)
-        itemTouchHelper.attachToRecyclerView(mRecyclerView)
-    }
 
     //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager
     private fun setUpRecyclerView() {
@@ -244,6 +180,19 @@ class Group : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+    fun editGroup(position: Int) {
+        val group = fullList[position]
+        val intent = Intent(this, EditGroupActivity::class.java).apply {
+            putExtra("position", position)
+            putExtra("id", group.id)
+            putExtra("number", group.numberGroup)
+            putExtra("year", group.year)
+            putExtra("horario", group.horario)
+            putExtra("courseCode", group.courseCod)
+            putExtra("teacherId", group.teacherId)
+        }
+        editGroupLauncher.launch(intent)
     }
 
     fun deleteGrupo(position: Int) {

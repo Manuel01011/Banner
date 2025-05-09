@@ -1,4 +1,4 @@
-package com.example.banner.frontend.views.professor
+package com.example.banner.frontend.views.teacher
 import Teacher_
 import android.content.Context
 import android.util.Log
@@ -36,9 +36,9 @@ class RecyclerAdapter3(
         notifyItemRemoved(position)
     }
 
-    fun restoreItem(item: Teacher_, position: Int) {
-        teachers.add(position, item)
-        notifyItemInserted(position)
+    fun editItem(position: Int, updatedTeacher: Teacher_) {
+        teachers[position] = updatedTeacher
+        notifyItemChanged(position)
     }
 
     fun updateData(newData: List<Teacher_>) {
@@ -47,22 +47,20 @@ class RecyclerAdapter3(
         notifyDataSetChanged()
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val textName: TextView = view.findViewById(R.id.text_name)
         private val textTelNumber: TextView = view.findViewById(R.id.text_tel_number)
         private val textEmail: TextView = view.findViewById(R.id.text_email)
         private val btnDelete: ImageButton = view.findViewById(R.id.btn_delete)
+        private val btnEdit: ImageButton = view.findViewById(R.id.btn_edit) // Añadido botón de edición
 
         fun bind(teacher: Teacher_, context: Context) {
-            // Establecer los valores de los TextViews con los datos del Teacher_
             textName.text = teacher.name
             textTelNumber.text = "Teléfono: ${teacher.telNumber}"
             textEmail.text = "Email: ${teacher.email}"
 
-            // Configurar el listener de clic en el ítem
             itemView.setOnClickListener {
-                // Muestra un Toast con el ID del Teacher_
-                Toast.makeText(context, "Teacher ID: ${teacher.id}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Profesor: ${teacher.name}", Toast.LENGTH_SHORT).show()
             }
 
             btnDelete.setOnClickListener {
@@ -70,6 +68,16 @@ class RecyclerAdapter3(
                     val position = adapterPosition
                     if (position != RecyclerView.NO_POSITION) {
                         context.deleteProfessor(position)
+                    }
+                }
+            }
+
+            // Configuración del botón de edición (nuevo)
+            btnEdit.setOnClickListener {
+                if (context is Teacher) {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        context.editTeacher(position)
                     }
                 }
             }

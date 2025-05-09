@@ -10,11 +10,11 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.banner.MainActivity
 import com.example.banner.R
 import com.example.banner.frontend.views.career.Career
-import com.example.banner.frontend.views.cicle.Semester
+import com.example.banner.frontend.views.semester.Semester
 import com.example.banner.frontend.views.course.Course
 import com.example.banner.frontend.views.enrollment.Enrollment
 import com.example.banner.frontend.views.group.Group
-import com.example.banner.frontend.views.professor.Teacher
+import com.example.banner.frontend.views.teacher.Teacher
 import com.example.banner.frontend.views.student.Student
 import com.example.banner.frontend.views.user.User
 import com.google.android.material.navigation.NavigationView

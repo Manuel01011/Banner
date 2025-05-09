@@ -1,4 +1,4 @@
-package com.example.banner.frontend.views.cicle
+package com.example.banner.frontend.views.semester
 
 import android.app.Activity
 import android.content.Intent

@@ -130,7 +130,7 @@ class Student : AppCompatActivity() {
 
         setUpRecyclerView()
         Log.d("CareerActivity", "Después de setUpRecyclerView")
-        enableSwipeToDeleteAndEdit()
+
     }
 
     //devuelve la lista de los carreas
@@ -143,91 +143,7 @@ class Student : AppCompatActivity() {
         )
     }
 
-    //Habilitar Swipe con ItemTouchHelper
-    private fun enableSwipeToDeleteAndEdit() {
-        val swipeHandler = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val student = mAdapter.getItem(position)
-
-                when (direction) {
-                    ItemTouchHelper.RIGHT -> {
-                        // Lanzar la actividad de edición
-                        editStudentLauncher.launch(Intent(this@Student, EditStudentActivity::class.java).apply  {
-                            putExtra("id", student.id)
-                            putExtra("name", student.name)
-                            putExtra("telNumber", student.telNumber)
-                            putExtra("email", student.email)
-                            putExtra("bornDate", student.bornDate)
-                            putExtra("careerCod", student.careerCod)
-                        })
-                        mAdapter.notifyItemChanged(position)
-                    }
-                }
-            }
-            //edicion con estilo bonito
-            override fun onChildDraw(
-                c: Canvas,
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                dX: Float,
-                dY: Float,
-                actionState: Int,
-                isCurrentlyActive: Boolean
-            ) {
-                super.onChildDraw(
-                    c,
-                    recyclerView,
-                    viewHolder,
-                    dX,
-                    dY,
-                    actionState,
-                    isCurrentlyActive
-                )
-
-                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE && dX > 0) {
-                    val itemView = viewHolder.itemView
-                    val paint = Paint().apply {
-                        color = Color.parseColor("#388E3C") // Verde para editar
-                    }
-
-                    val background = RectF(
-                        itemView.left.toFloat(),
-                        itemView.top.toFloat(),
-                        itemView.left + dX,
-                        itemView.bottom.toFloat()
-                    )
-
-                    c.drawRect(background, paint)
-
-                    // Agregar ícono de lápiz (opcional: revisa si tienes este drawable en tu proyecto)
-                    val icon = ContextCompat.getDrawable(
-                        this@Student,
-                        R.drawable.ic_edit
-                    ) // Usa tu ícono aquí
-                    icon?.let {
-                        val iconMargin = (itemView.height - it.intrinsicHeight) / 2
-                        val iconTop = itemView.top + (itemView.height - it.intrinsicHeight) / 2
-                        val iconLeft = itemView.left + iconMargin
-                        val iconRight = iconLeft + it.intrinsicWidth
-                        val iconBottom = iconTop + it.intrinsicHeight
-
-                        it.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                        it.draw(c)
-                    }
-                }
-            }
-        }
-
-        val itemTouchHelper = ItemTouchHelper(swipeHandler)
-        itemTouchHelper.attachToRecyclerView(mRecyclerView)
-    }
 
     //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager
     private fun setUpRecyclerView() {
@@ -263,7 +179,20 @@ class Student : AppCompatActivity() {
             super.onBackPressed()
         }
     }
-
+    // En tu clase Student
+    fun editStudent(position: Int) {
+        val student = fullList[position]
+        val intent = Intent(this, EditStudentActivity::class.java).apply {
+            putExtra("position", position)
+            putExtra("id", student.id)
+            putExtra("name", student.name)
+            putExtra("telNumber", student.telNumber)
+            putExtra("email", student.email)
+            putExtra("bornDate", student.bornDate)
+            putExtra("careerCod", student.careerCod)
+        }
+        editStudentLauncher.launch(intent)
+    }
     fun deleteStudent(position: Int) {
         val student = mAdapter.getItem(position)
         mAdapter.removeItem(position)

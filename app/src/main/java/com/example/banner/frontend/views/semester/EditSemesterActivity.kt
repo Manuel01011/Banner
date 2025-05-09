@@ -1,5 +1,4 @@
-package com.example.banner.frontend.views.cicle
-import Ciclo_
+package com.example.banner.frontend.views.semester
 import java.util.*
 import android.app.Activity
 import android.content.Intent

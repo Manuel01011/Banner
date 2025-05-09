@@ -1,11 +1,7 @@
-package com.example.banner.frontend.views.professor
+package com.example.banner.frontend.views.teacher
 import Teacher_
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -14,10 +10,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.banner.R
@@ -37,7 +31,7 @@ class Teacher : AppCompatActivity() {
     private lateinit var mAdapter: RecyclerAdapter3
 
     //editar
-    private lateinit var editProfessorLauncher: ActivityResultLauncher<Intent>
+    private lateinit var editTeacherLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,29 +64,29 @@ class Teacher : AppCompatActivity() {
             true
         }
 
-        // Launcher para editar teacher
-        editProfessorLauncher = registerForActivityResult(
+        editTeacherLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 if (data != null) {
+                    val position = data.getIntExtra("position", -1)
+                    val id = data.getIntExtra("id", -1)
                     val name = data.getStringExtra("name") ?: ""
                     val tel = data.getIntExtra("tel", 0)
                     val email = data.getStringExtra("email") ?: ""
-                    val id = data.getIntExtra("id", -1)
 
-                    val index = fullList.indexOfFirst { it.id == id }
-                    if (index != -1) {
-                        fullList[index].name = name
-                        fullList[index].telNumber = tel
-                        fullList[index].email = email
-                        mAdapter.updateData(fullList)
+                    if (position != -1) {
+                        val updatedTeacher = Teacher_(id, name, tel, email)
+                        mAdapter.editItem(position, updatedTeacher)
                         Toast.makeText(this, "Profesor actualizado", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
+
+
+
         addTeacherLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
@@ -121,7 +115,7 @@ class Teacher : AppCompatActivity() {
 
         setUpRecyclerView()
         Log.d("CareerActivity", "Después de setUpRecyclerView")
-        enableSwipeToDeleteAndEdit()
+
     }
 
     //devuelve la lista de los carreas
@@ -133,77 +127,7 @@ class Teacher : AppCompatActivity() {
         )
     }
 
-    //Habilitar Swipe con ItemTouchHelper
-    private fun enableSwipeToDeleteAndEdit() {
-        val swipeHandler = object : ItemTouchHelper.SimpleCallback(0,  ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val profesor = mAdapter.getItem(position)
-
-                when (direction) {
-                    ItemTouchHelper.RIGHT -> {
-                        editProfessorLauncher.launch(Intent(this@Teacher, EditTeacherActivity::class.java).apply {
-                            putExtra("name", profesor.name)
-                            putExtra("tel",profesor.telNumber)
-                            putExtra("email", profesor.email)
-                            putExtra("id", profesor.id)
-                        })
-                        mAdapter.notifyItemChanged(position)
-                    }
-                }
-            }
-            //edicion con estilo bonito
-            override fun onChildDraw(
-                c: Canvas,
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                dX: Float,
-                dY: Float,
-                actionState: Int,
-                isCurrentlyActive: Boolean
-            ) {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-
-                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE && dX > 0) {
-                    val itemView = viewHolder.itemView
-                    val paint = Paint().apply {
-                        color = Color.parseColor("#388E3C") // Verde para editar
-                    }
-
-                    val background = RectF(
-                        itemView.left.toFloat(),
-                        itemView.top.toFloat(),
-                        itemView.left + dX,
-                        itemView.bottom.toFloat()
-                    )
-
-                    c.drawRect(background, paint)
-
-                    // Agregar ícono de lápiz (opcional: revisa si tienes este drawable en tu proyecto)
-                    val icon = ContextCompat.getDrawable(this@Teacher, R.drawable.ic_edit) // Usa tu ícono aquí
-                    icon?.let {
-                        val iconMargin = (itemView.height - it.intrinsicHeight) / 2
-                        val iconTop = itemView.top + (itemView.height - it.intrinsicHeight) / 2
-                        val iconLeft = itemView.left + iconMargin
-                        val iconRight = iconLeft + it.intrinsicWidth
-                        val iconBottom = iconTop + it.intrinsicHeight
-
-                        it.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                        it.draw(c)
-                    }
-                }
-            }
-        }
-
-        val itemTouchHelper = ItemTouchHelper(swipeHandler)
-        itemTouchHelper.attachToRecyclerView(mRecyclerView)
-    }
 
     //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager
     private fun setUpRecyclerView() {
@@ -238,6 +162,18 @@ class Teacher : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+
+    fun editTeacher(position: Int) {
+        val teacher = fullList[position]
+        val intent = Intent(this, EditTeacherActivity::class.java).apply {
+            putExtra("position", position)
+            putExtra("id", teacher.id)
+            putExtra("name", teacher.name)
+            putExtra("tel", teacher.telNumber)
+            putExtra("email", teacher.email)
+        }
+        editTeacherLauncher.launch(intent)
     }
 
     fun deleteProfessor(position: Int) {

@@ -37,10 +37,6 @@ class RecyclerAdapter6(
         notifyItemRemoved(position)
     }
 
-    fun restoreItem(item: Grupo_, position: Int) {
-        grupos.add(position, item)
-        notifyItemInserted(position)
-    }
 
     fun updateData(newData: List<Grupo_>) {
         grupos.clear()
@@ -56,6 +52,7 @@ class RecyclerAdapter6(
         private val textCourse: TextView = view.findViewById(R.id.text_course)
         private val textTeacher: TextView = view.findViewById(R.id.text_teacher)
         private val btnDelete: ImageButton = view.findViewById(R.id.btn_delete)
+        val btnEdit: ImageButton = itemView.findViewById(R.id.btn_edit)
 
         fun bind(grupo: Grupo_, context: Context) {
             textId.text = "ID: ${grupo.id}"
@@ -69,6 +66,14 @@ class RecyclerAdapter6(
                 Toast.makeText(context, "Grupo ${grupo.numberGroup} - ${grupo.horario}", Toast.LENGTH_SHORT).show()
             }
 
+            btnEdit.setOnClickListener {
+                if (context is Group) {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        context.editGroup(position)
+                    }
+                }
+            }
             btnDelete.setOnClickListener {
                 if (context is Group) {
                     val position = adapterPosition
