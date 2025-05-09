@@ -1,4 +1,3 @@
-README - Sistema de Gestión Académica Universitaria
 📌 Descripción del Proyecto
 Este proyecto consiste en un Sistema de Gestión Académica para una universidad, diseñado para administrar:
 
