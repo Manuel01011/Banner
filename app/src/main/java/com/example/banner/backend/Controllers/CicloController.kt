@@ -1,3 +1,7 @@
+package com.example.backend_banner.backend.Controllers
+
+import com.example.backend_banner.backend.Models.Ciclo_
+import com.example.backend_banner.backend.service.DatabaseDAO
 import java.sql.ResultSet
 
 class CicloController {
@@ -8,7 +12,7 @@ class CicloController {
 
         // Llamamos al procedimiento almacenado que devuelve un ResultSet
         val resultSet: ResultSet? = DatabaseDAO.executeStoredProcedureWithResults(procedureName)
-
+        
         resultSet?.let {
             while (it.next()) {
                 val ciclo = Ciclo_(

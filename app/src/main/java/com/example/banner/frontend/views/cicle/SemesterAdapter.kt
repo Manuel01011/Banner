@@ -1,6 +1,4 @@
 package com.example.banner.frontend.views.cicle
-
-import Ciclo_
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.backend_banner.backend.Models.Ciclo_
 import com.example.banner.R
 
 class RecyclerAdapter2(

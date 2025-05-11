@@ -1,5 +1,4 @@
 package com.example.banner.frontend.views.enrollment
-import Enrollment_
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Canvas
@@ -20,6 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.backend_banner.backend.Models.Enrollment_
 import com.example.banner.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView

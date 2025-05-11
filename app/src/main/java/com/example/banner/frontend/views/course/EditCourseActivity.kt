@@ -1,6 +1,4 @@
 package com.example.banner.frontend.views.course
-
-import Course_
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle

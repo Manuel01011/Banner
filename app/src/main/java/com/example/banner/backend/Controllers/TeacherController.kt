@@ -1,3 +1,8 @@
+package com.example.backend_banner.backend.Controllers
+
+import com.example.backend_banner.backend.Models.Course_
+import com.example.backend_banner.backend.Models.Teacher_
+import com.example.backend_banner.backend.service.DatabaseDAO
 import java.sql.ResultSet
 
 class TeacherController {

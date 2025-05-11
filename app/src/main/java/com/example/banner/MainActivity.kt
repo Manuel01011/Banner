@@ -1,14 +1,14 @@
 package com.example.banner
-import CareerController
-import CicloController
-import CourseController
-import EnrollmentController
-import GrupoController
-import StudentController
-import TeacherController
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import com.example.backend_banner.backend.Controllers.CareerController
+import com.example.backend_banner.backend.Controllers.CicloController
+import com.example.backend_banner.backend.Controllers.CourseController
+import com.example.backend_banner.backend.Controllers.EnrollmentController
+import com.example.backend_banner.backend.Controllers.GrupoController
+import com.example.backend_banner.backend.Controllers.StudentController
+import com.example.backend_banner.backend.Controllers.TeacherController
 import com.example.banner.backend.Controllers.UserController
 import com.example.banner.frontend.views.login.login
 

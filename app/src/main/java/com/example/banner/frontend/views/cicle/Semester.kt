@@ -1,11 +1,9 @@
 package com.example.banner.frontend.views.cicle
-import Ciclo_
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -20,9 +18,13 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.backend_banner.backend.Models.Ciclo_
 import com.example.banner.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import org.json.JSONObject
 
 class Semester : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -55,6 +57,9 @@ class Semester : AppCompatActivity() {
             drawerLayout.openDrawer(GravityCompat.START)
         }
 
+        setUpRecyclerView()
+        loadCiclos()
+
         // Manejo de las opciones del menú
         navigationView.setNavigationItemSelectedListener { item ->
             Log.d("AdminActivity", "Menu item clicked: ${item.itemId} (${resources.getResourceEntryName(item.itemId)})")
@@ -71,7 +76,6 @@ class Semester : AppCompatActivity() {
             true
         }
 
-// En tu clase Semester, dentro de onCreate()
         editCicloLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
@@ -97,34 +101,20 @@ class Semester : AppCompatActivity() {
         }
 
 
-        addCycleLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        addCycleLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data
-                if (data != null) {
-                    // Obtener los valores de los campos de la nueva actividad
-                    val cycleId = data.getIntExtra("id", -1)
-                    val cycleYear = data.getIntExtra("year", -1)
-                    val cycleNumber = data.getIntExtra("number", -1)
-                    val startDate = data.getStringExtra("startDate") ?: ""
-                    val endDate = data.getStringExtra("endDate") ?: ""
-                    val isActive = data.getBooleanExtra("isActive", false)
-
-                    // Crear un nuevo objeto Cycle con los datos recibidos
-                    val newCycle = Ciclo_(cycleId, cycleYear, cycleNumber, startDate, endDate, isActive)
-
-                    // Agregar el nuevo semester a la lista
-                    fullList.add(newCycle)
-                    mAdapter.updateData(fullList)
-                    Toast.makeText(this, "Semester agregado", Toast.LENGTH_SHORT).show()
-                }
+                loadCiclos() // Recarga los datos del servidor
+                Toast.makeText(this, "Ciclo agregado", Toast.LENGTH_SHORT).show()
             }
         }
 
-            fabAgregarCiclo.setOnClickListener {
-                // Iniciar la actividad para agregar un semester
-                val intent = Intent(this, AddSemester::class.java)
-                addCycleLauncher.launch(intent)
-            }
+        fabAgregarCiclo.setOnClickListener {
+            // Iniciar la actividad para agregar un semester
+            val intent = Intent(this, AddSemester::class.java)
+            addCycleLauncher.launch(intent)
+        }
 
         Log.d("CareerActivity", "Antes de setUpRecyclerView")
         setUpRecyclerView()
@@ -132,17 +122,10 @@ class Semester : AppCompatActivity() {
 
     }
 
-    //devuelve la lista de los carreas
+    //devuelve la lista de los carreas del backend
     private fun getSuperheros(): MutableList<Ciclo_> {
-        return mutableListOf(
-            Ciclo_(1,2025,1,"17 febrero","22 julio",true),
-            Ciclo_(2,2025,2,"1 agosto","30 noviembre",false),
-            Ciclo_(3,2026,1,"15 febrero","25 julio",false),
-        )
+        return getCiclosFromBackend()
     }
-
-    //Habilitar Swipe con ItemTouchHelper
-
 
     //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager
     private fun setUpRecyclerView() {
@@ -150,19 +133,22 @@ class Semester : AppCompatActivity() {
         mRecyclerView.setHasFixedSize(true)
         mRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        fullList = getSuperheros()
-        mAdapter = RecyclerAdapter2(fullList.toMutableList(), this)
+        // Inicializa con lista vacía
+        fullList = mutableListOf()
+        mAdapter = RecyclerAdapter2(fullList, this)
         mRecyclerView.adapter = mAdapter
 
+        // Configuración del SearchView
         searchView = findViewById(R.id.search_view)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 val filtered = if (!newText.isNullOrBlank()) {
-                    // Filtra por el título del semester, que es la concatenación de "Semester number - year"
                     fullList.filter {
-                        "Semester ${it.number} - ${it.year}".contains(newText, ignoreCase = true)
+                        "Semester ${it.number} - ${it.year}".contains(newText, ignoreCase = true) ||
+                                it.dateStart.contains(newText, ignoreCase = true) ||
+                                it.dateFinish.contains(newText, ignoreCase = true)
                     }
                 } else {
                     fullList
@@ -195,9 +181,118 @@ class Semester : AppCompatActivity() {
         editCicloLauncher.launch(intent)
     }
 
+
+    // Método para obtener la lista de ciclos desde el backend
+    private fun getCiclosFromBackend(): MutableList<Ciclo_> {
+        val response = HttpHelper.getRawResponse("ciclos")
+        return try {
+            val json = JSONObject(response)
+            val dataArray = json.getJSONArray("data")
+            val listType = object : TypeToken<List<Ciclo_>>() {}.type
+            Gson().fromJson<List<Ciclo_>>(dataArray.toString(), listType).toMutableList()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            mutableListOf()
+        }
+    }
+
+    // Método para cargar los ciclos desde el backend
+    private fun loadCiclos() {
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Loading cycles...")
+            setCancelable(false)
+            show()
+        }
+
+        object : AsyncTask<Void, Void, MutableList<Ciclo_>>() {
+            override fun doInBackground(vararg params: Void?): MutableList<Ciclo_> {
+                return try {
+                    val response = HttpHelper.getRawResponse("ciclos")
+                    Log.d("API_RESPONSE", "Response: $response")
+
+                    if (response != null) {
+                        val json = JSONObject(response)
+                        val dataArray = json.getJSONArray("data")
+
+                        // Solución: Especifica explícitamente el tipo
+                        val type = object : TypeToken<List<Ciclo_>>() {}.type
+                        val lista: List<Ciclo_> = Gson().fromJson(dataArray.toString(), type)
+
+                        lista.toMutableList()
+                    } else {
+                        mutableListOf()
+                    }
+                } catch (e: Exception) {
+                    Log.e("API_ERROR", "Error loading ciclos", e)
+                    mutableListOf()
+                }
+            }
+
+            override fun onPostExecute(result: MutableList<Ciclo_>) {
+                progressDialog.dismiss()
+
+                if (result.isNotEmpty()) {
+                    fullList = result
+                    mAdapter.updateData(fullList)
+                    Log.d("LOAD_CICLOS", "Datos cargados: ${fullList.size} ciclos")
+                } else {
+                    Toast.makeText(
+                        this@Semester,
+                        "No se pudieron cargar los ciclos",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }.execute()
+    }
+
+    // Método para eliminar un ciclo
     fun deleteCiclo(position: Int) {
         val ciclo = mAdapter.getItem(position)
-        mAdapter.removeItem(position)
-        Toast.makeText(this, "Semester eliminada: ${ciclo.id}", Toast.LENGTH_SHORT).show()
+
+        AlertDialog.Builder(this)
+            .setTitle("Confirm deletion")
+            .setMessage("¿Eliminate the semester ${ciclo.number} of the year ${ciclo.year}?")
+            .setPositiveButton("Delete") { dialog, _ ->
+                executeDelete(position, ciclo)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
+
+    private fun executeDelete(position: Int, ciclo: Ciclo_) {
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Eliminating cicle...")
+            setCancelable(false)
+            show()
+        }
+
+        object : AsyncTask<Void, Void, Boolean>() {
+            override fun doInBackground(vararg params: Void?): Boolean {
+                return try {
+                    HttpHelper.deleteRequest("ciclos/${ciclo.id}")
+                } catch (e: Exception) {
+                    Log.e("DELETE_ERROR", "Error when deleting cicle", e)
+                    false
+                }
+            }
+
+            override fun onPostExecute(success: Boolean) {
+                progressDialog.dismiss()
+
+                if (success) {
+                    fullList.removeAt(position)
+                    mAdapter.updateData(fullList)
+                    Toast.makeText(this@Semester, "Cicle eliminated", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        this@Semester,
+                        "Error when deleting the cicle",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }.execute()
+    }
+
 }

@@ -1,3 +1,5 @@
+package com.example.backend_banner.backend.Models
+
 class Usuario_ {
     var id: Int = 0
     var password: String = ""

@@ -20,4 +20,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "banner"
-include(":app")
+include(":app", ":backend")
+

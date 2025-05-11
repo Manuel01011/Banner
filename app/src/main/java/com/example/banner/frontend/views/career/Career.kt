@@ -1,11 +1,8 @@
 package com.example.banner.frontend.views.career
-import Career_
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -14,15 +11,17 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.backend_banner.backend.Models.Career_
 import com.example.banner.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import org.json.JSONObject
 
 class Career : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -34,15 +33,11 @@ class Career : AppCompatActivity() {
     // Recyclerview de carreras
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: RecyclerAdapter
-
     //editar
     // Elimina esto:
     private lateinit var editCareerLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var addCareerLauncher: ActivityResultLauncher<Intent>
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,7 +87,7 @@ class Career : AppCompatActivity() {
                     if (position != -1) {
                         val updatedCareer = Career_(cod, name, title)
                         mAdapter.editItem(position, updatedCareer)
-                        Toast.makeText(this, "Carrera actualizada", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Career updated", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -104,17 +99,8 @@ class Career : AppCompatActivity() {
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data
-                if (data != null) {
-                    val cod = data.getIntExtra("cod", -1)
-                    val name = data.getStringExtra("name") ?: ""
-                    val title = data.getStringExtra("title") ?: ""
-
-                    val newCareer = Career_(cod, name, title)
-                    fullList.add(newCareer)
-                    mAdapter.updateData(fullList)
-                    Toast.makeText(this, "Carrera agregada", Toast.LENGTH_SHORT).show()
-                }
+                loadCareers()
+                Toast.makeText(this, "Career successfully added", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -127,21 +113,42 @@ class Career : AppCompatActivity() {
         // Configurar RecyclerView y adaptador
         Log.d("CareerActivity", "Antes de setUpRecyclerView")
         setUpRecyclerView()
+        loadCareers() // Cargar datos del backend al iniciar
         Log.d("CareerActivity", "Después de setUpRecyclerView")
 
     }
 
-
-    //devuelve la lista de los carreas
-    private fun getSuperheros(): MutableList<Career_> {
-        return mutableListOf(
-            Career_(1, "Ingeniería en Sistemas", "Ingeniero en Sistemas"),
-            Career_(2, "Ingeniería Civil", "Ingeniero Civil"),
-            Career_(3, "Medicina", "Médico Cirujano")
-        )
+    //Funciones para el lab 4 listar las carreras
+    private fun getCareersFromBackend(): MutableList<Career_> {
+        val response = HttpHelper.getRawResponse("careers") // Asegúrate de tener este método
+        return try {
+            val json = JSONObject(response)
+            val dataArray = json.getJSONArray("data")
+            val listType = object : TypeToken<List<Career_>>() {}.type
+            Gson().fromJson<List<Career_>>(dataArray.toString(), listType).toMutableList()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            mutableListOf()
+        }
     }
 
-    //Habilitar Swipe con ItemTouchHelper
+    private fun loadCareers() {
+        object : AsyncTask<Void, Void, MutableList<Career_>>() {
+            override fun doInBackground(vararg params: Void?): MutableList<Career_> {
+                return getCareersFromBackend()
+            }
+
+            override fun onPostExecute(result: MutableList<Career_>) {
+                super.onPostExecute(result)
+                fullList = result
+                mAdapter.updateData(fullList)
+            }
+        }.execute()
+    }
+    // Reemplazar getSuperheros() con esto:
+    private fun getSuperheros(): MutableList<Career_> {
+        return getCareersFromBackend()
+    }
 
 
     //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager
@@ -152,7 +159,6 @@ class Career : AppCompatActivity() {
 
         fullList = getSuperheros()
         mAdapter = RecyclerAdapter(fullList.toMutableList(), this) { superhero ->
-            // Handle edit action here (e.g., open a new activity or show a dialog)
             Toast.makeText(this, "Edit ${superhero.name}", Toast.LENGTH_SHORT).show()
         }
 
@@ -174,10 +180,11 @@ class Career : AppCompatActivity() {
         })
     }
 
+    // editCareer para usar el backend
     fun editCareer(position: Int) {
         val carrera = mAdapter.getItem(position)
         val intent = Intent(this, EditCareerActivity::class.java).apply {
-            putExtra("position", position)  // Añadimos la posición para saber qué item actualizar
+            putExtra("position", position)
             putExtra("cod", carrera.cod)
             putExtra("name", carrera.name)
             putExtra("title", carrera.title)
@@ -185,10 +192,40 @@ class Career : AppCompatActivity() {
         editCareerLauncher.launch(intent)
     }
 
+    // deleteCareer para usar el backend
     fun deleteCareer(position: Int) {
         val carrera = mAdapter.getItem(position)
-        mAdapter.removeItem(position)
-        Toast.makeText(this, "Carrera eliminada: ${carrera.name}", Toast.LENGTH_SHORT).show()
+
+        // Mostrar diálogo de confirmación
+        AlertDialog.Builder(this)
+            .setTitle("Confirm deletion")
+            .setMessage("¿Are you sure to eliminate the career ${carrera.name}?")
+            .setPositiveButton("Delete") { dialog, _ ->
+                dialog.dismiss()
+                executeDelete(position, carrera)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun executeDelete(position: Int, carrera: Career_) {
+        object : AsyncTask<Void, Void, Boolean>() {
+            override fun doInBackground(vararg params: Void?): Boolean {
+                return HttpHelper.deleteRequest("careers/${carrera.cod}")
+            }
+
+            override fun onPostExecute(success: Boolean) {
+                if (success) {
+                    mAdapter.removeItem(position)
+                    Toast.makeText(this@Career, "Career eliminated: ${carrera.name}", Toast.LENGTH_SHORT).show()
+
+                    // Opcional: Recargar datos del servidor para asegurar consistencia
+                    loadCareers()
+                } else {
+                    Toast.makeText(this@Career, "Error when deleting the Career", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.execute()
     }
 }
 

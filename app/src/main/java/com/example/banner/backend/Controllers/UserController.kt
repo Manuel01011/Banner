@@ -1,6 +1,6 @@
 package com.example.banner.backend.Controllers
-
-import Usuario_
+import com.example.backend_banner.backend.Models.Usuario_
+import com.example.backend_banner.backend.service.DatabaseDAO
 import java.sql.ResultSet
 
 class UserController {

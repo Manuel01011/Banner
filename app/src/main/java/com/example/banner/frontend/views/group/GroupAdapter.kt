@@ -1,6 +1,4 @@
 package com.example.banner.frontend.views.group
-
-import Grupo_
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +8,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.backend_banner.backend.Models.Grupo_
 import com.example.banner.R
 
 class RecyclerAdapter6(

@@ -1,5 +1,4 @@
 package com.example.banner.frontend.views.register
-import Usuario_
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,6 +9,7 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.backend_banner.backend.Models.Usuario_
 import com.example.banner.MainActivity
 import com.example.banner.R
 

@@ -1,3 +1,5 @@
+package com.example.backend_banner.backend.Models
+
 class Grupo_ {
     var id: Int = 0
     var numberGroup: Int = 0

@@ -1,3 +1,5 @@
+package com.example.backend_banner.backend.service
+
 import com.example.banner.backend.service.GlobalException
 import com.example.banner.backend.service.NoDataException
 import java.sql.CallableStatement
@@ -8,17 +10,17 @@ import java.sql.SQLException
 object DatabaseDAO {
 
     private val dbHelper = servicio()
-    private val conexion = dbHelper.getConnection()
+    private val conexion = com.example.backend_banner.backend.service.DatabaseDAO.dbHelper.getConnection()
 
     // Obtener conexión
     private fun getConnection(): Connection? {
-        return dbHelper.getConnection()?: throw GlobalException("No se pudo obtener la conexión a la base de datos")
+        return com.example.backend_banner.backend.service.DatabaseDAO.dbHelper.getConnection()?: throw GlobalException("No se pudo obtener la conexión a la base de datos")
     }
 
     // Método para ejecutar consultas SELECT
     fun executeQuery(query: String, vararg params: Any): ResultSet? {
         return try {
-            val conn = getConnection() ?: return null
+            val conn = com.example.backend_banner.backend.service.DatabaseDAO.getConnection() ?: return null
             val stmt = conn.prepareStatement(query)
             for ((index, param) in params.withIndex()) {
                 stmt.setObject(index + 1, param)
@@ -28,12 +30,12 @@ object DatabaseDAO {
             e.printStackTrace()
             null
         }
-        dbHelper.closeConnection(conexion)
+        com.example.backend_banner.backend.service.DatabaseDAO.dbHelper.closeConnection(com.example.backend_banner.backend.service.DatabaseDAO.conexion)
     }
 
     // ejecutar metodos que editan o eliminan no muestran nada
     fun executeStoredProcedure(procedureName: String, vararg params: Any): Boolean {
-        val conn = getConnection() ?: return false
+        val conn = com.example.backend_banner.backend.service.DatabaseDAO.getConnection() ?: return false
         return try {
             // Se prepara la llamada al procedimiento con el número dinámico de parámetros
             val placeholders = "?,".repeat(params.size).dropLast(1) // Crea la cadena de placeholders dinámica
@@ -48,14 +50,14 @@ object DatabaseDAO {
         } catch (e: SQLException) {
             throw GlobalException("Error al ejecutar procedimiento almacenado: ${e.message}")
         } finally {
-            dbHelper.closeConnection(conexion)
+            com.example.backend_banner.backend.service.DatabaseDAO.dbHelper.closeConnection(com.example.backend_banner.backend.service.DatabaseDAO.conexion)
         }
     }
 
     //procedimiento que devuelve un cursor de resultado
     fun executeStoredProcedureWithResults(procedureName: String, vararg params: Any?): ResultSet? {
         return try {
-            val conn = getConnection() ?: return null
+            val conn = com.example.backend_banner.backend.service.DatabaseDAO.getConnection() ?: return null
             val placeholders = "?,".repeat(params.size).dropLast(1) // Generar "?,?,?"
             val callableStatement: CallableStatement = conn.prepareCall("{CALL $procedureName($placeholders)}")
 
@@ -76,21 +78,21 @@ object DatabaseDAO {
         } catch (e: SQLException) {
             throw GlobalException("Error al ejecutar procedimiento almacenado con resultados: ${e.message}")
         } finally {
-            dbHelper.closeConnection(conexion)
+            com.example.backend_banner.backend.service.DatabaseDAO.dbHelper.closeConnection(com.example.backend_banner.backend.service.DatabaseDAO.conexion)
         }
     }
 
     //procedimiento que devuelve solo un resultado
     fun executeStoredProcedureForSingleResult(procedureName: String): ResultSet? {
         return try {
-            val conn = getConnection() ?: return null
+            val conn = com.example.backend_banner.backend.service.DatabaseDAO.getConnection() ?: return null
             val callableStatement: CallableStatement = conn.prepareCall("{CALL $procedureName()}")
             callableStatement.executeQuery()
 
         } catch (e: SQLException) {
             throw GlobalException("Error al ejecutar el procedimiento almacenado $procedureName: ${e.message}")
         } finally {
-            dbHelper.closeConnection(conexion)
+            com.example.backend_banner.backend.service.DatabaseDAO.dbHelper.closeConnection(com.example.backend_banner.backend.service.DatabaseDAO.conexion)
         }
 
     }

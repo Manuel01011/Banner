@@ -1,5 +1,4 @@
 package com.example.banner.frontend.views.career
-import Career_
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -10,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.Toast
+import com.example.backend_banner.backend.Models.Career_
 import com.example.banner.R
 
 class RecyclerAdapter(
@@ -50,9 +50,16 @@ class RecyclerAdapter(
     }
 
     fun updateData(newData: List<Career_>) {
+        val oldSize = carreras.size
         carreras.clear()
         carreras.addAll(newData)
-        notifyDataSetChanged()
+
+        // Notifica cambios de manera más eficiente:
+        if (oldSize == newData.size) {
+            notifyItemRangeChanged(0, oldSize)  // Si el tamaño es igual, solo actualiza los items
+        } else {
+            notifyDataSetChanged()  // Si el tamaño cambió, actualiza todo
+        }
     }
 
 

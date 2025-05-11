@@ -1,3 +1,5 @@
+package com.example.backend_banner.backend.Models
+
 class Course_ {
     var cod: Int = 0
     var name: String = ""

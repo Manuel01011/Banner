@@ -1,3 +1,5 @@
+package com.example.backend_banner.backend.Models
+
 class Student_ {
     var id: Int = 0
     var name: String = ""

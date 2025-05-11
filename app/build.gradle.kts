@@ -60,6 +60,7 @@ dependencies {
 }
 
 dependencies {
+    implementation(libs.androidx.media3.common.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.annotation)
@@ -68,4 +69,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation("com.google.android.material:material:1.10.0")
     implementation("mysql:mysql-connector-java:8.0.29")
+    implementation ("com.google.code.gson:gson:2.8.9")
 }

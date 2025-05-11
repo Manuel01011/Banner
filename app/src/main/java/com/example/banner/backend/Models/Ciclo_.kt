@@ -1,3 +1,5 @@
+package com.example.backend_banner.backend.Models
+
 class Ciclo_ {
     var id: Int = 0
     var year: Int = 0

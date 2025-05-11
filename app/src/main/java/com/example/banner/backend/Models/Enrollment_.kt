@@ -1,3 +1,5 @@
+package com.example.backend_banner.backend.Models
+
 class Enrollment_ {
     var studentId: Int = 0
     var grupoId: Int = 0
