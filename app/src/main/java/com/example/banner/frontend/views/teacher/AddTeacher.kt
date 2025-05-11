@@ -1,4 +1,4 @@
-package com.example.banner.frontend.views.professor
+package com.example.banner.frontend.views.teacher
 
 import android.app.Activity
 import android.content.Intent

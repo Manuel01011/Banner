@@ -55,6 +55,7 @@ class RecyclerAdapter5(
         private val textBorn: TextView = view.findViewById(R.id.text_born)
         private val textCareer: TextView = view.findViewById(R.id.text_career)
         private val btnDelete: ImageButton = view.findViewById(R.id.btn_delete)
+        private val btnEdit: ImageButton = view.findViewById(R.id.btn_edit)
 
 
         fun bind(student: Student_, context: Context) {
@@ -69,6 +70,14 @@ class RecyclerAdapter5(
 
             itemView.setOnClickListener {
                 Toast.makeText(context, "Estudiante: ${student.name}", Toast.LENGTH_SHORT).show()
+            }
+            btnEdit.setOnClickListener {
+                if (context is Student) {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        context.editStudent(position)
+                    }
+                }
             }
 
             btnDelete.setOnClickListener {

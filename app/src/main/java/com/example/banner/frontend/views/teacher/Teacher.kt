@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.backend_banner.backend.Models.Teacher_
 import com.example.banner.R
+import com.example.banner.frontend.views.teacher.AddTeacher
+import com.example.banner.frontend.views.teacher.EditTeacherActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 

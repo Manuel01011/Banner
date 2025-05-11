@@ -48,7 +48,7 @@
 
         <activity android:name=".frontend.views.student.EditStudentActivity" />
 
-        <activity android:name=".frontend.views.professor.EditTeacherActivity" />
+        <activity android:name=".frontend.views.teacher.EditTeacherActivity" />
 
         <activity android:name=".frontend.views.cicle.EditSemesterActivity" />
 
@@ -62,7 +62,7 @@
 
         <activity android:name=".frontend.views.career.AddCareer" />
 
-        <activity android:name=".frontend.views.cicle.AddSemester" />
+        <activity android:name=".frontend.views.semester.AddSemester" />
 
         <activity android:name=".frontend.views.course.AddCourse" />
 
@@ -72,7 +72,7 @@
 
         <activity android:name=".frontend.views.enrollment.AddEnrollment" />
 
-        <activity android:name=".frontend.views.professor.AddTeacher" />
+        <activity android:name=".frontend.views.teacher.AddTeacher" />
 
         <activity android:name=".frontend.views.user.AddUser" />
 
