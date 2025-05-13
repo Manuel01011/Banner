@@ -1,10 +1,13 @@
 package com.example.banner.frontend.views.course
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -23,6 +26,9 @@ import com.example.backend_banner.backend.Models.Course_
 import com.example.banner.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import org.json.JSONObject
 
 class Course : AppCompatActivity(){
     private lateinit var drawerLayout: DrawerLayout
@@ -95,26 +101,12 @@ class Course : AppCompatActivity(){
         }
 
         // Inicialización del ActivityResultLauncher para agregar curso
-       addCourseLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        addCourseLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data
-                if (data != null) {
-                    // Obtener los valores de los campos de la nueva actividad
-                    val courseCode = data.getIntExtra("courseCode", -1)
-                    val courseName = data.getStringExtra("courseName") ?: ""
-                    val credits = data.getIntExtra("credits", -1)
-                    val hours = data.getIntExtra("hours", -1)
-                    val cycleId = data.getIntExtra("cycleId", -1)
-                    val careerCode = data.getIntExtra("careerCode", -1)
-
-                    // Crear un nuevo objeto Course con los datos recibidos
-                    val newCourse = Course_(courseCode, courseName, credits, hours, cycleId, careerCode)
-
-                    // Agregar el nuevo curso a la lista
-                    fullList.add(newCourse)
-                    mAdapter.updateData(fullList)
-                    Toast.makeText(this, "Curso agregado", Toast.LENGTH_SHORT).show()
-                }
+                loadCourses() // Recargar datos del backend
+                Toast.makeText(this, "Course added successfully", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -127,17 +119,23 @@ class Course : AppCompatActivity(){
 
         Log.d("CareerActivity", "Antes de setUpRecyclerView")
         setUpRecyclerView()
+        loadCourses()
         Log.d("CareerActivity", "Después de setUpRecyclerView")
 
     }
 
     //devuelve la lista de los carreas
-    private fun getCursos(): MutableList<Course_> {
-        return mutableListOf(
-            Course_(1,"Programacion 1",4,4,1,101),
-            Course_(2,"Bases de datos 1",3,3,2,101),
-            Course_(3,"Redes",4,4,2,101),
-        )
+    private fun getCoursesFromBackend(): MutableList<Course_> {
+        val response = HttpHelper.getRawResponse("courses")
+        return try {
+            val json = JSONObject(response)
+            val dataArray = json.getJSONArray("data")
+            val listType = object : TypeToken<List<Course_>>() {}.type
+            Gson().fromJson<List<Course_>>(dataArray.toString(), listType).toMutableList()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            mutableListOf()
+        }
     }
 
     //Habilitar Swipe con ItemTouchHelper
@@ -149,10 +147,15 @@ class Course : AppCompatActivity(){
         mRecyclerView.setHasFixedSize(true)
         mRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        fullList = getCursos()
-        mAdapter = RecyclerAdapter4(fullList.toMutableList(), this)
+        // Inicializa con lista vacía
+        fullList = mutableListOf()
+        mAdapter = RecyclerAdapter4(fullList, this)
         mRecyclerView.adapter = mAdapter
 
+        // Cargar datos del backend
+        loadCourses()
+
+        // Configuración del SearchView
         searchView = findViewById(R.id.search_view)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
@@ -167,6 +170,49 @@ class Course : AppCompatActivity(){
                 return true
             }
         })
+    }
+
+    private fun loadCourses() {
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Loading courses...")
+            setCancelable(false)
+            show()
+        }
+
+        object : AsyncTask<Void, Void, MutableList<Course_>>() {
+            override fun doInBackground(vararg params: Void?): MutableList<Course_> {
+                return try {
+                    val response = HttpHelper.getRawResponse("courses")
+                    Log.d("API_RESPONSE", "Response: $response")
+
+                    if (response != null) {
+                        val json = JSONObject(response)
+                        val dataArray = json.getJSONArray("data")
+                        val type = object : TypeToken<List<Course_>>() {}.type
+                        Gson().fromJson<List<Course_>>(dataArray.toString(), type).toMutableList()
+                    } else {
+                        mutableListOf()
+                    }
+                } catch (e: Exception) {
+                    Log.e("API_ERROR", "Error loading courses", e)
+                    mutableListOf()
+                }
+            }
+
+            override fun onPostExecute(result: MutableList<Course_>) {
+                progressDialog.dismiss()
+                if (result.isNotEmpty()) {
+                    fullList = result
+                    mAdapter.updateData(fullList)
+                } else {
+                    Toast.makeText(
+                        this@Course,
+                        "Courses could not be uploaded",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }.execute()
     }
 
     // Si el usuario presiona atrás y el menú está abierto, se cierra en lugar de salir de la app
@@ -193,8 +239,49 @@ class Course : AppCompatActivity(){
     }
 
     fun deleteCourse(position: Int) {
-        val curso = mAdapter.getItem(position)
-        mAdapter.removeItem(position)
-        Toast.makeText(this, "Carrera eliminada: ${curso.name}", Toast.LENGTH_SHORT).show()
+        val course = mAdapter.getItem(position)
+
+        AlertDialog.Builder(this)
+            .setTitle("Confirm deletion")
+            .setMessage("¿Delete the course ${course.name}?")
+            .setPositiveButton("Delete") { dialog, _ ->
+                executeDelete(position, course)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun executeDelete(position: Int, course: Course_) {
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Eliminating course...")
+            setCancelable(false)
+            show()
+        }
+
+        object : AsyncTask<Void, Void, Boolean>() {
+            override fun doInBackground(vararg params: Void?): Boolean {
+                return try {
+                    HttpHelper.deleteRequest("courses/${course.cod}")
+                } catch (e: Exception) {
+                    Log.e("DELETE_ERROR", "Error when deleting course", e)
+                    false
+                }
+            }
+
+            override fun onPostExecute(success: Boolean) {
+                progressDialog.dismiss()
+                if (success) {
+                    fullList.removeAt(position)
+                    mAdapter.updateData(fullList)
+                    Toast.makeText(this@Course, "Course eliminated", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        this@Course,
+                        "Error when deleting the course",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }.execute()
     }
 }

@@ -1,12 +1,16 @@
 package com.example.banner.frontend.views.course
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.backend_banner.backend.Models.Course_
 import com.example.banner.R
 
 class AddCourse : AppCompatActivity() {
@@ -32,32 +36,74 @@ class AddCourse : AppCompatActivity() {
         saveBtn = findViewById(R.id.btn_guardar_curso)
 
         saveBtn.setOnClickListener {
-            // Obtener los valores de los campos de texto
-            val courseCodeValue = courseCode.text.toString().toIntOrNull()
-            val courseNameValue = courseName.text.toString()
-            val creditsValue = credits.text.toString().toIntOrNull()
-            val hoursValue = hours.text.toString().toIntOrNull()
-            val cycleIdValue = cycleId.text.toString().toIntOrNull()
-            val careerCodeValue = careerCode.text.toString().toIntOrNull()
+            try {
+                val courseCodeValue = courseCode.text.toString().toInt()
+                val courseNameValue = courseName.text.toString().trim()
+                val creditsValue = credits.text.toString().toInt()
+                val hoursValue = hours.text.toString().toInt()
+                val cycleIdValue = cycleId.text.toString().toInt()
+                val careerCodeValue = careerCode.text.toString().toInt()
 
-            // Validar si los campos no están vacíos
-            if (courseCodeValue != null && courseNameValue.isNotBlank() &&
-                creditsValue != null && hoursValue != null &&
-                cycleIdValue != null && careerCodeValue != null) {
-                // Si los datos son válidos, enviar los resultados
-                val resultIntent = Intent().apply {
-                    putExtra("courseCode", courseCodeValue)
-                    putExtra("courseName", courseNameValue)
-                    putExtra("credits", creditsValue)
-                    putExtra("hours", hoursValue)
-                    putExtra("cycleId", cycleIdValue)
-                    putExtra("careerCode", careerCodeValue)
+                if (courseNameValue.isEmpty()) {
+                    throw IllegalArgumentException("Course name cannot be empty")
                 }
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish() // Finalizar la actividad y volver a la anterior
-            } else {
-                // Mostrar mensaje si los campos están vacíos o inválidos
-                Toast.makeText(this, "Por favor complete todos los campos correctamente", Toast.LENGTH_SHORT).show()
+
+                if (creditsValue <= 0 || hoursValue <= 0) {
+                    throw IllegalArgumentException("Credits and hours must be positive")
+                }
+
+                // Mostrar progreso
+                val progressDialog = ProgressDialog(this).apply {
+                    setMessage("Adding course...")
+                    setCancelable(false)
+                    show()
+                }
+
+                // Crear objeto Course
+                val newCourse = Course_(
+                    courseCodeValue,
+                    courseNameValue,
+                    creditsValue,
+                    hoursValue,
+                    cycleIdValue,
+                    careerCodeValue
+                )
+
+                object : AsyncTask<Void, Void, Boolean>() {
+                    override fun doInBackground(vararg params: Void?): Boolean {
+                        return try {
+                            val response = HttpHelper.sendRequest(
+                                "courses",
+                                "POST",
+                                newCourse,
+                                String::class.java
+                            )
+                            response != null && response.contains("\"success\":true")
+                        } catch (e: Exception) {
+                            Log.e("API_ERROR", "Error adding course", e)
+                            false
+                        }
+                    }
+
+                    override fun onPostExecute(success: Boolean) {
+                        progressDialog.dismiss()
+                        if (success) {
+                            setResult(Activity.RESULT_OK)
+                            finish()
+                        } else {
+                            Toast.makeText(
+                                this@AddCourse,
+                                "Error adding course",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }.execute()
+
+            } catch (e: NumberFormatException) {
+                Toast.makeText(this, "Please enter valid numbers", Toast.LENGTH_SHORT).show()
+            } catch (e: IllegalArgumentException) {
+                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

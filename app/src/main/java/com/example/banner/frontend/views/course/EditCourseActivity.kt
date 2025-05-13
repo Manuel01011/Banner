@@ -1,10 +1,15 @@
 package com.example.banner.frontend.views.course
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.backend_banner.backend.Models.Course_
 import com.example.banner.R
 
 class EditCourseActivity : AppCompatActivity() {
@@ -47,51 +52,95 @@ class EditCourseActivity : AppCompatActivity() {
         edtCareerCod.setText(intent.getIntExtra("careerCod", 0).toString())
     }
 
-    private fun setupSaveButton() {
-        saveButton.setOnClickListener {
-            if (validateFields()) {
-                val resultIntent = Intent().apply {
-                    putExtra("position", position)
-                    putExtra("cod", edtCod.text.toString().toInt())
-                    putExtra("name", edtName.text.toString())
-                    putExtra("credits", edtCredits.text.toString().toInt())
-                    putExtra("hours", edtHours.text.toString().toInt())
-                    putExtra("cicloId", edtCicloId.text.toString().toInt())
-                    putExtra("careerCod", edtCareerCod.text.toString().toInt())
-                }
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
-            }
-        }
-    }
 
     private fun validateFields(): Boolean {
         return when {
             edtCod.text.isNullOrEmpty() -> {
-                edtCod.error = "Ingrese el código"
+                edtCod.error = "Enter a code"
                 false
             }
             edtName.text.isNullOrEmpty() -> {
-                edtName.error = "Ingrese el nombre"
+                edtName.error = "Enter a name"
                 false
             }
             edtCredits.text.isNullOrEmpty() -> {
-                edtCredits.error = "Ingrese los créditos"
+                edtCredits.error = "Enter credits"
                 false
             }
             edtHours.text.isNullOrEmpty() -> {
-                edtHours.error = "Ingrese las horas"
+                edtHours.error = "Enter the hours"
                 false
             }
             edtCicloId.text.isNullOrEmpty() -> {
-                edtCicloId.error = "Ingrese el ID del ciclo"
+                edtCicloId.error = "Enter the cycle ID"
                 false
             }
             edtCareerCod.text.isNullOrEmpty() -> {
-                edtCareerCod.error = "Ingrese el código de carrera"
+                edtCareerCod.error = "Enter the career code"
                 false
             }
             else -> true
+        }
+    }
+
+    private fun setupSaveButton() {
+        saveButton.setOnClickListener {
+            if (validateFields()) {
+                val progressDialog = ProgressDialog(this).apply {
+                    setMessage("Updating course...")
+                    setCancelable(false)
+                    show()
+                }
+
+                val updatedCourse = Course_(
+                    edtCod.text.toString().toInt(),
+                    edtName.text.toString(),
+                    edtCredits.text.toString().toInt(),
+                    edtHours.text.toString().toInt(),
+                    edtCicloId.text.toString().toInt(),
+                    edtCareerCod.text.toString().toInt()
+                )
+
+                object : AsyncTask<Void, Void, Boolean>() {
+                    override fun doInBackground(vararg params: Void?): Boolean {
+                        return try {
+                            val response = HttpHelper.sendRequest(
+                                "courses",
+                                "PUT",
+                                updatedCourse,
+                                String::class.java
+                            )
+                            response != null && response.contains("\"success\":true")
+                        } catch (e: Exception) {
+                            Log.e("API_ERROR", "Error updating course", e)
+                            false
+                        }
+                    }
+
+                    override fun onPostExecute(success: Boolean) {
+                        progressDialog.dismiss()
+                        if (success) {
+                            val resultIntent = Intent().apply {
+                                putExtra("position", position)
+                                putExtra("cod", updatedCourse.cod)
+                                putExtra("name", updatedCourse.name)
+                                putExtra("credits", updatedCourse.credits)
+                                putExtra("hours", updatedCourse.hours)
+                                putExtra("cicloId", updatedCourse.cicloId)
+                                putExtra("careerCod", updatedCourse.careerCod)
+                            }
+                            setResult(Activity.RESULT_OK, resultIntent)
+                            finish()
+                        } else {
+                            Toast.makeText(
+                                this@EditCourseActivity,
+                                "Error updating course",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }.execute()
+            }
         }
     }
 }

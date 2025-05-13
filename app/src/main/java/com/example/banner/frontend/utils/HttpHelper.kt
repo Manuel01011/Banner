@@ -7,6 +7,7 @@ import java.lang.reflect.Type
 import java.net.HttpURLConnection
 import java.net.URL
 
+//ruta para probar en el navegador: http://localhost:8080/api/
 object HttpHelper {
     private const val BASE_URL = "http://10.0.2.2:8080/api/"
     private val gson = Gson()
