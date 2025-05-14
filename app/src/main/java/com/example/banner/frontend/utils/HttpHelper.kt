@@ -54,7 +54,7 @@ object HttpHelper {
                 doOutput = true
                 setRequestProperty("Content-Type", "application/json")
                 setRequestProperty("Accept", "application/json")
-                setRequestProperty("Connection", "close") // Añade esto
+                setRequestProperty("Connection", "close")
             }
 
             // Escribir cuerpo

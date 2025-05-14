@@ -60,6 +60,8 @@ dependencies {
 }
 
 dependencies {
+    implementation(libs.cronet.embedded)
+    implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.media3.common.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -67,7 +69,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation("com.google.android.material:material:1.10.0")
-    implementation("mysql:mysql-connector-java:8.0.29")
     implementation ("com.google.code.gson:gson:2.8.9")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 }

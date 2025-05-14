@@ -1,13 +1,20 @@
 package com.example.banner.frontend.views.enrollment
-
 import android.app.Activity
-import android.content.Intent
+import android.app.ProgressDialog
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.backend_banner.backend.Models.Enrollment_
 import com.example.banner.R
+import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
 class AddEnrollment : AppCompatActivity() {
     private lateinit var studentId: EditText
@@ -27,25 +34,66 @@ class AddEnrollment : AppCompatActivity() {
 
         // Configurar el botón de guardar matrícula
         saveMatriculaBtn.setOnClickListener {
-            // Obtener los valores de los campos de texto
-            val studentIdValue = studentId.text.toString().toIntOrNull()
-            val grupoIdValue = grupoId.text.toString().toIntOrNull()
-            val gradeValue = grade.text.toString().toDoubleOrNull()
+            try {
+                val studentIdValue = studentId.text.toString().toInt()
+                val grupoIdValue = grupoId.text.toString().toInt()
+                val gradeValue = grade.text.toString().toDouble()
 
-            // Validar si los campos no están vacíos
-            if (studentIdValue != null && grupoIdValue != null && gradeValue != null) {
-
-                // Si los datos son válidos, enviar los resultados
-                val resultIntent = Intent().apply {
-                    putExtra("studentId", studentIdValue)
-                    putExtra("grupoId", grupoIdValue)
-                    putExtra("grade", gradeValue)
+                if (gradeValue < 0 || gradeValue > 100) {
+                    grade.error = "The rating must be between 0 and 100"
+                    return@setOnClickListener
                 }
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish() // Finalizar la actividad y volver a la anterior
-            } else {
-                // Mostrar mensaje si los campos están vacíos o inválidos
-                Toast.makeText(this, "Por favor complete todos los campos correctamente", Toast.LENGTH_SHORT).show()
+
+                val progressDialog = ProgressDialog(this).apply {
+                    setMessage("Adding enrrolment...")
+                    setCancelable(false)
+                    show()
+                }
+
+                val newEnrollment = Enrollment_(studentIdValue, grupoIdValue, gradeValue)
+
+                lifecycleScope.launch {
+                    try {
+                        val success = withContext(Dispatchers.IO) {
+                            // Cambio clave: Enviamos el objeto directamente, no como JSON string
+                            val response = HttpHelper.sendRequest(
+                                "enrollments",
+                                "POST",
+                                newEnrollment,  // Envía el objeto directamente
+                                String::class.java
+                            )
+
+                            // Verificación más robusta de la respuesta
+                            response?.let {
+                                val jsonResponse = JSONObject(it)
+                                jsonResponse.optBoolean("success", false) &&
+                                        jsonResponse.optString("message") == "Enrollment successfully created"
+                            } ?: false
+                        }
+
+                        progressDialog.dismiss()
+                        if (success) {
+                            setResult(Activity.RESULT_OK)
+                            finish()
+                        } else {
+                            Toast.makeText(
+                                this@AddEnrollment,
+                                "Error adding enrollment. Verify the data.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } catch (e: Exception) {
+                        progressDialog.dismiss()
+                        Log.e("API_ERROR", "Error adding enrollment", e)
+                        Toast.makeText(
+                            this@AddEnrollment,
+                            "Error: ${e.message ?: "Error desconocido"}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            } catch (e: NumberFormatException) {
+                Toast.makeText(this, "Please enter valid numeric values", Toast.LENGTH_LONG).show()
             }
         }
     }

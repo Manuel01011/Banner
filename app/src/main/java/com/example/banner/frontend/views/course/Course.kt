@@ -112,7 +112,6 @@ class Course : AppCompatActivity(){
 
         // Configurar el FAB para lanzar la actividad de agregar curso
         fabAgregarCurso.setOnClickListener {
-            // Iniciar la actividad para agregar un curso
             val intent = Intent(this, AddCourse::class.java)
             addCourseLauncher.launch(intent)
         }
