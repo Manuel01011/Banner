@@ -80,6 +80,7 @@ INSERT INTO Career (cod, name, title) VALUES
 INSERT INTO Ciclo (id, year, number, date_start, date_finish) VALUES
 (1, 2024, 1, '2024-01-15', '2024-06-15'),
 (2, 2024, 2, '2024-07-01', '2024-12-15');
+INSERT INTO Ciclo (id, year, number, date_start, date_finish) VALUES (3, 2025, 10, '2025-02-17', '2025-06-30');
 
 
 
@@ -591,16 +592,18 @@ CREATE PROCEDURE update_ciclo(
     IN p_year INT,
     IN p_number INT,
     IN p_dateStart DATE,
-    IN p_dateFinish DATE
+    IN p_dateFinish DATE,
+    IN p_isActive boolean
 )
 BEGIN
     UPDATE Ciclo
     SET year = p_year, 
         number = p_number, 
         date_start = p_dateStart, 
-        date_finish = p_dateFinish
+        date_finish = p_dateFinish,
+        is_active = p_isActive
     WHERE id = p_id;
-END $$  -- <-- Aquí cerramos correctamente el bloque `BEGIN ... END`
+END $$ 
 
 DELIMITER ;
 

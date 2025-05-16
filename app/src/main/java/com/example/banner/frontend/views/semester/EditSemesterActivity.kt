@@ -8,8 +8,12 @@ import android.widget.CheckBox
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import android.app.DatePickerDialog
+import android.app.ProgressDialog
+import android.util.Log
 import android.widget.Toast
+import com.example.backend_banner.backend.Models.Ciclo_
 import com.example.banner.R
+import android.os.AsyncTask
 
 class EditSemesterActivity : AppCompatActivity() {
     private lateinit var editYear: EditText
@@ -20,7 +24,7 @@ class EditSemesterActivity : AppCompatActivity() {
     private lateinit var btnSave: Button
 
     private var id: Int = -1
-    private var position: Int = -1  // Added to track position in the list
+    private var position: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +48,7 @@ class EditSemesterActivity : AppCompatActivity() {
 
     private fun loadIntentData() {
         id = intent.getIntExtra("id", -1)
-        position = intent.getIntExtra("position", -1)  // Get position from intent
+        position = intent.getIntExtra("position", -1)
         editYear.setText(intent.getIntExtra("year", 0).toString())
         editNumber.setText(intent.getIntExtra("number", 0).toString())
         editStartDate.setText(intent.getStringExtra("dateStart"))
@@ -60,17 +64,61 @@ class EditSemesterActivity : AppCompatActivity() {
     private fun setupSaveButton() {
         btnSave.setOnClickListener {
             if (validateFields()) {
-                val resultIntent = Intent().apply {
-                    putExtra("position", position)  // Include position in result
-                    putExtra("id", id)
-                    putExtra("year", editYear.text.toString().toInt())
-                    putExtra("number", editNumber.text.toString().toInt())
-                    putExtra("dateStart", editStartDate.text.toString())
-                    putExtra("dateFinish", editFinishDate.text.toString())
-                    putExtra("is_active", checkIsActive.isChecked)
+                val progressDialog = ProgressDialog(this).apply {
+                    setMessage("Updating semester...")
+                    setCancelable(false)
+                    show()
                 }
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
+
+                val updatedCiclo = Ciclo_(
+                    id = id,
+                    year = editYear.text.toString().toInt(),
+                    number = editNumber.text.toString().toInt(),
+                    dateStart = editStartDate.text.toString(),
+                    dateFinish = editFinishDate.text.toString(),
+                    is_active = checkIsActive.isChecked
+                )
+
+                object : AsyncTask<Void, Void, Boolean>() {
+                    override fun doInBackground(vararg params: Void?): Boolean {
+                        return try {
+                            val response = HttpHelper.sendRequest(
+                                "ciclos",
+                                "PUT",
+                                updatedCiclo,
+                                String::class.java
+                            )
+                            response != null && response.contains("\"success\":true")
+                        } catch (e: Exception) {
+                            Log.e("API_ERROR", "Error updating ciclo", e)
+                            false
+                        }
+                    }
+
+                    override fun onPostExecute(success: Boolean) {
+                        progressDialog.dismiss()
+                        if (success) {
+                            val resultIntent = Intent().apply {
+                                putExtra("position", position)
+                                putExtra("id", id)
+                                putExtra("year", updatedCiclo.year)
+                                putExtra("number", updatedCiclo.number)
+                                putExtra("dateStart", updatedCiclo.dateStart)
+                                putExtra("dateFinish", updatedCiclo.dateFinish)
+                                putExtra("is_active", updatedCiclo.is_active)
+                            }
+                            setResult(Activity.RESULT_OK, resultIntent)
+                            finish()
+                            Toast.makeText(this@EditSemesterActivity, "Semester updated", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(
+                                this@EditSemesterActivity,
+                                "Error updating the semester",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }.execute()
             }
         }
     }
@@ -78,7 +126,7 @@ class EditSemesterActivity : AppCompatActivity() {
     private fun setupActiveCheckbox() {
         checkIsActive.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                Toast.makeText(this, "Semester activado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Semester activated", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -86,27 +134,27 @@ class EditSemesterActivity : AppCompatActivity() {
     private fun validateFields(): Boolean {
         return when {
             editYear.text.isNullOrEmpty() -> {
-                editYear.error = "Ingrese el año"
+                editYear.error = "Enter the year"
                 false
             }
             editYear.text.toString().toIntOrNull() == null -> {
-                editYear.error = "Año inválido"
+                editYear.error = "Year invalid"
                 false
             }
             editNumber.text.isNullOrEmpty() -> {
-                editNumber.error = "Ingrese el número de semestre"
+                editNumber.error = "Enter the semester number"
                 false
             }
             editNumber.text.toString().toIntOrNull() == null -> {
-                editNumber.error = "Número de semestre inválido"
+                editNumber.error = "Semester number invalid"
                 false
             }
             editStartDate.text.isNullOrEmpty() -> {
-                editStartDate.error = "Seleccione fecha de inicio"
+                editStartDate.error = "Select start date"
                 false
             }
             editFinishDate.text.isNullOrEmpty() -> {
-                editFinishDate.error = "Seleccione fecha de fin"
+                editFinishDate.error = "Select end date"
                 false
             }
             else -> true

@@ -1,12 +1,17 @@
 package com.example.banner.frontend.views.group
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.backend_banner.backend.Models.Grupo_
 import com.example.banner.R
+import com.google.gson.Gson
 
 class EditGroupActivity : AppCompatActivity() {
     private lateinit var etId: EditText
@@ -18,6 +23,8 @@ class EditGroupActivity : AppCompatActivity() {
     private lateinit var btnGuardar: Button
 
     private var position: Int = -1
+    private var originalId: Int = -1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,28 +47,81 @@ class EditGroupActivity : AppCompatActivity() {
 
     private fun loadIntentData() {
         position = intent.getIntExtra("position", -1)
-        etId.setText(intent.getIntExtra("id", -1).toString())
+        originalId = intent.getIntExtra("id", -1)
+
+        etId.setText(originalId.toString())
         etNumber.setText(intent.getIntExtra("number", -1).toString())
         etYear.setText(intent.getIntExtra("year", -1).toString())
         etHorario.setText(intent.getStringExtra("horario"))
         etCourseCode.setText(intent.getIntExtra("courseCode", -1).toString())
         etTeacherId.setText(intent.getIntExtra("teacherId", -1).toString())
+
+        // ID no se puede editar ya que es la clave primaria
+        etId.isEnabled = false
     }
 
     private fun setupSaveButton() {
         btnGuardar.setOnClickListener {
             if (validateFields()) {
-                val resultIntent = Intent().apply {
-                    putExtra("position", position)
-                    putExtra("id", etId.text.toString().toInt())
-                    putExtra("number", etNumber.text.toString().toInt())
-                    putExtra("year", etYear.text.toString().toInt())
-                    putExtra("horario", etHorario.text.toString())
-                    putExtra("courseCode", etCourseCode.text.toString().toInt())
-                    putExtra("teacherId", etTeacherId.text.toString().toInt())
+                val progressDialog = ProgressDialog(this).apply {
+                    setMessage("Updating group...")
+                    setCancelable(false)
+                    show()
                 }
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
+
+                val updatedGroup = Grupo_(
+                    id = originalId,
+                    numberGroup = etNumber.text.toString().toInt(),
+                    year = etYear.text.toString().toInt(),
+                    horario = etHorario.text.toString(),
+                    courseCod = etCourseCode.text.toString().toInt(),
+                    teacherId = etTeacherId.text.toString().toInt()
+                )
+
+                Thread {
+                    try {
+                        // Envía el objeto directamente en lugar de convertirlo a String primero
+                        val success = HttpHelper.sendRequest(
+                            "groups",
+                            "PUT",
+                            updatedGroup,  // Envía el objeto directamente
+                            String::class.java
+                        )?.contains("\"success\":true") == true
+
+                        runOnUiThread {
+                            progressDialog.dismiss()
+                            if (success) {
+                                val resultIntent = Intent().apply {
+                                    putExtra("position", position)
+                                    putExtra("id", updatedGroup.id)
+                                    putExtra("number", updatedGroup.numberGroup)
+                                    putExtra("year", updatedGroup.year)
+                                    putExtra("horario", updatedGroup.horario)
+                                    putExtra("courseCode", updatedGroup.courseCod)
+                                    putExtra("teacherId", updatedGroup.teacherId)
+                                }
+                                setResult(Activity.RESULT_OK, resultIntent)
+                                finish()
+                            } else {
+                                Toast.makeText(
+                                    this@EditGroupActivity,
+                                    "Error updating the group",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        runOnUiThread {
+                            progressDialog.dismiss()
+                            Toast.makeText(
+                                this@EditGroupActivity,
+                                "Error: ${e.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Log.e("EDIT_GROUP", "Error updating group", e)
+                        }
+                    }
+                }.start()
             }
         }
     }
@@ -69,27 +129,27 @@ class EditGroupActivity : AppCompatActivity() {
     private fun validateFields(): Boolean {
         return when {
             etId.text.isNullOrEmpty() -> {
-                etId.error = "Ingrese ID del grupo"
+                etId.error = "Enter Group ID"
                 false
             }
             etNumber.text.isNullOrEmpty() -> {
-                etNumber.error = "Ingrese número de grupo"
+                etNumber.error = "Enter group number"
                 false
             }
             etYear.text.isNullOrEmpty() -> {
-                etYear.error = "Ingrese el año"
+                etYear.error = "Enter the year"
                 false
             }
             etHorario.text.isNullOrEmpty() -> {
-                etHorario.error = "Ingrese el horario"
+                etHorario.error = "Enter the schedule"
                 false
             }
             etCourseCode.text.isNullOrEmpty() -> {
-                etCourseCode.error = "Ingrese código de curso"
+                etCourseCode.error = "Enter course code"
                 false
             }
             etTeacherId.text.isNullOrEmpty() -> {
-                etTeacherId.error = "Ingrese ID del profesor"
+                etTeacherId.error = "Enter teacher ID"
                 false
             }
             else -> true

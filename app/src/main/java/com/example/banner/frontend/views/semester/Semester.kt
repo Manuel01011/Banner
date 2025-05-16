@@ -91,10 +91,12 @@ class Semester : AppCompatActivity() {
                     val isActive = data.getBooleanExtra("is_active", false)
 
                     if (position != -1) {
-                        val updatedCiclo = Ciclo_(id, year, number, dateStart, dateFinish, isActive)
-                        fullList[position] = updatedCiclo
+                        fullList[position] =
+                            Ciclo_(id, year, number, dateStart, dateFinish, isActive)
                         mAdapter.updateData(fullList)
-                        Toast.makeText(this, "Semestre actualizado", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Semester updated", Toast.LENGTH_SHORT).show()
+
+                        loadCiclos()
                     }
                 }
             }
@@ -106,7 +108,7 @@ class Semester : AppCompatActivity() {
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 loadCiclos() // Recarga los datos del servidor
-                Toast.makeText(this, "Ciclo agregado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Aggregate cycle", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -238,7 +240,7 @@ class Semester : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this@Semester,
-                        "No se pudieron cargar los ciclos",
+                        "Cycles could not be loaded",
                         Toast.LENGTH_LONG
                     ).show()
                 }

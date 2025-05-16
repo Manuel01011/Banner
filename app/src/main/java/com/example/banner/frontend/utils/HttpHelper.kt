@@ -127,6 +127,7 @@ object HttpHelper {
             connection.connectTimeout = 5000
             connection.readTimeout = 5000
             connection.responseCode == HttpURLConnection.HTTP_OK
+
         } catch (e: Exception) {
             e.printStackTrace()
             false

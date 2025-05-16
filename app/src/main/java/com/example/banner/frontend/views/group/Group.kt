@@ -1,10 +1,9 @@
 package com.example.banner.frontend.views.group
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -13,16 +12,19 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.backend_banner.backend.Models.Course_
 import com.example.backend_banner.backend.Models.Grupo_
 import com.example.banner.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import org.json.JSONObject
+
 
 class Group : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -35,7 +37,7 @@ class Group : AppCompatActivity() {
     // Recyclerview de Teachers
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: RecyclerAdapter6
-
+    private lateinit var courseList: MutableList<Course_>
     //edit
     private lateinit var editGroupLauncher: ActivityResultLauncher<Intent>
 
@@ -70,25 +72,12 @@ class Group : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
-        addGroupLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        addGroupLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data
-                if (data != null) {
-                    val groupId = data.getIntExtra("groupId", -1)
-                    val groupNumber = data.getIntExtra("groupNumber", -1)
-                    val groupYear = data.getIntExtra("groupYear", -1)
-                    val groupHorario = data.getStringExtra("groupHorario") ?: ""
-                    val groupCourseCode = data.getIntExtra("groupCourseCode", -1)
-                    val groupTeacherId = data.getIntExtra("groupTeacherId", -1)
-
-                    // Crear un nuevo objeto Grupo con los datos recibidos
-                    val newGroup = Grupo_(groupId, groupNumber, groupYear, groupHorario, groupCourseCode, groupTeacherId)
-
-                    // Agregar el nuevo estudiante a la lista
-                    fullList.add(newGroup)
-                    mAdapter.updateData(fullList)
-                    Toast.makeText(this, "Grupo agregado", Toast.LENGTH_SHORT).show()
-                }
+                loadGroups() // Recargar datos del backend
+                Toast.makeText(this, "Group successfully added", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -117,35 +106,106 @@ class Group : AppCompatActivity() {
                             teacherId = teacherId
                         )
                         mAdapter.updateData(fullList)
-                        Toast.makeText(this, "Grupo actualizado", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Group updated", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
-
-
         fabAgregarGrupo.setOnClickListener {
-            // Iniciar la actividad para agregar un curso
             val intent = Intent(this, AddGroup::class.java)
             addGroupLauncher.launch(intent)
         }
 
+        initViews()
+        loadGroups()
         setUpRecyclerView()
-        Log.d("CareerActivity", "Después de setUpRecyclerView")
+    }
 
+    private fun initViews() {
+        drawerLayout = findViewById(R.id.drawer_layout)
+        menuButton = findViewById(R.id.menu_button)
+        navigationView = findViewById(R.id.navigation_view)
+        fabAgregarGrupo = findViewById(R.id.fabAgregarGrupo)
+        searchView = findViewById(R.id.search_view)
+
+        // Configurar RecyclerView
+        mRecyclerView = findViewById(R.id.recycler_view)
+        mRecyclerView.setHasFixedSize(true)
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        // Inicializar lista vacía
+        fullList = mutableListOf()
+        mAdapter = RecyclerAdapter6(fullList, this)
+        mRecyclerView.adapter = mAdapter
+    }
+
+    private fun loadGroups() {
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Loading groups...")
+            setCancelable(false)
+            show()
+        }
+
+        object : AsyncTask<Void, Void, List<Grupo_>>() {
+            override fun doInBackground(vararg params: Void?): List<Grupo_> {
+                return try {
+                    val response = HttpHelper.getRawResponse("groups")
+                    Log.d("API_GROUPS", "Response: $response")
+
+                    if (response != null) {
+                        val json = JSONObject(response)
+                        val dataArray = json.getJSONArray("data")
+                        val type = object : TypeToken<List<Grupo_>>() {}.type
+                        Gson().fromJson(dataArray.toString(), type)
+                    } else {
+                        emptyList()
+                    }
+                } catch (e: Exception) {
+                    Log.e("API_ERROR", "Error loading groups", e)
+                    emptyList()
+                }
+            }
+
+            override fun onPostExecute(result: List<Grupo_>) {
+                progressDialog.dismiss()
+                if (result.isNotEmpty()) {
+                    fullList.clear()
+                    fullList.addAll(result)
+                    mAdapter.updateData(fullList)
+                    Log.d("LOAD_GROUPS", "Loaded groups: ${fullList.size}")
+                } else {
+                    Toast.makeText(this@Group, "No groups were found", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.execute()
     }
 
     //devuelve la lista de los carreas
     private fun getGrupos(): MutableList<Grupo_> {
-        return mutableListOf(
-            Grupo_(1,10,2025,"Lun-Jue 10:00-11:40",1,1),
-            Grupo_(2,20,2025,"Mierc 8:00-11:20",2,3),
-            Grupo_(3,12,2025,"Mar-Vie 1:00-2:40",1,4),
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Loading groups...")
+            setCancelable(false)
+            show()
+        }
 
-            )
+        val grupos = mutableListOf<Grupo_>()
+
+        try {
+            val response = HttpHelper.getRawResponse("groups")
+            if (response != null) {
+                val json = JSONObject(response)
+                val dataArray = json.getJSONArray("data")
+                val type = object : TypeToken<List<Grupo_>>() {}.type
+                grupos.addAll(Gson().fromJson<List<Grupo_>>(dataArray.toString(), type))
+            }
+        } catch (e: Exception) {
+            Log.e("API_ERROR", "Error loading groups", e)
+        } finally {
+            progressDialog.dismiss()
+        }
+
+        return grupos
     }
-
-    //Habilitar Swipe con ItemTouchHelper
 
     //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager
     private fun setUpRecyclerView() {
@@ -197,7 +257,40 @@ class Group : AppCompatActivity() {
 
     fun deleteGrupo(position: Int) {
         val grupo = mAdapter.getItem(position)
-        mAdapter.removeItem(position)
-        Toast.makeText(this, "Grupo eliminada: ${grupo.id}", Toast.LENGTH_SHORT).show()
+        Log.d("DELETE_GROUP", "Attempting to delete group with ID: ${grupo.id}")
+
+        AlertDialog.Builder(this)
+            .setTitle("Confirm deletion")
+            .setMessage("Are you sure to remove this Group?")
+            .setPositiveButton("Delete") { _, _ ->
+                Thread {
+                    try {
+                        val url = "groups/${grupo.id}"
+                        Log.d("DELETE_GROUP", "Request URL: $url")
+
+                        val success = HttpHelper.deleteRequest(url)
+                        Log.d("DELETE_GROUP", "Delete response: $success")
+
+                        runOnUiThread {
+                            if (success) {
+                                mAdapter.removeItem(position)
+                                Toast.makeText(this, "Group deleted", Toast.LENGTH_SHORT).show()
+                                // Recargar los grupos para sincronizar con el servidor
+                                loadGroups()
+                            } else {
+                                Toast.makeText(this, "Error when deleting", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("DELETE_GROUP", "Error deleting group", e)
+                        runOnUiThread {
+                            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }.start()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
+
 }
