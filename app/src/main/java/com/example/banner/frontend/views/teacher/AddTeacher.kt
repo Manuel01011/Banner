@@ -1,12 +1,16 @@
 package com.example.banner.frontend.views.teacher
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.backend_banner.backend.Models.Teacher_
 import com.example.banner.R
 
 class AddTeacher : AppCompatActivity() {
@@ -29,29 +33,81 @@ class AddTeacher : AppCompatActivity() {
 
         // Configurar el botón de guardar teacher
         saveProfesorBtn.setOnClickListener {
-            // Obtener los valores de los campos de texto
-            val profesorIdValue = profesorId.text.toString().toIntOrNull()
-            val profesorNameValue = profesorName.text.toString()
-            val profesorTelValue = profesorTel.text.toString()
-            val profesorEmailValue = profesorEmail.text.toString()
-
-            // Validar si los campos no están vacíos
-            if (profesorIdValue != null && profesorNameValue.isNotEmpty() &&
-                profesorTelValue.isNotEmpty() && profesorEmailValue.isNotEmpty()) {
-
-                // Si los datos son válidos, enviar los resultados
-                val resultIntent = Intent().apply {
-                    putExtra("profesorId", profesorIdValue)
-                    putExtra("profesorName", profesorNameValue)
-                    putExtra("profesorTel", profesorTelValue)
-                    putExtra("profesorEmail", profesorEmailValue)
-                }
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish() // Finalizar la actividad y volver a la anterior
-            } else {
-                // Mostrar mensaje si los campos están vacíos o inválidos
-                Toast.makeText(this, "Por favor complete todos los campos correctamente", Toast.LENGTH_SHORT).show()
+            if (validateFields()) {
+                saveTeacherToBackend()
             }
         }
+    }
+    private fun validateFields(): Boolean {
+        return when {
+            profesorName.text.isNullOrEmpty() -> {
+                profesorName.error = "Enter teacher name"
+                false
+            }
+            profesorTel.text.isNullOrEmpty() -> {
+                profesorTel.error = "Enter phone number"
+                false
+            }
+            profesorTel.text.toString().toIntOrNull() == null -> {
+                profesorTel.error = "Invalid phone number"
+                false
+            }
+            profesorEmail.text.isNullOrEmpty() -> {
+                profesorEmail.error = "Enter email"
+                false
+            }
+            !android.util.Patterns.EMAIL_ADDRESS.matcher(profesorEmail.text.toString()).matches() -> {
+                profesorEmail.error = "Invalid email format"
+                false
+            }
+            else -> true
+        }
+    }
+    private fun saveTeacherToBackend() {
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Saving teacher...")
+            setCancelable(false)
+            show()
+        }
+
+        val teacher = Teacher_(
+            id = profesorId.id,
+            name = profesorName.text.toString(),
+            telNumber = profesorTel.text.toString().toInt(),
+            email = profesorEmail.text.toString()
+        )
+
+        object : AsyncTask<Void, Void, Boolean>() {
+            override fun doInBackground(vararg params: Void?): Boolean {
+                return try {
+                    val response = HttpHelper.sendRequest(
+                        "teachers",
+                        "POST",
+                        teacher,
+                        String::class.java
+                    )
+                    Log.d("API_RESPONSE", "Response: $response")
+                    response != null && response.contains("\"success\":true")
+                } catch (e: Exception) {
+                    Log.e("API_ERROR", "Error saving teacher", e)
+                    false
+                }
+            }
+
+            override fun onPostExecute(success: Boolean) {
+                progressDialog.dismiss()
+                if (success) {
+                    Toast.makeText(this@AddTeacher, "Teacher saved successfully", Toast.LENGTH_SHORT).show()
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                } else {
+                    Toast.makeText(
+                        this@AddTeacher,
+                        "Error saving teacher",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }.execute()
     }
 }

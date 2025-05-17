@@ -1,10 +1,13 @@
 package com.example.banner.frontend.views.professor
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -19,12 +22,16 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.backend_banner.backend.Models.Student_
 import com.example.backend_banner.backend.Models.Teacher_
 import com.example.banner.R
 import com.example.banner.frontend.views.teacher.AddTeacher
 import com.example.banner.frontend.views.teacher.EditTeacherActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import org.json.JSONObject
 
 class Teacher : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -72,49 +79,40 @@ class Teacher : AppCompatActivity() {
             true
         }
 
-        // Launcher para editar teacher
+        addTeacherLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                loadTeachers() // Recarga los datos del servidor
+                Toast.makeText(this, "Teacher agregado", Toast.LENGTH_SHORT).show()
+            }
+        }
         editProfessorLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 if (data != null) {
-                    val name = data.getStringExtra("name") ?: ""
-                    val tel = data.getIntExtra("tel", 0)
-                    val email = data.getStringExtra("email") ?: ""
-                    val id = data.getIntExtra("id", -1)
+                    val position = data.getIntExtra("position", -1)
+                    val profesorId = data.getIntExtra("id", -1)
+                    val profesorName = data.getStringExtra("name") ?: ""
+                    val profesorTelNumber = data.getIntExtra("tel",-1)
+                    val profesorEmail = data.getStringExtra("email") ?: ""
 
-                    val index = fullList.indexOfFirst { it.id == id }
-                    if (index != -1) {
-                        fullList[index].name = name
-                        fullList[index].telNumber = tel
-                        fullList[index].email = email
+                    if (position != -1) {
+                        fullList[position] = Teacher_(
+                            id = profesorId,
+                            name = profesorName,
+                            telNumber = profesorTelNumber,
+                            email = profesorEmail,
+                        )
                         mAdapter.updateData(fullList)
-                        Toast.makeText(this, "Profesor actualizado", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Techaer updated", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
-        addTeacherLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data
-                if (data != null) {
-                    // Obtener los valores de los campos de la nueva actividad
-                    val profesorId = data.getIntExtra("profesorId", -1)
-                    val profesorName = data.getStringExtra("profesorName") ?: ""
-                    val profesorTelNumber = data.getIntExtra("profesorTel",-1)
-                    val profesorEmail = data.getStringExtra("profesorEmail") ?: ""
 
-                    // Crear un nuevo objeto Profesor con los datos recibidos
-                    val newProfesor = Teacher_(profesorId, profesorName, profesorTelNumber, profesorEmail)
-
-                    // Agregar el nuevo teacher a la lista
-                    fullList.add(newProfesor)
-                    mAdapter.updateData(fullList)
-                    Toast.makeText(this, "Profesor agregado", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
         fabAgregarProfesor.setOnClickListener {
             // Iniciar la actividad para agregar un curso
             val intent = Intent(this, AddTeacher::class.java)
@@ -122,17 +120,75 @@ class Teacher : AppCompatActivity() {
         }
 
         setUpRecyclerView()
-        Log.d("CareerActivity", "Después de setUpRecyclerView")
+        loadTeachers()
         enableSwipeToDeleteAndEdit()
+    }
+
+    private fun loadTeachers() {
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Loading teachers...")
+            setCancelable(false)
+            show()
+        }
+
+        object : AsyncTask<Void, Void, List<Teacher_>>() {
+            override fun doInBackground(vararg params: Void?): List<Teacher_> {
+                return try {
+                    val response = HttpHelper.getRawResponse("teachers")
+                    Log.d("API_TEACHERS", "Response: $response")
+
+                    if (response != null) {
+                        val json = JSONObject(response)
+                        val dataArray = json.getJSONArray("data")
+                        val type = object : TypeToken<List<Teacher_>>() {}.type
+                        Gson().fromJson(dataArray.toString(), type)
+                    } else {
+                        emptyList()
+                    }
+                } catch (e: Exception) {
+                    Log.e("API_ERROR", "Error loading teachers", e)
+                    emptyList()
+                }
+            }
+
+            override fun onPostExecute(result: List<Teacher_>) {
+                progressDialog.dismiss()
+                if (result.isNotEmpty()) {
+                    fullList.clear()
+                    fullList.addAll(result)
+                    mAdapter.updateData(fullList)
+                    Log.d("LOAD_TEACHERS", "Loaded teachers: ${fullList.size}")
+                } else {
+                    Toast.makeText(this@Teacher, "No teachers found", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.execute()
     }
 
     //devuelve la lista de los carreas
     private fun getSuperheros(): MutableList<Teacher_> {
-        return mutableListOf(
-            Teacher_(1,"Oscar",61823972,"Oscar@gamil.com"),
-            Teacher_(2,"Tigre",62567524,"Tigre@gamil.com"),
-            Teacher_(3,"George",62669395,"George@gamil.com"),
-        )
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Loading students...")
+            setCancelable(false)
+            show()
+        }
+
+        val teachers = mutableListOf<Teacher_>()
+        try {
+            val response = HttpHelper.getRawResponse("teachers")
+            if (response != null) {
+                val json = JSONObject(response)
+                val dataArray = json.getJSONArray("data")
+                val type = object : TypeToken<List<Teacher_>>() {}.type
+                teachers.addAll(Gson().fromJson<List<Teacher_>>(dataArray.toString(), type))
+            }
+        } catch (e: Exception) {
+            Log.e("API_ERROR", "Error loading teachers", e)
+        } finally {
+            progressDialog.dismiss()
+        }
+
+        return teachers
     }
 
     //Habilitar Swipe con ItemTouchHelper
@@ -244,7 +300,50 @@ class Teacher : AppCompatActivity() {
 
     fun deleteProfessor(position: Int) {
         val professor = mAdapter.getItem(position)
-        mAdapter.removeItem(position)
-        Toast.makeText(this, "Grupo eliminada: ${professor.id}", Toast.LENGTH_SHORT).show()
+        Log.d("DELETE_TEACHER", "Attempting to delete teacher with ID: ${professor.id}")
+
+        AlertDialog.Builder(this)
+            .setTitle("Are you sure?")
+            .setMessage("Are you sure you want to delete this teacher?")
+            .setPositiveButton("Delete") { _, _ ->
+                Thread {
+                    try {
+                        val url = "teachers/${professor.id}"
+                        Log.d("DELETE_TEACHER", "Request URL: $url")
+
+                        val success = HttpHelper.deleteRequest(url)
+                        Log.d("DELETE_TEACHER", "Delete response: $success")
+
+                        runOnUiThread {
+                            if (success) {
+                                mAdapter.removeItem(position)
+                                Toast.makeText(this@Teacher, "Teacher deleted", Toast.LENGTH_SHORT).show()
+                                loadTeachers()
+                            } else {
+                                Toast.makeText(this@Teacher, "Error deleting teacher", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("DELETE_TEACHER", "Error deleting teacher", e)
+                        runOnUiThread {
+                            Toast.makeText(this@Teacher, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }.start()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    fun editProfessor(position: Int) {
+        val professor = fullList[position]
+        val intent = Intent(this, EditTeacherActivity::class.java).apply {
+            putExtra("position", position)
+            putExtra("id", professor.id)
+            putExtra("name", professor.name)
+            putExtra("tel", professor.telNumber)
+            putExtra("email", professor.email)
+        }
+        editProfessorLauncher.launch(intent)
     }
 }

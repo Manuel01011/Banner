@@ -52,6 +52,7 @@ class RecyclerAdapter3(
         private val textTelNumber: TextView = view.findViewById(R.id.text_tel_number)
         private val textEmail: TextView = view.findViewById(R.id.text_email)
         private val btnDelete: ImageButton = view.findViewById(R.id.btn_delete)
+        private val btnEdit: ImageButton = view.findViewById(R.id.btn_edit)
 
         fun bind(teacher: Teacher_, context: Context) {
             // Establecer los valores de los TextViews con los datos del Teacher_
@@ -63,6 +64,15 @@ class RecyclerAdapter3(
             itemView.setOnClickListener {
                 // Muestra un Toast con el ID del Teacher_
                 Toast.makeText(context, "Teacher ID: ${teacher.id}", Toast.LENGTH_SHORT).show()
+            }
+
+            btnEdit.setOnClickListener {
+                if (context is Teacher) {
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        context.editProfessor(position)
+                    }
+                }
             }
 
             btnDelete.setOnClickListener {

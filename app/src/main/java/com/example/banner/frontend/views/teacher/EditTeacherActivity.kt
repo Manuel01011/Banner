@@ -1,10 +1,15 @@
 package com.example.banner.frontend.views.teacher
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.backend_banner.backend.Models.Teacher_
 import com.example.banner.R
 
 class EditTeacherActivity : AppCompatActivity() {
@@ -43,15 +48,57 @@ class EditTeacherActivity : AppCompatActivity() {
     private fun setupSaveButton() {
         btnSave.setOnClickListener {
             if (validateFields()) {
-                val resultIntent = Intent().apply {
-                    putExtra("position", position)  // Incluir posición en el resultado
-                    putExtra("id", teacherId)
-                    putExtra("name", editName.text.toString())
-                    putExtra("tel", editPhone.text.toString().toInt())
-                    putExtra("email", editEmail.text.toString())
+                val progressDialog = ProgressDialog(this).apply {
+                    setMessage("Updating teacher...")
+                    setCancelable(false)
+                    show()
                 }
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
+
+                val updatedTeacher = Teacher_(
+                    id = intent.getIntExtra("id", -1),
+                    name = editName.text.toString(),
+                    telNumber = editPhone.text.toString().toInt(),
+                    email = editEmail.text.toString()
+                )
+
+                object : AsyncTask<Void, Void, Boolean>() {
+                    override fun doInBackground(vararg params: Void?): Boolean {
+                        return try {
+                            val response = HttpHelper.sendRequest(
+                                "teachers",
+                                "PUT",
+                                updatedTeacher,
+                                String::class.java
+                            )
+                            response != null && response.contains("\"success\":true")
+                        } catch (e: Exception) {
+                            Log.e("API_ERROR", "Error updating teacher", e)
+                            false
+                        }
+                    }
+
+                    override fun onPostExecute(success: Boolean) {
+                        progressDialog.dismiss()
+                        if (success) {
+                            val resultIntent = Intent().apply {
+                                putExtra("position", position)
+                                putExtra("id", updatedTeacher.id)
+                                putExtra("name", updatedTeacher.name)
+                                putExtra("tel", updatedTeacher.telNumber)
+                                putExtra("email", updatedTeacher.email)
+                            }
+                            setResult(Activity.RESULT_OK, resultIntent)
+                            finish()
+                            Toast.makeText(this@EditTeacherActivity, "Teacher updated", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(
+                                this@EditTeacherActivity,
+                                "Error updating the teacher",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }.execute()
             }
         }
     }
