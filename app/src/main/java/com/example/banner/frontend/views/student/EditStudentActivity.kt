@@ -2,13 +2,17 @@ package com.example.banner.frontend.views.student
 
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.app.ProgressDialog
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.backend_banner.backend.Models.Student_
 import com.example.banner.R
 import java.util.Calendar
 
@@ -73,17 +77,61 @@ class EditStudentActivity : AppCompatActivity() {
     private fun setupSaveButton() {
         saveButton.setOnClickListener {
             if (validateFields()) {
-                val resultIntent = Intent().apply {
-                    putExtra("position", position)
-                    putExtra("id", intent.getIntExtra("id", -1))
-                    putExtra("name", nameEdit.text.toString())
-                    putExtra("telNumber", telEdit.text.toString().toInt())
-                    putExtra("email", emailEdit.text.toString())
-                    putExtra("bornDate", bornDateEdit.text.toString())
-                    putExtra("careerCod", careerCodEdit.text.toString().toInt())
+                val progressDialog = ProgressDialog(this).apply {
+                    setMessage("Updating student...")
+                    setCancelable(false)
+                    show()
                 }
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
+
+                val updatedStudent = Student_(
+                    id = intent.getIntExtra("id", -1),
+                    name = nameEdit.text.toString(),
+                    telNumber = telEdit.text.toString().toInt(),
+                    email = emailEdit.text.toString(),
+                    bornDate = bornDateEdit.text.toString(),
+                    careerCod = careerCodEdit.text.toString().toInt()
+                )
+
+                object : AsyncTask<Void, Void, Boolean>() {
+                    override fun doInBackground(vararg params: Void?): Boolean {
+                        return try {
+                            val response = HttpHelper.sendRequest(
+                                "students",
+                                "PUT",
+                                updatedStudent,
+                                String::class.java
+                            )
+                            response != null && response.contains("\"success\":true")
+                        } catch (e: Exception) {
+                            Log.e("API_ERROR", "Error updating student", e)
+                            false
+                        }
+                    }
+
+                    override fun onPostExecute(success: Boolean) {
+                        progressDialog.dismiss()
+                        if (success) {
+                            val resultIntent = Intent().apply {
+                                putExtra("position", position)
+                                putExtra("id", updatedStudent.id)
+                                putExtra("name", updatedStudent.name)
+                                putExtra("telNumber", updatedStudent.telNumber)
+                                putExtra("email", updatedStudent.email)
+                                putExtra("bornDate", updatedStudent.bornDate)
+                                putExtra("careerCod", updatedStudent.careerCod)
+                            }
+                            setResult(Activity.RESULT_OK, resultIntent)
+                            finish()
+                            Toast.makeText(this@EditStudentActivity, "Student updated", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(
+                                this@EditStudentActivity,
+                                "Error updating the student",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }.execute()
             }
         }
     }

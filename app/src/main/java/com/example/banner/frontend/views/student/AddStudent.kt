@@ -1,12 +1,15 @@
 package com.example.banner.frontend.views.student
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
+import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.backend_banner.backend.Models.Student_
 import com.example.banner.R
 
 class AddStudent : AppCompatActivity() {
@@ -34,32 +37,69 @@ class AddStudent : AppCompatActivity() {
 
         // Configuramos el botón para guardar el estudiante
         saveBtn.setOnClickListener {
-            // Obtener los valores de los campos
-            val studentIdValue = studentId.text.toString().toIntOrNull()
-            val studentNameValue = studentName.text.toString()
-            val studentTelNumberValue = studentTelNumber.text.toString()
-            val studentEmailValue = studentEmail.text.toString()
-            val studentBornDateValue = studentBornDate.text.toString()
-            val studentCareerCodeValue = studentCareerCode.text.toString().toIntOrNull()
+            val studentId = studentId.text.toString().toIntOrNull()
+            val studentName = studentName.text.toString()
+            val studentTelNumber = studentTelNumber.text.toString().toIntOrNull()
+            val studentEmail = studentEmail.text.toString()
+            val studentBornDate = studentBornDate.text.toString()
+            val studentCareerCod = studentCareerCode.text.toString().toIntOrNull()
 
-            // Validar que todos los campos no estén vacíos o nulos
-            if (studentIdValue != null && studentNameValue.isNotBlank() &&
-                studentTelNumberValue.isNotBlank() && studentEmailValue.isNotBlank() &&
-                studentBornDateValue.isNotBlank() && studentCareerCodeValue != null) {
-                // Si los datos son válidos, enviar los resultados
-                val resultIntent = Intent().apply {
-                    putExtra("studentId", studentIdValue)
-                    putExtra("studentName", studentNameValue)
-                    putExtra("studentTelNumber", studentTelNumberValue)
-                    putExtra("studentEmail", studentEmailValue)
-                    putExtra("studentBornDate", studentBornDateValue)
-                    putExtra("studentCareerCode", studentCareerCodeValue)
-                }
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish() // Finalizamos la actividad y volvemos a la anterior
+            if (studentId != null && studentName.isNotBlank() &&
+                studentTelNumber != null && studentEmail.isNotBlank() &&
+                studentBornDate.isNotBlank() && studentCareerCod != null) {
+
+                val newStudent = Student_(
+                    id = studentId,
+                    name = studentName,
+                    telNumber = studentTelNumber,
+                    email = studentEmail,
+                    bornDate = studentBornDate,
+                    careerCod = studentCareerCod
+                )
+
+                InsertStudentTask().execute(newStudent)
             } else {
-                // Mostrar mensaje si los campos están vacíos o inválidos
-                Toast.makeText(this, "Por favor complete todos los campos correctamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Complete todos los campos correctamente", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private inner class InsertStudentTask : AsyncTask<Student_, Void, Boolean>() {
+        private val progressDialog = ProgressDialog(this@AddStudent).apply {
+            setMessage("Guardando estudiante...")
+            setCancelable(false)
+        }
+
+        override fun onPreExecute() {
+            progressDialog.show()
+        }
+
+        override fun doInBackground(vararg params: Student_): Boolean {
+            return try {
+                val response = HttpHelper.sendRequest(
+                    "students",
+                    "POST",
+                    params[0],
+                    String::class.java
+                )
+                response?.contains("\"success\":true") ?: false
+            } catch (e: Exception) {
+                false
+            }
+        }
+
+        override fun onPostExecute(success: Boolean) {
+            progressDialog.dismiss()
+
+            if (success) {
+                setResult(Activity.RESULT_OK)
+                finish()
+            } else {
+                Toast.makeText(
+                    this@AddStudent,
+                    "Error al guardar el estudiante",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }

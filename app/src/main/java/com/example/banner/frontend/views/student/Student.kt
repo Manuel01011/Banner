@@ -1,10 +1,13 @@
 package com.example.banner.frontend.views.student
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -23,6 +26,9 @@ import com.example.backend_banner.backend.Models.Student_
 import com.example.banner.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import org.json.JSONObject
 
 class Student : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -57,13 +63,17 @@ class Student : AppCompatActivity() {
 
         // Manejo de las opciones del menú
         navigationView.setNavigationItemSelectedListener { item ->
-            Log.d("AdminActivity", "Menu item clicked: ${item.itemId} (${resources.getResourceEntryName(item.itemId)})")
+            Log.d(
+                "AdminActivity",
+                "Menu item clicked: ${item.itemId} (${resources.getResourceEntryName(item.itemId)})"
+            )
 
             when (item.itemId) {
                 R.id.nav_logout -> {
                     Log.d("ProfessorActivity", "Logout Clicked")
                     finish()
                 }
+
                 else -> Log.d("AdminActivity", "Unknown menu item: ${item.itemId}")
             }
 
@@ -78,6 +88,7 @@ class Student : AppCompatActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 if (data != null) {
+                    val position = data.getIntExtra("position", -1)
                     val studentId = data.getIntExtra("id", -1)
                     val name = data.getStringExtra("name") ?: ""
                     val telNumber = data.getIntExtra("telNumber", 0)
@@ -85,64 +96,105 @@ class Student : AppCompatActivity() {
                     val bornDate = data.getStringExtra("bornDate") ?: ""
                     val careerCod = data.getIntExtra("careerCod", 0)
 
-                    val index = fullList.indexOfFirst { it.id == studentId }
-                    if (index != -1) {
-                        fullList[index].apply {
-                            this.name = name
-                            this.telNumber = telNumber
-                            this.email = email
-                            this.bornDate = bornDate
-                            this.careerCod = careerCod
-                        }
+                    if (position != -1) {
+                        fullList[position] = Student_(
+                            id = studentId,
+                            name = name,
+                            telNumber = telNumber,
+                            email = email,
+                            bornDate = bornDate,
+                            careerCod = careerCod
+                        )
                         mAdapter.updateData(fullList)
-                        Toast.makeText(this, "Estudiante actualizado", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Student updated", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
-        addStudentLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        addStudentLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data
-                if (data != null) {
-                    // Obtener los valores de los campos de la nueva actividad
-                    val studentId = data.getIntExtra("studentId", -1)
-                    val studentName = data.getStringExtra("studentName") ?: ""
-                    val studentTelNumber = data.getIntExtra("studentTelNumber",-1)
-                    val studentEmail = data.getStringExtra("studentEmail") ?: ""
-                    val studentBornDate = data.getStringExtra("studentBornDate") ?: ""
-                    val studentCareerCode = data.getIntExtra("studentCareerCode", -1)
-
-                    // Crear un nuevo objeto Estudiante con los datos recibidos
-                    val newStudent = Student_(studentId, studentName, studentTelNumber, studentEmail, studentBornDate, studentCareerCode)
-
-                    // Agregar el nuevo estudiante a la lista
-                    fullList.add(newStudent)
-                    mAdapter.updateData(fullList)
-                    Toast.makeText(this, "Estudiante agregado", Toast.LENGTH_SHORT).show()
-                }
+                loadStudents() // Recarga los datos del servidor
+                Toast.makeText(this, "Estudiante agregado", Toast.LENGTH_SHORT).show()
             }
         }
+
         fabAgregarEstudiante.setOnClickListener {
-            // Iniciar la actividad para agregar un curso
             val intent = Intent(this, AddStudent::class.java)
             addStudentLauncher.launch(intent)
         }
-
+        loadStudents()
         setUpRecyclerView()
-        Log.d("CareerActivity", "Después de setUpRecyclerView")
-
     }
+
 
     //devuelve la lista de los carreas
     private fun getStudents(): MutableList<Student_> {
-        return mutableListOf(
-          Student_(1,"Manuel Mora",62567524,"Manuel@gmail.com","09/13/2004",1),
-            Student_(2,"Victor Quesada",82738459,"Victor@gmail.com","02/3/2000",1),
-            Student_(3,"Pablo Alvarez",384912303,"Pablo@gmail.com","04/1/1999",1)
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Loading students...")
+            setCancelable(false)
+            show()
+        }
 
-        )
+        val students = mutableListOf<Student_>()
+        try {
+            val response = HttpHelper.getRawResponse("students")
+            if (response != null) {
+                val json = JSONObject(response)
+                val dataArray = json.getJSONArray("data")
+                val type = object : TypeToken<List<Student_>>() {}.type
+                students.addAll(Gson().fromJson<List<Student_>>(dataArray.toString(), type))
+            }
+        } catch (e: Exception) {
+            Log.e("API_ERROR", "Error loading students", e)
+        } finally {
+            progressDialog.dismiss()
+        }
+
+        return students
     }
 
+    private fun loadStudents() {
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Loading students...")
+            setCancelable(false)
+            show()
+        }
+
+        object : AsyncTask<Void, Void, List<Student_>>() {
+            override fun doInBackground(vararg params: Void?): List<Student_> {
+                return try {
+                    val response = HttpHelper.getRawResponse("students")
+                    Log.d("API_STUDENTS", "Response: $response")
+
+                    if (response != null) {
+                        val json = JSONObject(response)
+                        val dataArray = json.getJSONArray("data")
+                        val type = object : TypeToken<List<Student_>>() {}.type
+                        Gson().fromJson(dataArray.toString(), type)
+                    } else {
+                        emptyList()
+                    }
+                } catch (e: Exception) {
+                    Log.e("API_ERROR", "Error loading students", e)
+                    emptyList()
+                }
+            }
+
+            override fun onPostExecute(result: List<Student_>) {
+                progressDialog.dismiss()
+                if (result.isNotEmpty()) {
+                    fullList.clear()
+                    fullList.addAll(result)
+                    mAdapter.updateData(fullList)
+                    Log.d("LOAD_STUDENTS", "Loaded students: ${fullList.size}")
+                } else {
+                    Toast.makeText(this@Student, "No se encontraron estudiantes", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.execute()
+    }
 
 
     //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager
@@ -193,9 +245,41 @@ class Student : AppCompatActivity() {
         }
         editStudentLauncher.launch(intent)
     }
+
     fun deleteStudent(position: Int) {
         val student = mAdapter.getItem(position)
-        mAdapter.removeItem(position)
-        Toast.makeText(this, "Estudiante eliminada: ${student.id}", Toast.LENGTH_SHORT).show()
+        Log.d("DELETE_STUDENT", "Attempting to delete student with ID: ${student.id}")
+
+        AlertDialog.Builder(this)
+            .setTitle("Are you sure?")
+            .setMessage("ArAre you sure you want to delete this student?")
+            .setPositiveButton("Delete") { _, _ ->
+                Thread {
+                    try {
+                        val url = "students/${student.id}"
+                        Log.d("DELETE_STUDENT", "Request URL: $url")
+
+                        val success = HttpHelper.deleteRequest(url)
+                        Log.d("DELETE_STUDENT", "Delete response: $success")
+
+                        runOnUiThread {
+                            if (success) {
+                                mAdapter.removeItem(position)
+                                Toast.makeText(this, "Student deleted", Toast.LENGTH_SHORT).show()
+                                loadStudents()
+                            } else {
+                                Toast.makeText(this, "Error al eliminar", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("DELETE_STUDENT", "Error deleting student", e)
+                        runOnUiThread {
+                            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }.start()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 }
