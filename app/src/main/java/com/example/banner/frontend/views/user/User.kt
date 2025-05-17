@@ -1,10 +1,13 @@
 package com.example.banner.frontend.views.user
 import android.app.Activity
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -19,10 +22,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.backend_banner.backend.Models.Teacher_
 import com.example.backend_banner.backend.Models.Usuario_
 import com.example.banner.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import org.json.JSONObject
 
 class User : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -89,44 +96,111 @@ class User : AppCompatActivity() {
             }
         }
 
+        addUserLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                loadUsers() // Recarga los datos del servidor
+                Toast.makeText(this, "User added", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         //edit
-        editUserLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        editUserLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 if (data != null) {
-                    val index = data.getIntExtra("userIndex", -1)
-                    val usuarioId = data.getIntExtra("usuarioId", -1)
-                    val usuarioPassword = data.getStringExtra("usuarioPassword") ?: ""
-                    val usuarioRole = data.getStringExtra("usuarioRole") ?: ""
+                    val position = data.getIntExtra("userIndex", -1)
+                    val userId = data.getIntExtra("usuarioId", -1)
+                    val password = data.getStringExtra("usuarioPassword") ?: ""
+                    val role = data.getStringExtra("usuarioRole") ?: ""
 
-                    if (index != -1) {
-                        val editedUser = Usuario_(usuarioId, usuarioPassword, usuarioRole)
-                        fullList[index] = editedUser
+                    if (position != -1) {
+                        fullList[position] = Usuario_(userId, password, role)
                         mAdapter.updateData(fullList)
-                        Toast.makeText(this, "Usuario editado", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "User updated", Toast.LENGTH_SHORT).show()
+
+                        loadUsers()
                     }
                 }
             }
         }
         fabAgregarUsuario.setOnClickListener {
-            // Iniciar la actividad para agregar un curso
             val intent = Intent(this, AddUser::class.java)
             addUserLauncher.launch(intent)
         }
 
         setUpRecyclerView()
-        Log.d("CareerActivity", "Después de setUpRecyclerView")
+        loadUsers()
         enableSwipeToDeleteAndEdit()
     }
 
-    //devuelve la lista de los carreas
-    private fun getUsuers(): MutableList<Usuario_> {
-        return mutableListOf(
-            Usuario_(1,"pass","Student"),
-            Usuario_(2,"pass","Teacher"),
-            Usuario_(3,"pass","Admi"),
+    private fun loadUsers() {
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Loading users...")
+            setCancelable(false)
+            show()
+        }
 
-        )
+        object : AsyncTask<Void, Void, List<Usuario_>>() {
+            override fun doInBackground(vararg params: Void?): List<Usuario_> {
+                return try {
+                    val response = HttpHelper.getRawResponse("users")
+                    Log.d("API_USERS", "Response: $response")
+
+                    if (response != null) {
+                        val json = JSONObject(response)
+                        val dataArray = json.getJSONArray("data")
+                        val type = object : TypeToken<List<Usuario_>>() {}.type
+                        Gson().fromJson(dataArray.toString(), type)
+                    } else {
+                        emptyList()
+                    }
+                } catch (e: Exception) {
+                    Log.e("API_ERROR", "Error loading users", e)
+                    emptyList()
+                }
+            }
+
+            override fun onPostExecute(result: List<Usuario_>) {
+                progressDialog.dismiss()
+                if (result.isNotEmpty()) {
+                    fullList.clear()
+                    fullList.addAll(result)
+                    mAdapter.updateData(fullList)
+                    Log.d("LOAD_USERS", "Loaded users: ${fullList.size}")
+                } else {
+                    Toast.makeText(this@User, "No users found", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.execute()
+    }
+
+    private fun getUsuers(): MutableList<Usuario_> {
+        val progressDialog = ProgressDialog(this).apply {
+            setMessage("Loading users...")
+            setCancelable(false)
+            show()
+        }
+
+        val usuarios = mutableListOf<Usuario_>()
+        try {
+            val response = HttpHelper.getRawResponse("users")
+            if (response != null) {
+                val json = JSONObject(response)
+                val dataArray = json.getJSONArray("data")
+                val type = object : TypeToken<List<Usuario_>>() {}.type
+                usuarios.addAll(Gson().fromJson<List<Usuario_>>(dataArray.toString(), type))
+            }
+        } catch (e: Exception) {
+            Log.e("API_ERROR", "Error loading teachers", e)
+        } finally {
+            progressDialog.dismiss()
+        }
+
+        return usuarios
     }
     //Habilitar Swipe con ItemTouchHelper
     private fun enableSwipeToDeleteAndEdit() {
@@ -143,7 +217,6 @@ class User : AppCompatActivity() {
 
                 when (direction) {
                     ItemTouchHelper.RIGHT -> {
-                        // Editar usuario
                         val intent = Intent(this@User, EditUser::class.java).apply {
                             putExtra("usuarioId", student.id)
                             putExtra("usuarioPassword", student.password)
@@ -151,6 +224,7 @@ class User : AppCompatActivity() {
                             putExtra("userIndex", position)
                         }
                         editUserLauncher.launch(intent)
+                        mAdapter.notifyItemChanged(position)
                     }
                 }
             }
@@ -181,7 +255,7 @@ class User : AppCompatActivity() {
 
                     c.drawRect(background, paint)
 
-                    // Agregar ícono de lápiz (opcional: revisa si tienes este drawable en tu proyecto)
+
                     val icon = ContextCompat.getDrawable(this@User, R.drawable.ic_edit) // Usa tu ícono aquí
                     icon?.let {
                         val iconMargin = (itemView.height - it.intrinsicHeight) / 2
@@ -238,7 +312,39 @@ class User : AppCompatActivity() {
 
     fun deleteUser(position: Int) {
         val user = mAdapter.getItem(position)
-        mAdapter.removeItem(position)
-        Toast.makeText(this, "Usuario eliminada: ${user.id}", Toast.LENGTH_SHORT).show()
+        Log.d("DELETE_USER", "Attempting to delete user with ID: ${user.id}")
+
+        AlertDialog.Builder(this)
+            .setTitle("Are you sure?")
+            .setMessage("Are you sure you want to delete this user?")
+            .setPositiveButton("Delete") { _, _ ->
+                Thread {
+                    try {
+                        val url = "users/${user.id}"
+                        Log.d("DELETE_USER", "Request URL: $url")
+
+                        val success = HttpHelper.deleteRequest(url)
+                        Log.d("DELETE_USER", "Delete response: $success")
+
+                        runOnUiThread {
+                            if (success) {
+                                mAdapter.removeItem(position)
+                                Toast.makeText(this@User, "User deleted", Toast.LENGTH_SHORT).show()
+                                loadUsers()
+                            } else {
+                                Toast.makeText(this@User, "Error deleting user", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("DELETE_USER", "Error deleting user", e)
+                        runOnUiThread {
+                            Toast.makeText(this@User, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }.start()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
+
 }

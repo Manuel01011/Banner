@@ -114,7 +114,6 @@ class Teacher : AppCompatActivity() {
         }
 
         fabAgregarProfesor.setOnClickListener {
-            // Iniciar la actividad para agregar un curso
             val intent = Intent(this, AddTeacher::class.java)
             addTeacherLauncher.launch(intent)
         }

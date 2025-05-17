@@ -158,6 +158,16 @@ BEGIN
 END //
 DELIMITER ;
 
+-- eliminar usuario
+DELIMITER //
+
+CREATE PROCEDURE delete_user(IN user_id INT)
+BEGIN
+    DELETE FROM Usuario WHERE id = user_id;
+END //
+
+DELIMITER ;
+
 
 
 -- Procedimiento para buscar carrera por nombre y codigo
@@ -459,6 +469,8 @@ BEGIN
     VALUES (p_id, p_number_group, p_year, p_horario, p_course_cod, p_teacher_id);
 END //
 DELIMITER ;
+
+CALL insert_grupo(3, 2, 2025, 'Lunes y Miércoles 8:00-10:00', 101, 1);
 
 
 DELIMITER //

@@ -53,7 +53,7 @@
             android:layout_marginTop="40dp"
             android:layout_marginEnd="4dp"
             android:background="@android:color/transparent"
-            android:contentDescription="Edit career"
+            android:contentDescription="Edit User"
             android:src="@drawable/ic_edit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_menu_delete"
             android:background="@android:color/transparent"
-            android:contentDescription="Eliminar Matricula"
+            android:contentDescription="Eliminar User"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
