@@ -68,8 +68,12 @@ CREATE TABLE Enrollment (
 CREATE TABLE Usuario (
   id INTEGER PRIMARY KEY,
   password TEXT,
-  role TEXT CHECK (role IN ('admin', 'matriculador', 'profesor', 'alumno'))
+  role TEXT CHECK (role IN ('admin', 'matriculador', 'teacher', 'student'))
 );
+
+ALTER TABLE Usuario 
+ADD CONSTRAINT usuario_chk_1 
+CHECK (role IN ('admin', 'matriculador', 'profesor', 'alumno', 'teacher', 'student'));
 
 -- Insert data into Career
 INSERT INTO Career (cod, name, title) VALUES
@@ -169,6 +173,36 @@ END //
 DELIMITER ;
 
 
+DELIMITER //
+CREATE PROCEDURE sp_LoginUsuario(
+    IN p_id INT,
+    IN p_password VARCHAR(255)
+)
+BEGIN
+    DECLARE user_count INT;
+    
+    SELECT COUNT(*) INTO user_count 
+    FROM Usuario 
+    WHERE id = p_id AND password = p_password;
+    
+    IF user_count > 0 THEN
+        SELECT 1 AS login_result;
+    ELSE
+        SELECT 0 AS login_result;
+    END IF;
+END //
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE GetUsuarioById(IN user_id INT)
+BEGIN
+    SELECT id, password, role
+    FROM Usuario
+    WHERE id = user_id;
+END //
+
+DELIMITER ;
 
 -- Procedimiento para buscar carrera por nombre y codigo
 DELIMITER $$

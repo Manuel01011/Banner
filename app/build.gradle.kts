@@ -60,6 +60,7 @@ dependencies {
 }
 
 dependencies {
+    implementation(libs.volley)
     implementation(libs.cronet.embedded)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.media3.common.ktx)

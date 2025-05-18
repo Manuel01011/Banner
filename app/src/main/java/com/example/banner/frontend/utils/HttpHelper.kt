@@ -35,6 +35,33 @@ object HttpHelper {
         }
     }
 
+    fun postRequest(endpoint: String, requestBody: String): String? {
+        return try {
+            val url = URL("${BASE_URL}$endpoint")
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.doOutput = true
+            connection.setRequestProperty("Content-Type", "application/json")
+
+            val outputStream = connection.outputStream
+            outputStream.write(requestBody.toByteArray())
+            outputStream.flush()
+            outputStream.close()
+
+            if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+                val inputStream = connection.inputStream
+                val response = inputStream.bufferedReader().use { it.readText() }
+                inputStream.close()
+                response
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("HTTP_POST", "Error in POST request", e)
+            null
+        }
+    }
+
     // Método para enviar datos (POST/PUT)
     fun <T> sendRequest(
         endpoint: String,

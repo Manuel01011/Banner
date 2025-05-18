@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.backend_banner.backend.Models.Usuario_
 import com.example.banner.R
+import org.json.JSONObject
 
 class AddUser : AppCompatActivity() {
     private lateinit var usuarioId: EditText
@@ -39,16 +40,28 @@ class AddUser : AppCompatActivity() {
 
     private fun validateFields(): Boolean {
         return when {
+            usuarioId.text.isNullOrEmpty() -> {
+                usuarioId.error = "Enter user ID"
+                false
+            }
+            !usuarioId.text.toString().matches(Regex("\\d+")) -> {
+                usuarioId.error = "ID must be a number"
+                false
+            }
             usuarioPassword.text.isNullOrEmpty() -> {
                 usuarioPassword.error = "Enter password"
+                false
+            }
+            usuarioPassword.text.toString().length < 4 -> {
+                usuarioPassword.error = "Password must be at least 4 characters"
                 false
             }
             usuarioRole.text.isNullOrEmpty() -> {
                 usuarioRole.error = "Enter role"
                 false
             }
-            usuarioId.text.isNullOrEmpty() -> {
-                usuarioId.error = "Enter user ID"
+            !usuarioRole.text.toString().lowercase().matches(Regex("admin|teacher|student")) -> {
+                usuarioRole.error = "Role must be admin, teacher or student"
                 false
             }
             else -> true
@@ -62,14 +75,23 @@ class AddUser : AppCompatActivity() {
             show()
         }
 
+        // Validar que el ID sea un número válido
+        val userId = try {
+            usuarioId.text.toString().toInt()
+        } catch (e: NumberFormatException) {
+            progressDialog.dismiss()
+            usuarioId.error = "ID must be a number"
+            return
+        }
+
         val user = Usuario_(
-            id = usuarioId.id,
+            id = userId, // Usar el ID convertido a Int
             password = usuarioPassword.text.toString(),
-            role = usuarioRole.text.toString(),
+            role = usuarioRole.text.toString().lowercase() // Convertir a minúsculas para consistencia
         )
 
-        object : AsyncTask<Void, Void, Boolean>() {
-            override fun doInBackground(vararg params: Void?): Boolean {
+        object : AsyncTask<Void, Void, Pair<Boolean, String?>>() {
+            override fun doInBackground(vararg params: Void?): Pair<Boolean, String?> {
                 return try {
                     val response = HttpHelper.sendRequest(
                         "users",
@@ -78,24 +100,33 @@ class AddUser : AppCompatActivity() {
                         String::class.java
                     )
                     Log.d("API_RESPONSE", "Response: $response")
-                    response != null && response.contains("\"success\":true")
+
+                    if (response != null) {
+                        val jsonResponse = JSONObject(response)
+                        val success = jsonResponse.optBoolean("success", false)
+                        val message = jsonResponse.optString("message", null)
+                        Pair(success, message)
+                    } else {
+                        Pair(false, "No response from server")
+                    }
                 } catch (e: Exception) {
                     Log.e("API_ERROR", "Error saving user", e)
-                    false
+                    Pair(false, e.message)
                 }
             }
 
-            override fun onPostExecute(success: Boolean) {
+            override fun onPostExecute(result: Pair<Boolean, String?>) {
                 progressDialog.dismiss()
-                if (success) {
+                if (result.first) {
                     Toast.makeText(this@AddUser, "User saved successfully", Toast.LENGTH_SHORT).show()
                     setResult(Activity.RESULT_OK)
                     finish()
                 } else {
+                    val errorMsg = result.second ?: "Error saving user"
                     Toast.makeText(
                         this@AddUser,
-                        "Error saving user",
-                        Toast.LENGTH_SHORT
+                        "Error: $errorMsg",
+                        Toast.LENGTH_LONG
                     ).show()
                 }
             }
