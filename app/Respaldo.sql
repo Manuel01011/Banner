@@ -111,8 +111,8 @@ INSERT INTO Grupo (id, number_group, year, horario, course_cod, teacher_id) VALU
 
 -- Insert data into Enrollment
 INSERT INTO Enrollment (student_id, grupo_id, grade) VALUES
-(1, 1, 89.5),
-(2, 2, 92.0);
+(3, 1, 89.5),
+(3, 2, 92.0);
 
 -- Insert data into Usuario
 INSERT INTO Usuario (id, password, role) VALUES
@@ -121,8 +121,9 @@ INSERT INTO Usuario (id, password, role) VALUES
 (3, 'profesor456', 'profesor'),
 (4, 'alumno789', 'alumno');
 
-
-
+INSERT INTO Usuario (id, password, role) VALUES(3, 'pass', 'teacher')
+select * from Usuario
+delete from Usuario where id = 3
 
 -- procedimiento para agregar un curso
 DELIMITER //
@@ -216,6 +217,32 @@ BEGIN
     AND (p_cod IS NULL OR cod = p_cod);
 END $$
 DELIMITER ;
+
+-- procedimiento para obtener una carrera por su codigo
+DELIMITER $$
+CREATE PROCEDURE getCareerByCod(
+    IN p_cod INT
+)
+BEGIN
+    SELECT * FROM Career 
+    WHERE  cod = p_cod;
+END $$
+DELIMITER ;
+
+call getCareerByCod(1)
+
+-- procedimiento para obtener una curso por su codigo
+DELIMITER $$
+CREATE PROCEDURE get_course_by_cod(
+    IN p_cod INT
+)
+BEGIN
+    SELECT * FROM course 
+    WHERE  cod = p_cod;
+END $$
+DELIMITER ;
+select * from enrollment
+call get_course_by_cod(3)
 
 -- procedimiento para editar una carrera
 DELIMITER //
@@ -776,6 +803,45 @@ END $$
 
 DELIMITER ;
 
+-- historial de student
+DELIMITER //
+CREATE PROCEDURE GetStudentAcademicHistory(IN student_id INT)
+BEGIN
+    SELECT 
+        e.student_id,
+        e.grade,
+        c.cod AS course_cod,
+        c.name AS course_name,
+        c.credits,
+        cl.id AS ciclo_id,
+        cl.year AS ciclo_year,
+        cl.number AS ciclo_number,
+        cr.cod AS career_cod,
+        cr.name AS career_name,
+        g.id AS group_id,
+        g.number_group,
+        t.id AS teacher_id,
+        t.name AS teacher_name
+    FROM 
+        Enrollment e
+    JOIN 
+        Grupo g ON e.grupo_id = g.id
+    JOIN 
+        Course c ON g.course_cod = c.cod
+    JOIN 
+        Ciclo cl ON c.ciclo_id = cl.id
+    JOIN 
+        Career cr ON c.career_cod = cr.cod
+    LEFT JOIN 
+        Teacher t ON g.teacher_id = t.id
+    WHERE 
+        e.student_id = student_id
+    ORDER BY 
+        cl.year DESC, cl.number DESC;
+END //
+DELIMITER ;
+
+call GetStudentAcademicHistory(1)
 
 DELIMITER $$
 

@@ -35,6 +35,71 @@ object HttpHelper {
         }
     }
 
+    fun postRaw(url: String, body: String): String? {
+        return try {
+            val connection = URL("$BASE_URL/$url").openConnection() as HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.doOutput = true
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+
+            // Escribir el cuerpo de la solicitud
+            val outputStream = connection.outputStream
+            outputStream.write(body.toByteArray())
+            outputStream.flush()
+            outputStream.close()
+
+            // Leer la respuesta
+            val responseCode = connection.responseCode
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                connection.inputStream.bufferedReader().use { it.readText() }
+            } else {
+                // Leer el error stream si hay un código de error
+                connection.errorStream?.bufferedReader()?.use { it.readText() }?.also {
+                    Log.e("HTTP_ERROR", "Error $responseCode: $it")
+                }
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("HTTP_EXCEPTION", "Error en postRaw: ${e.message}")
+            null
+        }
+    }
+
+    fun get(endpoint: String): String? {
+        return try {
+            // Eliminamos barras adicionales al principio del endpoint si existen
+            val cleanEndpoint = endpoint.removePrefix("/")
+            val fullUrl = "$BASE_URL$cleanEndpoint"
+
+            Log.d("HTTP_GET", "Requesting URL: $fullUrl")
+
+            val connection = URL(fullUrl).openConnection() as HttpURLConnection
+            connection.apply {
+                requestMethod = "GET"
+                connectTimeout = 10000
+                readTimeout = 10000
+                setRequestProperty("Accept", "application/json")
+            }
+
+            val responseCode = connection.responseCode
+            Log.d("HTTP_GET", "Response code: $responseCode")
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                val response = connection.inputStream.bufferedReader().use { it.readText() }
+                Log.d("HTTP_GET", "Response: $response")
+                response
+            } else {
+                val error = connection.errorStream?.bufferedReader()?.use { it.readText() }
+                Log.e("HTTP_GET", "Error $responseCode: $error")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("HTTP_GET", "Exception: ${e.message}", e)
+            null
+        }
+    }
+
+
     fun postRequest(endpoint: String, requestBody: String): String? {
         return try {
             val url = URL("${BASE_URL}$endpoint")

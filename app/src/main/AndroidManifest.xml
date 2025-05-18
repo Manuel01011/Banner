@@ -78,6 +78,9 @@
 
         <activity android:name=".frontend.views.login.login" />
 
+        <activity android:name=".frontend.views.rol_student.StudentHistory"
+            android:theme="@style/Theme.Banner" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

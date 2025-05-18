@@ -1,5 +1,4 @@
 package com.example.banner.frontend.views.login
-
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -13,8 +12,7 @@ import com.example.banner.backend.Controllers.UserController
 import com.example.banner.frontend.views.admin.Admin
 import com.example.banner.frontend.views.professor.Teacher
 import com.example.banner.frontend.views.register.Register
-import com.example.banner.frontend.views.student.Student
-import com.google.gson.Gson
+import com.example.banner.frontend.views.rol_student.StudentHistory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -151,7 +149,7 @@ class login : ComponentActivity(){
         val intent = when (role.toLowerCase()) {
             "admin" -> Intent(this, Admin::class.java)
             "teacher" -> Intent(this, Teacher::class.java)
-            "student" -> Intent(this, Student::class.java)
+            "student" -> Intent(this, StudentHistory::class.java)
             else -> {
                 showToast("Rol de usuario no reconocido: $role")
                 return
