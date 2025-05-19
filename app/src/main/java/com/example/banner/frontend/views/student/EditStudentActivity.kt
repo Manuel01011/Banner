@@ -22,6 +22,7 @@ class EditStudentActivity : AppCompatActivity() {
     private lateinit var emailEdit: EditText
     private lateinit var bornDateEdit: EditText
     private lateinit var careerCodEdit: EditText
+    private lateinit var passwordEdit: EditText
     private lateinit var saveButton: Button
 
     private var position: Int = -1
@@ -89,7 +90,9 @@ class EditStudentActivity : AppCompatActivity() {
                     telNumber = telEdit.text.toString().toInt(),
                     email = emailEdit.text.toString(),
                     bornDate = bornDateEdit.text.toString(),
-                    careerCod = careerCodEdit.text.toString().toInt()
+                    careerCod = careerCodEdit.text.toString().toInt(),
+                    password = passwordEdit.text.toString()
+
                 )
 
                 object : AsyncTask<Void, Void, Boolean>() {
@@ -119,6 +122,7 @@ class EditStudentActivity : AppCompatActivity() {
                                 putExtra("email", updatedStudent.email)
                                 putExtra("bornDate", updatedStudent.bornDate)
                                 putExtra("careerCod", updatedStudent.careerCod)
+                                putExtra("password", updatedStudent.password)
                             }
                             setResult(Activity.RESULT_OK, resultIntent)
                             finish()

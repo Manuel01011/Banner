@@ -95,6 +95,7 @@ class Student : AppCompatActivity() {
                     val email = data.getStringExtra("email") ?: ""
                     val bornDate = data.getStringExtra("bornDate") ?: ""
                     val careerCod = data.getIntExtra("careerCod", 0)
+                    val password = data.getStringExtra("password") ?: ""
 
                     if (position != -1) {
                         fullList[position] = Student_(
@@ -103,7 +104,8 @@ class Student : AppCompatActivity() {
                             telNumber = telNumber,
                             email = email,
                             bornDate = bornDate,
-                            careerCod = careerCod
+                            careerCod = careerCod,
+                            password = password
                         )
                         mAdapter.updateData(fullList)
                         Toast.makeText(this, "Student updated", Toast.LENGTH_SHORT).show()

@@ -103,6 +103,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp" />
 
+    <!-- password-->
+    <TextView
+        android:id="@+id/agregar_estudiante_pass_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter the password"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/agregar_estudiante_email"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/agregar_estudiante_pass"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:hint="Password"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@id/agregar_estudiante_pass_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp" />
+
     <!-- Fecha de nacimiento -->
     <TextView
         android:id="@+id/agregar_estudiante_bornDate_text"
@@ -110,7 +134,7 @@
         android:layout_height="wrap_content"
         android:text="Enter date of birth"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/agregar_estudiante_email"
+        app:layout_constraintTop_toBottomOf="@id/agregar_estudiante_pass"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"/>
@@ -132,7 +156,7 @@
         android:id="@+id/agregar_estudiante_careerCod_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter major code"
+        android:text="Carrer Code"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/agregar_estudiante_bornDate"
         app:layout_constraintStart_toStartOf="parent"
@@ -144,7 +168,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:hint="Code"
+        android:hint="Carrer Code"
         android:inputType="number"
         app:layout_constraintTop_toBottomOf="@id/agregar_estudiante_careerCod_text"
         app:layout_constraintStart_toStartOf="parent"

@@ -37,6 +37,8 @@ CREATE TABLE Student (
   career_cod INTEGER,
   FOREIGN KEY (career_cod) REFERENCES Career(cod)
 );
+ALTER TABLE Student ADD COLUMN password varchar(100);
+
 
 CREATE TABLE Teacher (
   id INTEGER PRIMARY KEY,
@@ -459,8 +461,6 @@ BEGIN
 END//
 DELIMITER ;
 
-
-
 DELIMITER //
 CREATE PROCEDURE delete_course(IN p_cod INT)
 BEGIN
@@ -468,10 +468,7 @@ BEGIN
 END //
 DELIMITER ;
 
-
-
-
-
+drop procedure insert_student
 DELIMITER //
 CREATE PROCEDURE insert_student(
     IN p_id INT,
@@ -479,11 +476,12 @@ CREATE PROCEDURE insert_student(
     IN p_tel_number INT,
     IN p_email VARCHAR(100),
     IN p_born_date DATE,
-    IN p_career_cod INT
+    IN p_career_cod INT,
+    IN p_password varchar(100)
 )
 BEGIN
-    INSERT INTO Student (id, name, tel_number, email, born_date, career_cod) 
-    VALUES (p_id, p_name, p_tel_number, p_email, p_born_date, p_career_cod);
+    INSERT INTO Student (id, name, tel_number, email, born_date, career_cod, password) VALUES (p_id, p_name, p_tel_number, p_email, p_born_date, p_career_cod,p_password);
+    INSERT INTO Usuario (id, password, role) VALUES (p_id, p_password, 'student');
 END //
 DELIMITER ;
 
@@ -929,6 +927,8 @@ BEGIN
     SELECT * FROM Student;
 END;
 //DELIMITER 
+call GetAllStudents()
+
 
 -- procedieminto para todos los profesores
 DELIMITER //

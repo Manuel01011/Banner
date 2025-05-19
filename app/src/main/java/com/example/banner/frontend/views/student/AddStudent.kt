@@ -1,8 +1,6 @@
 package com.example.banner.frontend.views.student
-
 import android.app.Activity
 import android.app.ProgressDialog
-import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.Button
@@ -20,6 +18,7 @@ class AddStudent : AppCompatActivity() {
     private lateinit var studentEmail: EditText
     private lateinit var studentBornDate: EditText
     private lateinit var studentCareerCode: EditText
+    private lateinit var studentPassword: EditText
     private lateinit var saveBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +32,7 @@ class AddStudent : AppCompatActivity() {
         studentEmail = findViewById(R.id.agregar_estudiante_email)
         studentBornDate = findViewById(R.id.agregar_estudiante_bornDate)
         studentCareerCode = findViewById(R.id.agregar_estudiante_careerCod)
+        studentPassword = findViewById(R.id.agregar_estudiante_pass)
         saveBtn = findViewById(R.id.btn_guardar_estudiante)
 
         // Configuramos el botón para guardar el estudiante
@@ -43,6 +43,7 @@ class AddStudent : AppCompatActivity() {
             val studentEmail = studentEmail.text.toString()
             val studentBornDate = studentBornDate.text.toString()
             val studentCareerCod = studentCareerCode.text.toString().toIntOrNull()
+            val studentPassword = studentPassword.text.toString()
 
             if (studentId != null && studentName.isNotBlank() &&
                 studentTelNumber != null && studentEmail.isNotBlank() &&
@@ -54,7 +55,8 @@ class AddStudent : AppCompatActivity() {
                     telNumber = studentTelNumber,
                     email = studentEmail,
                     bornDate = studentBornDate,
-                    careerCod = studentCareerCod
+                    careerCod = studentCareerCod,
+                    password = studentPassword
                 )
 
                 InsertStudentTask().execute(newStudent)

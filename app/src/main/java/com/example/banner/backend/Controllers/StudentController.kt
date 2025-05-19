@@ -23,7 +23,8 @@ class StudentController {
                     it.getInt("tel_number"),
                     it.getString("email"),
                     it.getString("born_date"),
-                    it.getInt("career_cod")
+                    it.getInt("career_cod"),
+                    it.getString("password")
                 )
                 students.add(student)
             }
@@ -66,7 +67,8 @@ class StudentController {
                     it.getInt("tel_number"),
                     it.getString("email"),
                     it.getString("born_date"),
-                    it.getInt("career_cod")
+                    it.getInt("career_cod"),
+                    it.getString("password")
                 )
                 students.add(student)
             }
