@@ -13,10 +13,10 @@
         android:layout_height="wrap_content"
         android:text="Enter user id"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/agregar_estudiante_careerCod"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/agregar_usuario_id"
@@ -25,10 +25,10 @@
         android:minHeight="48dp"
         android:hint="ID"
         android:inputType="number"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/agregar_usuario_id_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="16dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Contraseña del usuario -->
     <TextView
@@ -37,10 +37,10 @@
         android:layout_height="wrap_content"
         android:text="Enter user password"
         android:textStyle="bold"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/agregar_usuario_id"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/agregar_usuario_password"
@@ -49,10 +49,10 @@
         android:minHeight="48dp"
         android:hint="Password"
         android:inputType="textPassword"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/agregar_usuario_password_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="16dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Rol del usuario -->
     <TextView
@@ -61,10 +61,10 @@
         android:layout_height="wrap_content"
         android:text="User rol"
         android:textStyle="bold"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/agregar_usuario_password"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/agregar_usuario_role"
@@ -73,10 +73,10 @@
         android:minHeight="48dp"
         android:hint="Rol"
         android:inputType="text"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/agregar_usuario_role_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="16dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Botón para guardar el usuario -->
     <Button
@@ -87,9 +87,9 @@
         android:backgroundTint="@color/purple_500"
         android:textColor="@android:color/white"
         android:minHeight="48dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintTop_toBottomOf="@id/agregar_usuario_role"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

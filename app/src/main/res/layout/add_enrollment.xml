@@ -22,12 +22,11 @@
         android:text="Enter student id"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
-    <EditText
-        android:id="@+id/agregar_id_estudiante"
+    <Spinner
+        android:id="@+id/student_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="ID"
-        android:inputType="number"/>
+        android:layout_marginBottom="16dp"/>
 
     <!-- ID de grupo -->
     <TextView
@@ -36,12 +35,12 @@
         android:text="Enter group id"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
-    <EditText
-        android:id="@+id/agregar_id_grupo"
+
+    <Spinner
+        android:id="@+id/group_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="ID"
-        android:inputType="number"/>
+        android:layout_marginBottom="16dp"/>
 
     <!-- Calificación -->
     <TextView

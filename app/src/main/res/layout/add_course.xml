@@ -22,14 +22,16 @@
         android:text="Course Code"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
+
     <EditText
-        android:id="@+id/agregar_cod_curso"
+        android:id="@+id/agregar_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Course Code"
-        android:inputType="number"
+        android:inputType="text"
         android:minHeight="48dp"
         android:minWidth="48dp"/>
+
 
     <!-- Nombre del curso -->
     <TextView
@@ -86,14 +88,11 @@
         android:text="Cycle ID"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
-    <EditText
-        android:id="@+id/agregar_id_ciclo"
+    <Spinner
+        android:id="@+id/cycle_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Cycle ID"
-        android:inputType="number"
-        android:minHeight="48dp"
-        android:minWidth="48dp"/>
+        android:minHeight="48dp"/>
 
     <!-- Código de carrera -->
     <TextView
@@ -102,14 +101,11 @@
         android:text="Career Code"
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
-    <EditText
-        android:id="@+id/agregar_cod_carrera"
+    <Spinner
+        android:id="@+id/career_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Career Code"
-        android:inputType="number"
-        android:minHeight="48dp"
-        android:minWidth="48dp"/>
+        android:minHeight="48dp"/>
 
     <!-- Botón Guardar -->
     <Button
