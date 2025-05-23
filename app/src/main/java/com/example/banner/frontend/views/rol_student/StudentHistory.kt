@@ -14,14 +14,6 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import com.example.banner.MainActivity
-import com.example.banner.frontend.views.career.Career
-import com.example.banner.frontend.views.cicle.Semester
-import com.example.banner.frontend.views.course.Course
-import com.example.banner.frontend.views.enrollment.Enrollment
-import com.example.banner.frontend.views.group.Group
-import com.example.banner.frontend.views.professor.Teacher
-import com.example.banner.frontend.views.student.Student
-import com.example.banner.frontend.views.user.User
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

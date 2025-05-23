@@ -174,7 +174,12 @@ object HttpHelper {
             if (responseType == String::class.java) {
                 response as T
             } else {
-                gson.fromJson(response, responseType)
+                if (response.isNullOrBlank()) {
+                    Log.e("HTTP", "Respuesta vacía, no se puede parsear")
+                    null
+                } else {
+                    gson.fromJson(response, responseType)
+                }
             }
 
         } catch (e: Exception) {

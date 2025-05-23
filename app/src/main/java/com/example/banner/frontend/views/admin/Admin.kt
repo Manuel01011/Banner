@@ -40,7 +40,7 @@ class Admin : AppCompatActivity() {
         navigationView.requestFocus()
 
         // Mostrar nombre del usuario
-        val usuario = intent.getStringExtra("USERNAME")
+        val usuario = intent.getStringExtra("USER_ID")
         textViewWelcome.text = "Welcome $usuario"
 
         // Botón para abrir el menú lateral

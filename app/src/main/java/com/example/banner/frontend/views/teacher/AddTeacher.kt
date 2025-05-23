@@ -71,7 +71,7 @@ class AddTeacher : AppCompatActivity() {
         }
 
         val teacher = Teacher_(
-            id = profesorId.id,
+            id = profesorId.text.toString().toInt(),
             name = profesorName.text.toString(),
             telNumber = profesorTel.text.toString().toInt(),
             email = profesorEmail.text.toString()
