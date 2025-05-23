@@ -18,6 +18,7 @@ class AddTeacher : AppCompatActivity() {
     private lateinit var profesorName: EditText
     private lateinit var profesorTel: EditText
     private lateinit var profesorEmail: EditText
+    private lateinit var profesorPassword: EditText
     private lateinit var saveProfesorBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +30,7 @@ class AddTeacher : AppCompatActivity() {
         profesorName = findViewById(R.id.agregar_profesor_name)
         profesorTel = findViewById(R.id.agregar_profesor_telNumber)
         profesorEmail = findViewById(R.id.agregar_profesor_email)
+        profesorPassword = findViewById(R.id.agregar_profesor_pass)
         saveProfesorBtn = findViewById(R.id.btn_guardar_profesor)
 
         // Configurar el botón de guardar teacher
@@ -56,6 +58,10 @@ class AddTeacher : AppCompatActivity() {
                 profesorEmail.error = "Enter email"
                 false
             }
+            profesorPassword.text.isNullOrEmpty() -> {
+                profesorPassword.error = "Enter password"
+                false
+            }
             !android.util.Patterns.EMAIL_ADDRESS.matcher(profesorEmail.text.toString()).matches() -> {
                 profesorEmail.error = "Invalid email format"
                 false
@@ -74,7 +80,8 @@ class AddTeacher : AppCompatActivity() {
             id = profesorId.text.toString().toInt(),
             name = profesorName.text.toString(),
             telNumber = profesorTel.text.toString().toInt(),
-            email = profesorEmail.text.toString()
+            email = profesorEmail.text.toString(),
+            password = profesorPassword.text.toString()
         )
 
         object : AsyncTask<Void, Void, Boolean>() {

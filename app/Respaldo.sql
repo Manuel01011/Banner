@@ -46,6 +46,7 @@ CREATE TABLE Teacher (
   tel_number INTEGER,
   email TEXT
 );
+ALTER TABLE Teacher ADD COLUMN password varchar(100);
 
 CREATE TABLE Grupo (
   id INTEGER AUTO_INCREMENT PRIMARY KEY,
@@ -492,17 +493,17 @@ BEGIN
 END //
 DELIMITER ;
 
-
 DELIMITER //
 CREATE PROCEDURE insert_teacher(
     IN p_id INT,
     IN p_name VARCHAR(100),
     IN p_tel_number INT,
-    IN p_email VARCHAR(100)
+    IN p_email VARCHAR(100),
+    IN p_password varchar(100)
 )
 BEGIN
-    INSERT INTO Teacher (id, name, tel_number, email) 
-    VALUES (p_id, p_name, p_tel_number, p_email);
+    INSERT INTO Teacher (id, name, tel_number, email, password) VALUES (p_id, p_name, p_tel_number, p_email,p_password);
+    INSERT INTO Usuario (id, password, role) VALUES (p_id, p_password, 'teacher');
 END //
 DELIMITER ;
 
@@ -622,7 +623,7 @@ CREATE PROCEDURE update_student_grade(IN student_id INT, IN grupo_id INT, IN new
 BEGIN
     UPDATE Enrollment 
     SET grade = new_grade
-    WHERE student_id = student_id AND grupo_id = grupo_id;
+    WHERE student_id = p_student_id AND grupo_id = grupo_id;
 END $$
 
 DELIMITER ;
@@ -930,6 +931,8 @@ END;
 call GetAllStudents()
 
 
+
+
 -- procedieminto para todos los profesores
 DELIMITER //
 CREATE PROCEDURE GetAllTeachers()
@@ -937,6 +940,78 @@ BEGIN
     SELECT * FROM Teacher;
 END;
 //DELIMITER 
+
+
+    -- Seleccionar todos los grupos asignados a un profesor específico
+DELIMITER //
+CREATE PROCEDURE get_groups_by_teacher(IN p_teacher_id INT)
+BEGIN
+    SELECT 
+        g.id,
+        g.number_group,
+        g.year,
+        g.horario,
+        g.course_cod,
+        g.teacher_id
+    FROM 
+        Grupo g
+    WHERE 
+        g.teacher_id = p_teacher_id
+    ORDER BY 
+        g.year DESC, g.number_group ASC;
+END //
+DELIMITER ;
+call get_groups_by_teacher(1)
+
+DELIMITER //
+
+
+-- Procedimiento que devuelve todas las matrículas de un grupo específico
+DELIMITER //
+CREATE PROCEDURE GetEnrollmentsByGroupId(IN p_group_id INT)
+BEGIN
+    -- Verificar si el grupo existe
+    DECLARE v_group_exists INT DEFAULT 0;
+    SELECT COUNT(*) INTO v_group_exists FROM Grupo WHERE id = p_group_id;
+    
+    IF v_group_exists = 0 THEN
+        -- Lanzar error si el grupo no existe
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Error: El grupo especificado no existe';
+    ELSE
+        -- Consulta principal para obtener las matrículas con información relacionada
+        SELECT 
+            e.student_id,
+            s.name AS student_name,
+            s.email AS student_email,
+            e.grupo_id,
+            g.number_group AS group_number,
+            c.name AS course_name,
+            c.credits AS course_credits,
+            e.grade,
+            t.name AS teacher_name,
+            CONCAT(ci.year, '-', ci.number) AS ciclo_academico
+        FROM 
+            Enrollment e
+        JOIN 
+            Student s ON e.student_id = s.id
+        JOIN 
+            Grupo g ON e.grupo_id = g.id
+        JOIN 
+            Course c ON g.course_cod = c.cod
+        JOIN 
+            Teacher t ON g.teacher_id = t.id
+        JOIN
+            Ciclo ci ON c.ciclo_id = ci.id
+        WHERE 
+            e.grupo_id = p_group_id
+        ORDER BY 
+            s.name ASC;
+    END IF;
+END //
+DELIMITER ;
+
+call GetEnrollmentsByGroupId(1)
 
 -- procedieminto para todos los usuarios
 DELIMITER //

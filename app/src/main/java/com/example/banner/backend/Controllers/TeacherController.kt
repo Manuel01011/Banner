@@ -21,7 +21,8 @@ class TeacherController {
                     it.getInt("id"),
                     it.getString("name"),
                     it.getInt("tel_number"),
-                    it.getString("email")
+                    it.getString("email"),
+                    it.getString("password")
                 )
                 teachers.add(teacher)
             }
@@ -62,6 +63,7 @@ class TeacherController {
                     it.getString("name"),
                     it.getInt("tel_number"),
                     it.getString("email"),
+                    it.getString("password")
                 )
                 teachers.add(teacher)
             }

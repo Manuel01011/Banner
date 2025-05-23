@@ -5,14 +5,16 @@ class Teacher_ {
     var name: String = ""
     var telNumber: Int = 0
     var email: String = ""
+    var password: String = ""
 
     constructor()
 
-    constructor(id: Int, name: String, telNumber: Int, email: String) {
+    constructor(id: Int, name: String, telNumber: Int, email: String, password: String) {
         this.id = id
         this.name = name
         this.telNumber = telNumber
         this.email = email
+        this.password = password
     }
 
     override fun toString(): String {

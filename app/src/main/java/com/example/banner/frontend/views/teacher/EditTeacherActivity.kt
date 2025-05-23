@@ -16,6 +16,7 @@ class EditTeacherActivity : AppCompatActivity() {
     private lateinit var editName: EditText
     private lateinit var editPhone: EditText
     private lateinit var editEmail: EditText
+    private lateinit var editPass: EditText
     private lateinit var btnSave: Button
 
     private var teacherId: Int = -1
@@ -34,6 +35,7 @@ class EditTeacherActivity : AppCompatActivity() {
         editName = findViewById(R.id.edit_name)
         editPhone = findViewById(R.id.edit_tel)
         editEmail = findViewById(R.id.edit_email)
+        editPass = findViewById(R.id.edit_pass)
         btnSave = findViewById(R.id.btn_save)
     }
 
@@ -43,6 +45,7 @@ class EditTeacherActivity : AppCompatActivity() {
         editName.setText(intent.getStringExtra("name"))
         editPhone.setText(intent.getIntExtra("tel", 0).toString())
         editEmail.setText(intent.getStringExtra("email"))
+        editPass.setText(intent.getStringExtra("pass"))
     }
 
     private fun setupSaveButton() {
@@ -58,7 +61,9 @@ class EditTeacherActivity : AppCompatActivity() {
                     id = intent.getIntExtra("id", -1),
                     name = editName.text.toString(),
                     telNumber = editPhone.text.toString().toInt(),
-                    email = editEmail.text.toString()
+                    email = editEmail.text.toString(),
+                    password = editPass.text.toString()
+
                 )
 
                 object : AsyncTask<Void, Void, Boolean>() {
@@ -106,19 +111,23 @@ class EditTeacherActivity : AppCompatActivity() {
     private fun validateFields(): Boolean {
         return when {
             editName.text.isNullOrEmpty() -> {
-                editName.error = "Ingrese el nombre"
+                editName.error = "Enter the name"
                 false
             }
             editPhone.text.isNullOrEmpty() -> {
-                editPhone.error = "Ingrese el teléfono"
+                editPhone.error = "Enter the phone number"
                 false
             }
             editEmail.text.isNullOrEmpty() -> {
-                editEmail.error = "Ingrese el email"
+                editEmail.error = "Enter the email"
+                false
+            }
+            editPass.text.isNullOrEmpty() -> {
+                editPass.error = "Enter the password"
                 false
             }
             !android.util.Patterns.EMAIL_ADDRESS.matcher(editEmail.text.toString()).matches() -> {
-                editEmail.error = "Email inválido"
+                editEmail.error = "Invalid email format"
                 false
             }
             else -> true
