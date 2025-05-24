@@ -107,6 +107,7 @@ object HttpHelper {
             connection.requestMethod = "POST"
             connection.doOutput = true
             connection.setRequestProperty("Content-Type", "application/json")
+            connection.setRequestProperty("Accept", "application/json")
 
             val outputStream = connection.outputStream
             outputStream.write(requestBody.toByteArray())

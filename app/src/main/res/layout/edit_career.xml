@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_background"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:background="@drawable/login_background">
 
-    <!-- Título principal -->
     <TextView
         android:id="@+id/tvTitulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Career Edit"
+        android:text="Editar Carrera"
         android:textStyle="bold"
         android:textSize="18sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Label para Código -->
     <TextView
         android:id="@+id/tvCodigo"
         android:layout_width="wrap_content"
@@ -33,19 +32,18 @@
         android:id="@+id/edit_cod"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Code"
+        android:hint="Código"
         android:inputType="number"
         android:enabled="false"
         app:layout_constraintTop_toBottomOf="@id/tvCodigo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Label para Nombre de la carrera -->
     <TextView
         android:id="@+id/tvNombreCarrera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Career name"
+        android:text="Nombre de la carrera"
         android:textStyle="bold"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/edit_cod"
@@ -55,17 +53,16 @@
         android:id="@+id/edit_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Name"
+        android:hint="Nombre"
         app:layout_constraintTop_toBottomOf="@id/tvNombreCarrera"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Label para Título -->
     <TextView
         android:id="@+id/tvTituloCarrera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title"
+        android:text="Título"
         android:textStyle="bold"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/edit_name"
@@ -75,45 +72,62 @@
         android:id="@+id/edit_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Title"
+        android:hint="Título"
         app:layout_constraintTop_toBottomOf="@id/tvTituloCarrera"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Label para Cursos -->
+    <!-- Cursos asignados -->
     <TextView
-        android:id="@+id/tvCourses"
+        android:id="@+id/tvAssignedCourses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Courses"
+        android:text="Cursos asignados"
         android:textStyle="bold"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@id/edit_title"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Lista de cursos -->
     <ListView
-        android:id="@+id/coursesListView"
+        android:id="@+id/assignedCoursesListView"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tvCourses"
+        android:layout_height="120dp"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        app:layout_constraintTop_toBottomOf="@id/tvAssignedCourses"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btn_save" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Botón para guardar -->
+    <!-- Cursos no asignados -->
+    <TextView
+        android:id="@+id/tvUnassignedCourses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cursos disponibles para añadir"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/assignedCoursesListView"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ListView
+        android:id="@+id/unassignedCoursesListView"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        app:layout_constraintTop_toBottomOf="@id/tvUnassignedCourses"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <Button
         android:id="@+id/btn_save"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
-        android:textColor="#FFFFFF"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/purple_500"
-        app:layout_constraintTop_toBottomOf="@id/coursesListView"
+        android:text="Guardar"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/unassignedCoursesListView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

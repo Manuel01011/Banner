@@ -27,6 +27,37 @@ CREATE TABLE Course (
   FOREIGN KEY (ciclo_id) REFERENCES Ciclo(id),
   FOREIGN KEY (career_cod) REFERENCES Career(cod)
 );
+ALTER TABLE Course DROP FOREIGN KEY course_ibfk_2;
+ALTER TABLE Course DROP COLUMN career_cod;
+
+-- tabla intermedia para conectar un curso a muchas carreas
+CREATE TABLE Career_Course (
+    career_cod INTEGER,
+    course_cod INTEGER,
+    PRIMARY KEY (career_cod, course_cod),
+    FOREIGN KEY (career_cod) REFERENCES Career(cod),
+    FOREIGN KEY (course_cod) REFERENCES Course(cod)
+);
+
+
+-- Agregar curso a carrera
+DELIMITER //
+CREATE PROCEDURE add_course_to_career(IN p_career_cod INT, IN p_course_cod INT)
+BEGIN
+    INSERT INTO Career_Course (career_cod, course_cod) 
+    VALUES (p_career_cod, p_course_cod)
+    ON DUPLICATE KEY UPDATE career_cod = p_career_cod;
+END //
+DELIMITER ;
+
+-- Eliminar curso de carrera
+DELIMITER //
+CREATE PROCEDURE remove_course_from_career(IN p_career_cod INT, IN p_course_cod INT)
+BEGIN
+    DELETE FROM Career_Course 
+    WHERE career_cod = p_career_cod AND course_cod = p_course_cod;
+END //
+DELIMITER ;
 
 CREATE TABLE Student (
   id INTEGER PRIMARY KEY,
@@ -244,22 +275,67 @@ BEGIN
     WHERE  cod = p_cod;
 END $$
 DELIMITER ;
-select * from enrollment
-call get_course_by_cod(3)
+
+
 
 -- procedimiento para editar una carrera
 DELIMITER //
 CREATE PROCEDURE edit_career(
     IN p_cod INT,
-    IN p_name VARCHAR(255),
-    IN p_title VARCHAR(255)
+    IN p_name TEXT,
+    IN p_title TEXT,
+    IN p_courses_to_add JSON,
+    IN p_courses_to_remove JSON
 )
 BEGIN
+    DECLARE success BOOLEAN DEFAULT TRUE;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SET success = FALSE;
+        SELECT success AS result;
+        RESIGNAL;
+    END;
+    
+    START TRANSACTION;
+    
+    -- 1. Actualizar datos básicos de la carrera
     UPDATE Career
-    SET name = p_name, title = p_title
+    SET name = p_name, 
+        title = p_title
     WHERE cod = p_cod;
+    
+    -- 2. Eliminar relaciones con cursos
+    IF p_courses_to_remove IS NOT NULL AND JSON_LENGTH(p_courses_to_remove) > 0 THEN
+        DELETE FROM Career_Course 
+        WHERE career_cod = p_cod
+        AND course_cod IN (
+            SELECT CAST(JSON_EXTRACT(p_courses_to_remove, CONCAT('$[', idx, ']')) AS UNSIGNED)
+            FROM (
+                SELECT 0 AS idx UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+                UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9
+            ) AS indexes
+            WHERE idx < JSON_LENGTH(p_courses_to_remove)
+        );
+    END IF;
+    
+    -- 3. Añadir nuevas relaciones con cursos
+    IF p_courses_to_add IS NOT NULL AND JSON_LENGTH(p_courses_to_add) > 0 THEN
+        INSERT INTO Career_Course (career_cod, course_cod)
+        SELECT p_cod, CAST(JSON_EXTRACT(p_courses_to_add, CONCAT('$[', idx, ']')) AS UNSIGNED)
+        FROM (
+            SELECT 0 AS idx UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+            UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9
+        ) AS indexes
+        WHERE idx < JSON_LENGTH(p_courses_to_add)
+        ON DUPLICATE KEY UPDATE career_cod = career_cod; -- Evitar duplicados
+    END IF;
+    
+    COMMIT;
+    SELECT success AS result;
 END //
 DELIMITER ;
+
 
 -- procedimiento para añadir un curso a una carrera
 DELIMITER //
@@ -619,11 +695,17 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE PROCEDURE update_student_grade(IN student_id INT, IN grupo_id INT, IN new_grade DECIMAL(5,2))
+CREATE PROCEDURE update_student_grade(
+    IN p_student_id INT, 
+    IN p_grupo_id INT, 
+    IN p_new_grade DECIMAL(5,2)
+)
 BEGIN
     UPDATE Enrollment 
-    SET grade = new_grade
-    WHERE student_id = p_student_id AND grupo_id = grupo_id;
+    SET grade = p_new_grade
+    WHERE student_id = p_student_id AND grupo_id = p_grupo_id;
+    
+    SELECT ROW_COUNT() > 0 AS success;
 END $$
 
 DELIMITER ;
@@ -656,8 +738,17 @@ DELIMITER ;
 use banner;
 
 
+DELIMITER //
 
-DELIMITER $$
+CREATE PROCEDURE get_career_by_id(IN p_cod INT)
+BEGIN
+    SELECT cod, name, title
+    FROM Career
+    WHERE cod = p_cod;
+END //
+
+DELIMITER ;
+
 
 CREATE PROCEDURE update_ciclo(
     IN p_id INT,
@@ -888,6 +979,40 @@ BEGIN
     SELECT * FROM Career;
 END;
 //DELIMITER ;
+
+-- Obtener cursos asociados a la carrera
+
+DROP PROCEDURE IF EXISTS get_career_courses;
+DELIMITER //
+CREATE PROCEDURE get_career_courses(IN p_career_cod INT)
+BEGIN
+    SELECT 
+        c.cod,
+        c.name,
+        c.credits,
+        c.hours,
+        c.ciclo_id AS cicloId,
+        cc.career_cod AS careerCod
+    FROM Course c
+    JOIN Career_Course cc ON c.cod = cc.course_cod
+    WHERE cc.career_cod = p_career_cod;
+END //
+DELIMITER ;
+
+call get_career_courses(2)
+
+DELIMITER //
+CREATE PROCEDURE get_courses_not_assigned_to_career(IN p_career_cod INT)
+BEGIN
+    SELECT c.cod, c.name, c.credits, c.hours, c.ciclo_id, 0 AS career_cod -- career_cod=0 porque no está asignado
+    FROM Course c
+    WHERE c.cod NOT IN (
+        SELECT course_cod FROM Career_Course WHERE career_cod = p_career_cod
+    );
+END //
+DELIMITER ;
+
+call get_courses_not_assigned_to_career(1)
 
 -- procedieminto para todos los ciclos
 DELIMITER //
