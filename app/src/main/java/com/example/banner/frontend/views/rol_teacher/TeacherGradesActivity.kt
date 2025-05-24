@@ -1,21 +1,27 @@
 package com.example.banner.frontend.views.rol_teacher
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.backend_banner.backend.Models.Enrollment_
 import com.example.backend_banner.backend.Models.Grupo_
+import com.example.banner.MainActivity
 import com.example.banner.R
 import com.example.banner.frontend.views.teacher.StudentGradeAdapter
+import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -28,8 +34,11 @@ class TeacherGradesActivity : AppCompatActivity() {
     private lateinit var groupsSpinner: Spinner
     private lateinit var studentsRecyclerView: RecyclerView
     private lateinit var saveButton: Button
+    private lateinit var menuButton: ImageButton
     private lateinit var adapter: StudentGradeAdapter
     private lateinit var progressDialog: ProgressDialog
+    private lateinit var navigationView: NavigationView
+    private lateinit var drawerLayout: DrawerLayout
 
     private var currentGroupId: Int = -1
     private var teacherId: Int = 0
@@ -40,6 +49,14 @@ class TeacherGradesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.teacher_grades)
 
+        // Inicializar vistas
+        groupsSpinner = findViewById(R.id.groups_spinner)
+        studentsRecyclerView = findViewById(R.id.students_recycler_view)
+        saveButton = findViewById(R.id.save_grades_button)
+        menuButton = findViewById(R.id.menu_button)
+        navigationView = findViewById(R.id.navigation_view)
+        drawerLayout = findViewById(R.id.drawer_layout)
+
         teacherId = intent.getIntExtra("USER_ID", 0)
         if (teacherId == 0) {
             Toast.makeText(this, "Error: No se identificó al profesor", Toast.LENGTH_SHORT).show()
@@ -47,24 +64,47 @@ class TeacherGradesActivity : AppCompatActivity() {
             return
         }
 
-        groupsSpinner = findViewById(R.id.groups_spinner)
-        studentsRecyclerView = findViewById(R.id.students_recycler_view)
-        saveButton = findViewById(R.id.save_grades_button)
-
+        // Configurar RecyclerView
         studentsRecyclerView.layoutManager = LinearLayoutManager(this)
         adapter = StudentGradeAdapter(emptyList(), currentGroupId) { studentId, groupId, newGrade ->
             // callback por cada cambio
         }
         studentsRecyclerView.adapter = adapter
 
+        // Configurar Spinner
         groupsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedGroup = currentGroups[position]
-                currentGroupId = selectedGroup.id
-                loadStudentsForGroup(currentGroupId)
+                if (currentGroups.isNotEmpty()) {
+                    val selectedGroup = currentGroups[position]
+                    currentGroupId = selectedGroup.id
+                    loadStudentsForGroup(currentGroupId)
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        // Configurar Navigation Drawer
+        menuButton.setOnClickListener {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            } else {
+                drawerLayout.openDrawer(GravityCompat.START)
+            }
+        }
+
+
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_logout -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                }
+            }
+            drawerLayout.closeDrawer(GravityCompat.START)
+            true
         }
 
         saveButton.setOnClickListener { saveGrades() }
