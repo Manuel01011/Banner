@@ -105,6 +105,22 @@ CREATE TABLE Usuario (
   role TEXT CHECK (role IN ('admin', 'matriculador', 'teacher', 'student'))
 );
 
+-- solicitudes para los usuarios nuevos
+CREATE TABLE RegistrationRequest (
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  user_id INTEGER UNIQUE,
+  password TEXT NOT NULL,
+  role TEXT NOT NULL CHECK (role IN ('teacher', 'student', 'admin', 'matriculador')),
+  name TEXT,
+  tel_number INTEGER,
+  email TEXT,
+  born_date TEXT,
+  career_cod INTEGER,
+  status TEXT NOT NULL CHECK (status IN ('pending', 'approved', 'rejected')),
+  request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (career_cod) REFERENCES Career(cod)
+);
+
 ALTER TABLE Usuario 
 ADD CONSTRAINT usuario_chk_1 
 CHECK (role IN ('admin', 'matriculador', 'profesor', 'alumno', 'teacher', 'student'));

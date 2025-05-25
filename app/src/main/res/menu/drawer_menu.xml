@@ -42,6 +42,11 @@
         android:icon="@drawable/ic_users" />
 
     <item
+        android:id="@+id/nav_registration_requests"
+        android:icon="@drawable/ic_request"
+        android:title="Solicitudes"/>
+
+    <item
         android:id="@+id/nav_logout"
         android:title="Logout"
         android:icon="@drawable/ic_logout" />

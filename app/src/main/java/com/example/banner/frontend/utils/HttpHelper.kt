@@ -1,13 +1,13 @@
 import android.util.Log
 import com.google.gson.Gson
 import java.io.BufferedReader
+import java.io.DataOutputStream
 import java.io.InputStreamReader
 import java.io.OutputStream
 import java.lang.reflect.Type
 import java.net.HttpURLConnection
 import java.net.URL
 
-//ruta para probar en el navegador: http://localhost:8080/api/
 object HttpHelper {
     private const val BASE_URL = "http://10.0.2.2:8080/api/"
     private val gson = Gson()
@@ -213,6 +213,48 @@ object HttpHelper {
             null
         } finally {
             connection.disconnect()
+        }
+    }
+
+    fun putRequest(endpoint: String, jsonBody: String = ""): String? {
+        return try {
+            val cleanEndpoint = endpoint.removePrefix("/")
+            val url = URL("${BASE_URL}$cleanEndpoint")
+            val conn = url.openConnection() as HttpURLConnection
+
+            // Configuración mejorada
+            conn.apply {
+                requestMethod = "PUT"
+                connectTimeout = 15000
+                readTimeout = 15000
+                doOutput = true
+                setRequestProperty("Content-Type", "application/json")
+                setRequestProperty("Accept", "application/json")
+                setRequestProperty("Connection", "close")
+            }
+
+            // Escribir cuerpo si es necesario
+            if (jsonBody.isNotEmpty()) {
+                DataOutputStream(conn.outputStream).use {
+                    it.writeBytes(jsonBody)
+                    it.flush()
+                }
+            }
+
+            // Manejo de respuesta mejorado
+            val responseCode = conn.responseCode
+            if (responseCode in 200..299) {
+                conn.inputStream.bufferedReader().use { it.readText() }.also {
+                    Log.d("HTTP_PUT", "Response: $it")
+                }
+            } else {
+                conn.errorStream?.bufferedReader()?.use { it.readText() }?.also {
+                    Log.e("HTTP_PUT", "Error $responseCode: $it")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("HTTP_PUT", "Error en putRequest: ${e.message}", e)
+            null
         }
     }
 
