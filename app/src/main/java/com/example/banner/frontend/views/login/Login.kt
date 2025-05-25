@@ -12,6 +12,7 @@ import com.example.banner.backend.Controllers.UserController
 import com.example.banner.frontend.views.admin.Admin
 import com.example.banner.frontend.views.professor.Teacher
 import com.example.banner.frontend.views.register.Register
+import com.example.banner.frontend.views.rol_matriculador.StudentListActivity
 import com.example.banner.frontend.views.rol_student.StudentHistory
 import com.example.banner.frontend.views.rol_teacher.TeacherGradesActivity
 import kotlinx.coroutines.CoroutineScope
@@ -151,6 +152,7 @@ class login : ComponentActivity(){
             "admin" -> Intent(this, Admin::class.java)
             "teacher" -> Intent(this, TeacherGradesActivity::class.java)
             "student" -> Intent(this, StudentHistory::class.java)
+            "matriculador" -> Intent(this, StudentListActivity::class.java)
             else -> {
                 showToast("Rol de usuario no reconocido: $role")
                 return

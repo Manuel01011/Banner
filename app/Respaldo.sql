@@ -155,17 +155,21 @@ INSERT INTO Usuario (id, password, role) VALUES
 (3, 'profesor456', 'profesor'),
 (4, 'alumno789', 'alumno');
 
+
 INSERT INTO Usuario (id, password, role) VALUES(3, 'pass', 'teacher')
 select * from Usuario
 delete from Usuario where id = 3
 
 -- procedimiento para agregar un curso
+drop procedure insert_course
 DELIMITER //
-CREATE PROCEDURE insert_course(IN Course_cod INT, IN Course_name VARCHAR(255), IN Course_credits INT, IN Course_hours INT, IN Course_ciclo_id INT, IN Course_career_cod INT)
+CREATE PROCEDURE insert_course(IN Course_cod INT, IN Course_name VARCHAR(255), IN Course_credits INT, IN Course_hours INT, IN Course_ciclo_id INT)
 BEGIN
-    INSERT INTO Course (cod, name, credits, hours, ciclo_id, career_cod) VALUES (Course_cod, Course_name, Course_credits, Course_hours, Course_ciclo_id, Course_career_cod);
+    INSERT INTO Course (cod, name, credits, hours, ciclo_id) VALUES (Course_cod, Course_name, Course_credits, Course_hours, Course_ciclo_id);
 END //
 DELIMITER ;
+
+
 -- Stored Procedure: Mantenimiento de cursos (búsqueda por nombre, código y carrera) en MySQL
 DELIMITER $$
 CREATE PROCEDURE BuscarCurso(
@@ -277,7 +281,7 @@ END $$
 DELIMITER ;
 
 
-
+drop procedure edit_career
 -- procedimiento para editar una carrera
 DELIMITER //
 CREATE PROCEDURE edit_career(
@@ -749,6 +753,7 @@ END //
 
 DELIMITER ;
 
+call get_career_by_id(1);
 
 CREATE PROCEDURE update_ciclo(
     IN p_id INT,
@@ -796,16 +801,14 @@ CREATE PROCEDURE update_course(
     IN p_name VARCHAR(255),
     IN p_credits INT,
     IN p_hours INT,
-    IN p_cicloId INT,
-    IN p_careerCod INT
+    IN p_cicloId INT
 )
 BEGIN
     UPDATE Course
     SET name = p_name, 
         credits = p_credits, 
         hours = p_hours, 
-        ciclo_id = p_cicloId, 
-        career_cod = p_careerCod
+        ciclo_id = p_cicloId
     WHERE cod = p_cod;
 END $$
 
@@ -893,25 +896,22 @@ END $$
 
 DELIMITER ;
 
+
 -- historial de student
+
 DELIMITER //
 CREATE PROCEDURE GetStudentAcademicHistory(IN student_id INT)
 BEGIN
     SELECT 
-        e.student_id,
-        e.grade,
         c.cod AS course_cod,
         c.name AS course_name,
         c.credits,
-        cl.id AS ciclo_id,
+        e.grade,
         cl.year AS ciclo_year,
         cl.number AS ciclo_number,
-        cr.cod AS career_cod,
-        cr.name AS career_name,
-        g.id AS group_id,
+        ca.name AS career_name,
         g.number_group,
-        t.id AS teacher_id,
-        t.name AS teacher_name
+        COALESCE(t.name, 'No asignado') AS teacher_name
     FROM 
         Enrollment e
     JOIN 
@@ -921,7 +921,9 @@ BEGIN
     JOIN 
         Ciclo cl ON c.ciclo_id = cl.id
     JOIN 
-        Career cr ON c.career_cod = cr.cod
+        Student s ON e.student_id = s.id
+    JOIN 
+        Career ca ON s.career_cod = ca.cod
     LEFT JOIN 
         Teacher t ON g.teacher_id = t.id
     WHERE 

@@ -80,6 +80,9 @@
 
         <activity android:name=".frontend.views.rol_teacher.TeacherGradesActivity"/>
 
+        <activity android:name=".frontend.views.rol_matriculador.StudentListActivity"/>
+
+        <activity android:name=".frontend.views.rol_matriculador.StudentEnrollmentsActivity"/>
 
         <activity android:name=".frontend.views.rol_student.StudentHistory"
             android:theme="@style/Theme.Banner" />
