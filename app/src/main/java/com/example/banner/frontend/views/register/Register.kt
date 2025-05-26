@@ -143,7 +143,7 @@ class Register : AppCompatActivity() {
 
         careerSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedCareerId = position + 1 // Simulando IDs de carreras
+                selectedCareerId = position + 1
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -156,7 +156,7 @@ class Register : AppCompatActivity() {
             val password = passwordInput.text.toString().trim()
 
             if (userId.isEmpty() || password.isEmpty()) {
-                showToast("Por favor, completa todos los campos")
+                showToast("Please enter user ID and password")
                 return@setOnClickListener
             }
 
@@ -176,7 +176,7 @@ class Register : AppCompatActivity() {
         val careerCod = selectedCareerId
 
         if (name.isEmpty() || telNumber.isEmpty() || email.isEmpty() || bornDate.isEmpty() || careerCod == null) {
-            showToast("Por favor, completa todos los campos para estudiante")
+            showToast("Please complete all fields for student registration")
             return
         }
 
@@ -203,7 +203,7 @@ class Register : AppCompatActivity() {
         val email = emailInput.text.toString()
 
         if (name.isEmpty() || telNumber.isEmpty() || email.isEmpty()) {
-            showToast("Por favor, completa todos los campos para profesor")
+            showToast("Please complete all fields for teacher registration")
             return
         }
 
@@ -254,17 +254,16 @@ class Register : AppCompatActivity() {
                         if (response != null) {
                             val jsonResponse = JSONObject(response)
                             if (jsonResponse.getBoolean("success")) {
-                                showToast("Solicitud de registro enviada para aprobación")
+                                showToast("Request registered successfully")
                             } else {
                                 showToast("Error: ${jsonResponse.optString("message")}")
                             }
                         } else {
-                            showToast("Error de conexión")
+                            showToast("Conexion error")
                         }
                     } catch (e: Exception) {
-                        showToast("Error al procesar la respuesta")
+                        showToast("Error parsing response: ${e.message}")
                     }
-                    // Redirige siempre después de manejar la respuesta
                     redirectToMainScreen()
                 }
 

@@ -129,7 +129,7 @@ class Admin : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 runOnUiThread {
-                    showToast("Error de conexión: ${e.message}")
+                    showToast("Connection error: ${e.message}")
                     Log.e("AdminActivity", "Error loading requests", e)
                 }
             }
@@ -152,24 +152,24 @@ class Admin : AppCompatActivity() {
                         if (!response.isNullOrEmpty()) {
                             val json = JSONObject(response)
                             if (json.getBoolean("success")) {
-                                showToast("Solicitud aprobada con éxito")
+                                showToast("Application successfully approved")
                             } else {
-                                showToast("Error: ${json.optString("message", "Error en el servidor")}")
+                                showToast("Error: ${json.optString("message", "Server error")}")
                             }
                         } else {
                             // 3. Mostrar éxito genérico si la respuesta está vacía pero la operación fue exitosa
-                            showToast("Solicitud aprobada (actualiza la lista)")
+                            showToast("Request approved")
                         }
                     } catch (e: Exception) {
                         // 4. Mostrar éxito aunque falle el parseo
-                        showToast("Solicitud procesada - Actualiza la lista")
-                        Log.w("APPROVE_WARNING", "Error parseando respuesta: ${e.message}")
+                        showToast("Request processed")
+                        Log.w("APPROVE_WARNING", "Error parsing response: ${e.message}")
                     }
                 }
 
             } catch (e: Exception) {
                 runOnUiThread {
-                    showToast("Error de conexión: ${e.message}")
+                    showToast("Conexion error: ${e.message}")
                     Log.e("APPROVE_ERROR", "Error de red", e)
                 }
             }
@@ -190,17 +190,17 @@ class Admin : AppCompatActivity() {
                         try {
                             val jsonResponse = JSONObject(response)
                             if (jsonResponse.getBoolean("success")) {
-                                showToast("Solicitud rechazada")
+                                showToast("Request rejected")
                                 loadPendingRequests()
                             } else {
                                 showToast("Error: ${jsonResponse.optString("message")}")
                             }
                         } catch (e: Exception) {
-                            showToast("Error al procesar respuesta")
+                            showToast("Error processing response")
                             Log.e("AdminActivity", "JSON Error", e)
                         }
                     } else {
-                        showToast("Error de conexión (respuesta nula)")
+                        showToast("Connection error: No response from server")
                     }
                 }
             } catch (e: Exception) {

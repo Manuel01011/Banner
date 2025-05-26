@@ -57,7 +57,7 @@ class RecyclerAdapter3(
         fun bind(teacher: Teacher_, context: Context) {
             // Establecer los valores de los TextViews con los datos del Teacher_
             textName.text = teacher.name
-            textTelNumber.text = "Teléfono: ${teacher.telNumber}"
+            textTelNumber.text = "Phone: ${teacher.telNumber}"
             textEmail.text = "Email: ${teacher.email}"
 
             // Configurar el listener de clic en el ítem

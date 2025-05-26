@@ -118,10 +118,7 @@ class Semester : AppCompatActivity() {
             addCycleLauncher.launch(intent)
         }
 
-        Log.d("CareerActivity", "Antes de setUpRecyclerView")
         setUpRecyclerView()
-        Log.d("CareerActivity", "Después de setUpRecyclerView")
-
     }
 
     //devuelve la lista de los carreas del backend
@@ -236,7 +233,7 @@ class Semester : AppCompatActivity() {
                 if (result.isNotEmpty()) {
                     fullList = result
                     mAdapter.updateData(fullList)
-                    Log.d("LOAD_CICLOS", "Datos cargados: ${fullList.size} ciclos")
+                    Log.d("LOAD_CICLOS", "Data uploaded: ${fullList.size} ciclos")
                 } else {
                     Toast.makeText(
                         this@Semester,

@@ -71,7 +71,7 @@ class StudentListActivity : AppCompatActivity() {
         // 3. Configuración del SearchView
         searchView = findViewById<SearchView>(R.id.searchViewStudents).apply {
             this.setIconifiedByDefault(false)
-            this.queryHint = "Buscar estudiante"
+            this.queryHint = "Search student"
 
             this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
@@ -96,12 +96,12 @@ class StudentListActivity : AppCompatActivity() {
                     if (::navigationView.isInitialized) {
                         drawerLayout.openDrawer(GravityCompat.START)
                     } else {
-                        Log.e("NAV_ERROR", "NavigationView no inicializado")
+                        Log.e("NAV_ERROR", "NavigationView not initialized")
                     }
                 }
             } catch (e: Exception) {
-                Log.e("DRAWER_ERROR", "Error al manejar drawer", e)
-                Toast.makeText(this, "Error al abrir el menú", Toast.LENGTH_SHORT).show()
+                Log.e("DRAWER_ERROR", "Error handling drawer", e)
+                Toast.makeText(this, "Error opening the menu", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -135,7 +135,7 @@ class StudentListActivity : AppCompatActivity() {
 
     private fun loadStudents() {
         val progressDialog = ProgressDialog(this).apply {
-            setMessage("Cargando estudiantes...")
+            setMessage("Loading students...")
             setCancelable(false)
             show()
         }
@@ -177,7 +177,7 @@ class StudentListActivity : AppCompatActivity() {
                 if (result.isEmpty()) {
                     Toast.makeText(
                         this@StudentListActivity,
-                        "No se encontraron estudiantes",
+                        "No students found",
                         Toast.LENGTH_LONG
                     ).show()
                 }

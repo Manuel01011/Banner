@@ -10,7 +10,6 @@ import androidx.activity.ComponentActivity
 import com.example.banner.R
 import com.example.banner.backend.Controllers.UserController
 import com.example.banner.frontend.views.admin.Admin
-import com.example.banner.frontend.views.professor.Teacher
 import com.example.banner.frontend.views.register.Register
 import com.example.banner.frontend.views.rol_matriculador.StudentListActivity
 import com.example.banner.frontend.views.rol_student.StudentHistory
@@ -33,7 +32,6 @@ class login : ComponentActivity(){
         setContentView(R.layout.login_activity)
         val userController = UserController()
 
-        // Obtener las vistas de los componentes UI del XML
         usernameInput = findViewById(R.id.user_name_input)
         passwordInput = findViewById(R.id.password_input)
         loginbtn = findViewById(R.id.login_btn)
@@ -44,14 +42,12 @@ class login : ComponentActivity(){
             val username = usernameInput.text.toString().toIntOrNull()
             val password = passwordInput.text.toString()
 
-            // Verificar si el username es válido (no nulo)
             if (username == null) {
-                showToast("El id de usuario debe ser un número entero")
-                // Mostrar un mensaje de error o alerta aquí si lo deseas
+                showToast("The user id must be an integer")
                 return@setOnClickListener
             }
             if (password.isEmpty()) {
-                showToast("Por favor ingrese su contraseña")
+                showToast("Please enter your password")
                 return@setOnClickListener
             }
             attemptLogin(username, password)
@@ -128,22 +124,22 @@ class login : ComponentActivity(){
 
                         redirectUserBasedOnRole(userId, role)
                     } else {
-                        val message = jsonResponse.optString("message", "Credenciales incorrectas")
+                        val message = jsonResponse.optString("message", "Incorrect credentials")
                         showToast(message)
                     }
                 }
                 HttpURLConnection.HTTP_UNAUTHORIZED -> {
-                    val message = jsonResponse.optString("message", "Credenciales incorrectas")
+                    val message = jsonResponse.optString("message", "Incorrect credentials")
                     showToast(message)
                 }
                 else -> {
-                    val message = jsonResponse.optString("message", "Error desconocido")
+                    val message = jsonResponse.optString("message", "Unknown error")
                     showToast("Error $responseCode: $message")
                 }
             }
         } catch (e: Exception) {
             Log.e("LoginParseError", "Error parsing response", e)
-            showToast("Error procesando la respuesta del servidor")
+            showToast("Error processing server response")
         }
     }
 
@@ -154,7 +150,7 @@ class login : ComponentActivity(){
             "student" -> Intent(this, StudentHistory::class.java)
             "matriculador" -> Intent(this, StudentListActivity::class.java)
             else -> {
-                showToast("Rol de usuario no reconocido: $role")
+                showToast("Unrecognized user role: $role")
                 return
             }
         }

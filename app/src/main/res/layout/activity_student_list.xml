@@ -19,8 +19,9 @@
             android:layout_height="48dp"
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
+            android:iconifiedByDefault="false"
             android:background="@color/white"
-            android:queryHint="Buscar estudiante..." />
+            android:queryHint="Search student..." />
 
         <ImageButton
             android:id="@+id/menu_button"

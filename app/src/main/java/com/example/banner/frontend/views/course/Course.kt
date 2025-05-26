@@ -3,10 +3,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -16,10 +12,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.backend_banner.backend.Models.Course_
@@ -94,7 +88,7 @@ class Course : AppCompatActivity(){
                     if (position != -1) {
                         fullList[position] = Course_(cod, name, credits, hours, cicloId, careerCod)
                         mAdapter.updateData(fullList)
-                        Toast.makeText(this, "Curso actualizado", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Updated course", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -116,11 +110,8 @@ class Course : AppCompatActivity(){
             addCourseLauncher.launch(intent)
         }
 
-        Log.d("CareerActivity", "Antes de setUpRecyclerView")
         setUpRecyclerView()
         loadCourses()
-        Log.d("CareerActivity", "Después de setUpRecyclerView")
-
     }
 
     //devuelve la lista de los carreas
@@ -136,8 +127,6 @@ class Course : AppCompatActivity(){
             mutableListOf()
         }
     }
-
-    //Habilitar Swipe con ItemTouchHelper
 
 
     //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager

@@ -18,7 +18,6 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -35,7 +34,6 @@ class StudentHistory : AppCompatActivity() {
     private var studentId: Int = -1
     private lateinit var navigationView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,15 +62,15 @@ class StudentHistory : AppCompatActivity() {
         // Get student ID from Intent
         studentId = intent.getIntExtra("USER_ID", -1)
         if (studentId == -1) {
-            Toast.makeText(this, "Error: ID de estudiante no proporcionado", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Error: Student ID not provided", Toast.LENGTH_LONG).show()
             finish()
             return
         }
 
         // Set up progress dialog
         progressDialog = ProgressDialog(this).apply {
-            setTitle("Cargando")
-            setMessage("Obteniendo historial académico...")
+            setTitle("Loading")
+            setMessage("Obtaining academic history...")
             setCancelable(false)
         }
         progressDialog.show()
@@ -130,14 +128,14 @@ class StudentHistory : AppCompatActivity() {
 
                         // Mostrar info adicional si quieres (por ejemplo nombre/carrera del primer curso)
                         studentIdView.text = "ID: $studentId"
-                        studentCareer.text = "Carrera: ${items.firstOrNull()?.careerName ?: "Desconocida"}"
+                        studentCareer.text = "Carrera: ${items.firstOrNull()?.careerName ?: "Unknown"}"
                     }
                 } else {
                     withContext(Dispatchers.Main) {
                         progressDialog.dismiss()
                         Toast.makeText(
                             this@StudentHistory,
-                            "Error al cargar historial. Código: $responseCode",
+                            "Error loading history. Code: $responseCode",
                             Toast.LENGTH_LONG
                         ).show()
                     }

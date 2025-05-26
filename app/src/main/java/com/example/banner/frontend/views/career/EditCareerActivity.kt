@@ -19,11 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.backend_banner.backend.Models.Career_
 import com.example.backend_banner.backend.Models.Course_
 import com.example.banner.R
-import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -106,7 +101,7 @@ class EditCareerActivity : AppCompatActivity() {
 
     private fun validateFields(): Boolean {
         if (name.text.isBlank() || title.text.isBlank()) {
-            Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Complete all fields", Toast.LENGTH_SHORT).show()
             return false
         }
         return true
@@ -173,7 +168,7 @@ class EditCareerActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: List<Course_>?) {
             if (result == null) {
-                Toast.makeText(this@EditCareerActivity, "Error al cargar cursos asignados.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@EditCareerActivity, "Error loading assigned courses.", Toast.LENGTH_LONG).show()
                 return
             }
             assignedCourses.clear()
@@ -222,7 +217,7 @@ class EditCareerActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: List<Course_>?) {
             if (result == null) {
-                Toast.makeText(this@EditCareerActivity, "Error al cargar cursos no asignados.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@EditCareerActivity, "Error loading unassigned courses.", Toast.LENGTH_LONG).show()
                 return
             }
             unassignedCourses.clear()
@@ -260,7 +255,7 @@ class EditCareerActivity : AppCompatActivity() {
                     "PUT",
                     payload,
                     String::class.java
-                ) ?: return Pair(false, "No se recibió respuesta del servidor")
+                ) ?: return Pair(false, "No response was received from the server")
 
                 Log.d("UpdateCareer", "Server response: $response")
 
@@ -278,13 +273,13 @@ class EditCareerActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: Pair<Boolean, String?>) {
             if (result.first) {
-                Toast.makeText(this@EditCareerActivity, "Carrera actualizada con éxito", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@EditCareerActivity, "Successfully updated career", Toast.LENGTH_SHORT).show()
                 setResult(Activity.RESULT_OK)
                 finish()
             } else {
                 Toast.makeText(
                     this@EditCareerActivity,
-                    result.second ?: "Error desconocido al actualizar",
+                    result.second ?: "Unknown error when updating",
                     Toast.LENGTH_LONG
                 ).show()
             }

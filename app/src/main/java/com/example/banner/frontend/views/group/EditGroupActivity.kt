@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.backend_banner.backend.Models.Grupo_
 import com.example.banner.R
-import com.google.gson.Gson
 
 class EditGroupActivity : AppCompatActivity() {
     private lateinit var etId: EditText

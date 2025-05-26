@@ -21,7 +21,7 @@ class RecyclerAdapter(
     //onCreateViewHolder: Infla el diseño de cada elemento de la lista
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return ViewHolder(layoutInflater.inflate(R.layout.career_item, parent, false)) // Reemplaza con el layout correcto
+        return ViewHolder(layoutInflater.inflate(R.layout.career_item, parent, false))
     }
 
     //onBindViewHolder: Asigna los datos de un SuperHeroe a la vista correspondiente.
@@ -56,7 +56,7 @@ class RecyclerAdapter(
 
         // Notifica cambios de manera más eficiente:
         if (oldSize == newData.size) {
-            notifyItemRangeChanged(0, oldSize)  // Si el tamaño es igual, solo actualiza los items
+            notifyItemRangeChanged(0, oldSize)
         } else {
             notifyDataSetChanged()  // Si el tamaño cambió, actualiza todo
         }
@@ -79,7 +79,7 @@ class RecyclerAdapter(
 
             // Solo para mostrar un Toast si se hace clic en todo el ítem
             itemView.setOnClickListener {
-                Log.d("ViewHolder", "Clic en carrera: ${carrera.cod}")
+                Log.d("ViewHolder", "Click on carrera: ${carrera.cod}")
                 Toast.makeText(context, carrera.name, Toast.LENGTH_SHORT).show()
             }
 
@@ -104,6 +104,4 @@ class RecyclerAdapter(
             }
         }
     }
-
-
 }

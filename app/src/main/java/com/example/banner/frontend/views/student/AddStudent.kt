@@ -84,7 +84,7 @@ class AddStudent : AppCompatActivity() {
 
                     saveStudent(newStudent)
                 } else {
-                    Toast.makeText(this, "Complete todos los campos correctamente", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Complete all fields correctly", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()

@@ -1,5 +1,4 @@
 package com.example.banner.frontend.views.rol_matriculador
-
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -28,7 +27,7 @@ class StudentEnrollmentsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_student_enrollments)
 
         studentId = intent.getIntExtra("student_id", -1)
-        studentName = intent.getStringExtra("student_name") ?: "Desconocido"
+        studentName = intent.getStringExtra("student_name") ?: "Known Student"
 
         findViewById<TextView>(R.id.tvStudentName).text = "Enrollments of: $studentName"
 
@@ -142,9 +141,9 @@ class StudentEnrollmentsActivity : AppCompatActivity() {
         }.start()
 
         AlertDialog.Builder(this)
-            .setTitle("Agregar Matrícula")
+            .setTitle("Add Enrollment")
             .setView(dialogView)
-            .setPositiveButton("Agregar") { _, _ ->
+            .setPositiveButton("Add") { _, _ ->
                 val selectedGroupIndex = spinnerGroup.selectedItemPosition
                 val selectedGroup = if (selectedGroupIndex in groupsList.indices) groupsList[selectedGroupIndex] else null
                 val grade = etGrade.text.toString().toDoubleOrNull()
@@ -167,12 +166,12 @@ class StudentEnrollmentsActivity : AppCompatActivity() {
                     }.start()
                 } else {
                     AlertDialog.Builder(this)
-                        .setMessage("Por favor, seleccione un grupo y una nota válida")
+                        .setMessage("Please select a valid group and enter a valid grade.")
                         .setPositiveButton("OK", null)
                         .show()
                 }
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton("Cancel", null)
             .show()
     }
 }

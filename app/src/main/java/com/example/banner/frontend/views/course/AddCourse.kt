@@ -236,7 +236,7 @@ class AddCourse : AppCompatActivity() {
         val adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item,
-            cyclesList.map { "${it.id} - ${it.year}" } // Asume que Cycle_ tiene un campo 'name'
+            cyclesList.map { "${it.id} - ${it.year}" }
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         cycleSpinner.adapter = adapter

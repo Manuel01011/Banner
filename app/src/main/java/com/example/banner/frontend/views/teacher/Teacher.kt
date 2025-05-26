@@ -84,7 +84,7 @@ class Teacher : AppCompatActivity() {
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 loadTeachers() // Recarga los datos del servidor
-                Toast.makeText(this, "Teacher agregado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Teacher added", Toast.LENGTH_SHORT).show()
             }
         }
         editProfessorLauncher = registerForActivityResult(

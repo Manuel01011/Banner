@@ -60,7 +60,7 @@ class RecyclerAdapter7(
             textGrade.text = "Grade: ${enrollment.grade}"
 
             itemView.setOnClickListener {
-                Toast.makeText(context, "Inscripción del estudiante ID: ${enrollment.studentId}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Student Enrollment ID: ${enrollment.studentId}", Toast.LENGTH_SHORT).show()
             }
 
             btnEdit.setOnClickListener {

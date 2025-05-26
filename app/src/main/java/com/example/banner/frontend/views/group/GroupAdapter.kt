@@ -55,14 +55,14 @@ class RecyclerAdapter6(
 
         fun bind(grupo: Grupo_, context: Context) {
             textId.text = "ID: ${grupo.id}"
-            textNumber.text = "Número de grupo: ${grupo.numberGroup}"
-            textYear.text = "Año: ${grupo.year}"
-            textSchedule.text = "Horario: ${grupo.horario}"
-            textCourse.text = "Código del curso: ${grupo.courseCod}"
-            textTeacher.text = "ID del teacher: ${grupo.teacherId}"
+            textNumber.text = "Group number: ${grupo.numberGroup}"
+            textYear.text = "Year: ${grupo.year}"
+            textSchedule.text = "Schedule: ${grupo.horario}"
+            textCourse.text = "Cod: ${grupo.courseCod}"
+            textTeacher.text = "ID: ${grupo.teacherId}"
 
             itemView.setOnClickListener {
-                Toast.makeText(context, "Grupo ${grupo.numberGroup} - ${grupo.horario}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Group ${grupo.numberGroup} - ${grupo.horario}", Toast.LENGTH_SHORT).show()
             }
 
             btnEdit.setOnClickListener {

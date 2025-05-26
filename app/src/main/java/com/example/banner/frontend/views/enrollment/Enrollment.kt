@@ -69,7 +69,8 @@ class Enrollment : AppCompatActivity() {
             drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
-        // Inicialización del ActivityResultLauncher para agregar matrícula
+
+
         addEnrollmentLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
@@ -79,7 +80,6 @@ class Enrollment : AppCompatActivity() {
             }
         }
 
-        // Agregar esto en onCreate() después de inicializar addEnrollmentLauncher
         editEnrollmentLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->

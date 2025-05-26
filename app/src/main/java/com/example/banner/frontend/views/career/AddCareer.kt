@@ -24,14 +24,13 @@ class AddCareer : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.add_career) // Asegúrate de que este XML esté correctamente configurado
+        setContentView(R.layout.add_career)
 
         cod = findViewById(R.id.agregar_cod)
         name = findViewById(R.id.agregar_name)
         title = findViewById(R.id.agregar_title)
         addBtn = findViewById(R.id.btn_agregar)
 
-        // La edición del código es deshabilitada, pero si lo deseas, puedes habilitarla aquí.
 
         // Modificar el onClickListener del botón
         addBtn.setOnClickListener {

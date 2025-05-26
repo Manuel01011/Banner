@@ -91,7 +91,7 @@ class User : AppCompatActivity() {
                     // Agregar el nuevo estudiante a la lista
                     fullList.add(newUser)
                     mAdapter.updateData(fullList)
-                    Toast.makeText(this, "Usuario agregado", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "User added", Toast.LENGTH_SHORT).show()
                 }
             }
         }

@@ -118,7 +118,7 @@ class Student : AppCompatActivity() {
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 loadStudents() // Recarga los datos del servidor
-                Toast.makeText(this, "Estudiante agregado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Aggregate student", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -192,7 +192,7 @@ class Student : AppCompatActivity() {
                     mAdapter.updateData(fullList)
                     Log.d("LOAD_STUDENTS", "Loaded students: ${fullList.size}")
                 } else {
-                    Toast.makeText(this@Student, "No se encontraron estudiantes", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@Student, "No students found", Toast.LENGTH_SHORT).show()
                 }
             }
         }.execute()
@@ -254,7 +254,7 @@ class Student : AppCompatActivity() {
 
         AlertDialog.Builder(this)
             .setTitle("Are you sure?")
-            .setMessage("ArAre you sure you want to delete this student?")
+            .setMessage("Are you sure you want to delete this student?")
             .setPositiveButton("Delete") { _, _ ->
                 Thread {
                     try {
@@ -281,7 +281,7 @@ class Student : AppCompatActivity() {
                     }
                 }.start()
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton("Cancel", null)
             .show()
     }
 }

@@ -143,27 +143,27 @@ class EditStudentActivity : AppCompatActivity() {
     private fun validateFields(): Boolean {
         return when {
             nameEdit.text.isNullOrEmpty() -> {
-                nameEdit.error = "Ingrese el nombre"
+                nameEdit.error = "Enter the name"
                 false
             }
             telEdit.text.isNullOrEmpty() -> {
-                telEdit.error = "Ingrese el teléfono"
+                telEdit.error = "Enter the phone number"
                 false
             }
             emailEdit.text.isNullOrEmpty() -> {
-                emailEdit.error = "Ingrese el email"
+                emailEdit.error = "Enter the email"
                 false
             }
             !Patterns.EMAIL_ADDRESS.matcher(emailEdit.text.toString()).matches() -> {
-                emailEdit.error = "Email inválido"
+                emailEdit.error = "Invalid email format"
                 false
             }
             bornDateEdit.text.isNullOrEmpty() -> {
-                bornDateEdit.error = "Seleccione fecha de nacimiento"
+                bornDateEdit.error = "Enter the date of birth"
                 false
             }
             careerCodEdit.text.isNullOrEmpty() -> {
-                careerCodEdit.error = "Ingrese código de carrera"
+                careerCodEdit.error = "Enter the career code"
                 false
             }
             else -> true

@@ -144,7 +144,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:hint="(YYYY-MM-DD)"
+        android:hint="YYYY-MM-DD"
         android:inputType="date"
         app:layout_constraintTop_toBottomOf="@id/agregar_estudiante_bornDate_text"
         app:layout_constraintStart_toStartOf="parent"

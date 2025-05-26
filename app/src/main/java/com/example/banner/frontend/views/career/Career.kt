@@ -33,8 +33,7 @@ class Career : AppCompatActivity() {
     // Recyclerview de carreras
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: RecyclerAdapter
-    //editar
-    // Elimina esto:
+
     private lateinit var editCareerLauncher: ActivityResultLauncher<Intent>
 
     private lateinit var addCareerLauncher: ActivityResultLauncher<Intent>
@@ -111,16 +110,13 @@ class Career : AppCompatActivity() {
         }
 
         // Configurar RecyclerView y adaptador
-        Log.d("CareerActivity", "Antes de setUpRecyclerView")
         setUpRecyclerView()
         loadCareers() // Cargar datos del backend al iniciar
-        Log.d("CareerActivity", "Después de setUpRecyclerView")
-
     }
 
-    //Funciones para el lab 4 listar las carreras
+
     private fun getCareersFromBackend(): MutableList<Career_> {
-        val response = HttpHelper.getRawResponse("careers") // Asegúrate de tener este método
+        val response = HttpHelper.getRawResponse("careers")
         return try {
             val json = JSONObject(response)
             val dataArray = json.getJSONArray("data")
@@ -145,13 +141,11 @@ class Career : AppCompatActivity() {
             }
         }.execute()
     }
-    // Reemplazar getSuperheros() con esto:
+
     private fun getSuperheros(): MutableList<Career_> {
         return getCareersFromBackend()
     }
 
-
-    //setUpRecyclerView: Inicializa y configura el RecyclerView con un LinearLayoutManager
     private fun setUpRecyclerView() {
         mRecyclerView = findViewById(R.id.recycler_view)
         mRecyclerView.setHasFixedSize(true)
@@ -219,7 +213,6 @@ class Career : AppCompatActivity() {
                     mAdapter.removeItem(position)
                     Toast.makeText(this@Career, "Career eliminated: ${carrera.name}", Toast.LENGTH_SHORT).show()
 
-                    // Opcional: Recargar datos del servidor para asegurar consistencia
                     loadCareers()
                 } else {
                     Toast.makeText(this@Career, "Error when deleting the Career", Toast.LENGTH_SHORT).show()

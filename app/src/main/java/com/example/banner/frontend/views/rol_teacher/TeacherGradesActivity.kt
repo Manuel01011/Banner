@@ -59,7 +59,7 @@ class TeacherGradesActivity : AppCompatActivity() {
 
         teacherId = intent.getIntExtra("USER_ID", 0)
         if (teacherId == 0) {
-            Toast.makeText(this, "Error: No se identificó al profesor", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Error: Teacher was not identified", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -112,7 +112,7 @@ class TeacherGradesActivity : AppCompatActivity() {
     }
 
     private fun loadTeacherGroups() {
-        showProgressDialog("Cargando grupos...")
+        showProgressDialog("Loading groups...")
 
         lifecycleScope.launch {
             try {
@@ -121,7 +121,7 @@ class TeacherGradesActivity : AppCompatActivity() {
                 }
 
                 if (response.isNullOrEmpty()) {
-                    showError("No se recibió respuesta del servidor")
+                    showError("No response was received from the server")
                     return@launch
                 }
 
@@ -135,11 +135,11 @@ class TeacherGradesActivity : AppCompatActivity() {
                         if (currentGroups.isNotEmpty()) {
                             setupGroupsSpinner()
                         } else {
-                            showError("No tiene grupos asignados")
+                            showError("No groups assigned")
                         }
                     }
                 } else {
-                    showError(jsonResponse.optString("message", "Error al cargar grupos"))
+                    showError(jsonResponse.optString("message", "Error loading groups"))
                 }
             } catch (e: Exception) {
                 showError("Error: ${e.message}")
@@ -153,14 +153,14 @@ class TeacherGradesActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item,
-            currentGroups.map { "Grupo ${it.id} : ${it.horario}" }
+            currentGroups.map { "Group ${it.id} : ${it.horario}" }
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         groupsSpinner.adapter = adapter
     }
 
     private fun loadStudentsForGroup(groupId: Int) {
-        showProgressDialog("Cargando estudiantes...")
+        showProgressDialog("Loading students...")
 
         lifecycleScope.launch {
             try {
@@ -169,7 +169,7 @@ class TeacherGradesActivity : AppCompatActivity() {
                 }
 
                 if (response.isNullOrEmpty()) {
-                    showError("El servidor no devolvió datos")
+                    showError("Server did not return data")
                     return@launch
                 }
 
@@ -184,7 +184,7 @@ class TeacherGradesActivity : AppCompatActivity() {
                         adapter.updateData(filtered, groupId)
                     }
                 } else {
-                    showError(jsonResponse.optString("message", "Error desconocido"))
+                    showError(jsonResponse.optString("message", "Unkown Error"))
                 }
             } catch (e: Exception) {
                 showError("Error: ${e.message}")
@@ -199,11 +199,11 @@ class TeacherGradesActivity : AppCompatActivity() {
             .filterKeys { it.second == currentGroupId }
 
         if (modifiedGrades.isEmpty()) {
-            Toast.makeText(this, "No hay cambios para guardar", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No changes to save", Toast.LENGTH_SHORT).show()
             return
         }
 
-        showProgressDialog("Guardando notas...")
+        showProgressDialog("Saving grades...")
 
         lifecycleScope.launch {
             try {
@@ -225,17 +225,17 @@ class TeacherGradesActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     dismissProgressDialog()
                     if (allSuccess) {
-                        Toast.makeText(this@TeacherGradesActivity, "Notas guardadas con éxito", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@TeacherGradesActivity, "Successfully grades notes", Toast.LENGTH_SHORT).show()
                         adapter.clearChanges(currentGroupId)
                         loadStudentsForGroup(currentGroupId)
                     } else {
                         val successCount = results.count { it }
-                        showError("Se guardaron $successCount de ${modifiedGrades.size} notas")
+                        showError("They were kept $successCount de ${modifiedGrades.size} grades")
                     }
                 }
             } catch (e: Exception) {
                 dismissProgressDialog()
-                showError("Error al guardar notas: ${e.message}")
+                showError("Error saving grades: ${e.message}")
             }
         }
     }
