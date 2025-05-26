@@ -1,7 +1,5 @@
 # Sistema de Gestión Académica Universitaria 📚
 
-> ⚠ **Proyecto en desarrollo – No está finalizado.**
-
 Este proyecto corresponde a un sistema de gestión académica para una universidad, diseñado para manejar la información relacionada con carreras, cursos, profesores, alumnos, ciclos lectivos, matrículas y calificaciones.
 Es necesario tener la API: https://github.com/Manuel01011/API-Banner
 
