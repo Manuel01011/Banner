@@ -250,21 +250,28 @@ class Register : AppCompatActivity() {
                 val response = HttpHelper.postRequest("registration-requests", jsonRequest)
 
                 runOnUiThread {
-                    if (response != null) {
-                        val jsonResponse = JSONObject(response)
-                        if (jsonResponse.getBoolean("success")) {
-                            showToast("Solicitud de registro enviada para aprobación")
-                            redirectToMainScreen()
+                    try {
+                        if (response != null) {
+                            val jsonResponse = JSONObject(response)
+                            if (jsonResponse.getBoolean("success")) {
+                                showToast("Solicitud de registro enviada para aprobación")
+                            } else {
+                                showToast("Error: ${jsonResponse.optString("message")}")
+                            }
                         } else {
-                            showToast("Error en el registro: ${jsonResponse.optString("message")}")
+                            showToast("Error de conexión")
                         }
-                    } else {
-                        showToast("Error de conexión con el servidor")
+                    } catch (e: Exception) {
+                        showToast("Error al procesar la respuesta")
                     }
+                    // Redirige siempre después de manejar la respuesta
+                    redirectToMainScreen()
                 }
+
             } catch (e: Exception) {
                 runOnUiThread {
-                    showToast("Error al enviar la solicitud: ${e.message}")
+                    showToast("Error: ${e.message}")
+                    redirectToMainScreen()
                 }
             }
         }.start()

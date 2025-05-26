@@ -176,8 +176,81 @@ INSERT INTO Usuario (id, password, role) VALUES(3, 'pass', 'teacher')
 select * from Usuario
 delete from Usuario where id = 3
 
+-- Procedimiento para crear solicitud de registro
+drop procedure create_registration_request
+DELIMITER //
+CREATE PROCEDURE create_registration_request(
+    IN p_user_id INT,
+    IN p_password TEXT,
+    IN p_role TEXT,
+    IN p_name TEXT,
+    IN p_tel_number INT,
+    IN p_email TEXT,
+    IN p_born_date TEXT,
+    IN p_career_cod INT
+)
+BEGIN
+    DECLARE v_name TEXT DEFAULT NULL;
+    DECLARE v_tel_number INT DEFAULT NULL;
+    DECLARE v_email TEXT DEFAULT NULL;
+    DECLARE v_born_date TEXT DEFAULT NULL;
+    DECLARE v_career_cod INT DEFAULT NULL;
+    
+    -- Manejar valores vacíos o cero como NULL
+    SET v_name = NULLIF(p_name, '');
+    SET v_tel_number = CASE WHEN p_tel_number = 0 THEN NULL ELSE p_tel_number END;
+    SET v_email = NULLIF(p_email, '');
+    SET v_born_date = NULLIF(p_born_date, '');
+    SET v_career_cod = CASE WHEN p_career_cod = 0 THEN NULL ELSE p_career_cod END;
+    
+    INSERT INTO RegistrationRequest (
+        user_id, password, role, name, tel_number, email, born_date, career_cod, status, request_date
+    ) VALUES (
+        p_user_id, p_password, p_role, v_name, v_tel_number, v_email, v_born_date, v_career_cod, 
+        'pending', NOW()
+    );
+    
+    SELECT LAST_INSERT_ID() AS id;
+END //
+DELIMITER ;
+
+-- Procedimiento para obtener solicitud por ID
+DELIMITER //
+CREATE PROCEDURE get_registration_request_by_id(IN p_id INT)
+BEGIN
+    SELECT * FROM RegistrationRequest WHERE id = p_id;
+END //
+DELIMITER ;
+
+-- Procedimiento para actualizar estado de solicitud
+DELIMITER //
+CREATE PROCEDURE update_registration_request_status(
+    IN p_id INT,
+    IN p_status TEXT
+)
+BEGIN
+    UPDATE RegistrationRequest 
+    SET status = p_status 
+    WHERE id = p_id;
+END //
+DELIMITER ;
+
+-- Procedimiento para obtener solicitudes pendientes
+DELIMITER //
+CREATE PROCEDURE get_pending_registration_requests()
+BEGIN
+    SELECT * FROM RegistrationRequest WHERE status = 'pending';
+END //
+DELIMITER ;
+
+call get_pending_registration_requests()
+
+
+call get_pending_registration_requests()
+select * from RegistrationRequest
+
 -- procedimiento para agregar un curso
-drop procedure insert_course
+
 DELIMITER //
 CREATE PROCEDURE insert_course(IN Course_cod INT, IN Course_name VARCHAR(255), IN Course_credits INT, IN Course_hours INT, IN Course_ciclo_id INT)
 BEGIN
