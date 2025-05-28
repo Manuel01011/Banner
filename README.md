@@ -18,7 +18,7 @@ El sistema permite a una universidad procesar y organizar:
 
 ---
 
-## 📘 Funcionalidades esperadas
+## 📘 Funcionalidades 
 
 1. Mantenimiento de **cursos**, **carreras**, **profesores**, **alumnos** y **ciclos**.
 2. Programación de la **oferta académica** por ciclo.
