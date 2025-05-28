@@ -36,27 +36,6 @@ El sistema permite a una universidad procesar y organizar:
 - **Profesor**: Registro de notas de estudiantes.
 - **Alumno**: Consulta de su historial académico.
 
----
-
-## 🔨 Tecnologías y Componentes
-
-El proyecto se está desarrollando en fases:
-
-### Etapa I (Completada)
-- Modelado Entidad-Relación y Relacional.
-- Script estructural de base de datos.
-
-### Etapa II (En progreso)
-- CRUDs implementados con procedimientos almacenados y vistas.
-- Población de tablas con datos de prueba (mínimo 10 filas por tabla).
-
-### Etapa III (Pendiente)
-- Triggers.
-- Pruebas funcionales completas.
-- Documentación detallada.
-
----
-
 ## 🚧 Estado del Proyecto
 
 Actualmente el proyecto **se encuentra en la Etapa II**. Algunas funcionalidades están en desarrollo y pueden no estar completamente operativas o integradas.
